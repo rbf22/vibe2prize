@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Vibe-to-Enterprise Framework - EPAM</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reset.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reveal.min.css">
+    <!-- Light/Dark friendly syntax highlighting -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai.min.css"
+        id="highlight-theme"
+        data-dark-href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai.min.css"
+        data-light-href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=9">
+</head>
+<body>
+    <!-- Theme Toggle & Navigation Cluster -->
+    <div class="control-cluster" role="group" aria-label="Slide navigation and theme toggle">
+        <button id="nav-prev" class="nav-button" aria-label="Go to previous slide">&lsaquo;</button>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Light/Dark Mode">
+            <svg id="icon-sun" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg id="icon-moon" class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+        <button id="nav-next" class="nav-button" aria-label="Advance to next slide">&rsaquo;</button>
+    </div>
+
+    <div class="noise" aria-hidden="true"></div>
+    <div id="slide-warning" role="status" aria-live="polite"></div>
+
+    <div class="footer-bar" aria-hidden="true">
+        <div class="footer-logo">
+            <img
+                src="assets/1_Logo_Assets/1_EPAM_Logo_2023/1.%20Primary%20Logo/Black%20Logo/EPAM_LOGO_Black.svg"
+                alt="EPAM logo"
+                class="footer-logo-img footer-logo-dark"
+                draggable="false"
+            >
+            <img
+                src="assets/1_Logo_Assets/1_EPAM_Logo_2023/1.%20Primary%20Logo/White%20Logo/EPAM_LOGO_White.svg"
+                alt="EPAM logo"
+                class="footer-logo-img footer-logo-light"
+                draggable="false"
+            >
+        </div>
+        <div class="footer-caption">EPAM Proprietary and Confidential</div>
+        <div class="footer-slide-number" id="slide-number">1 / 1</div>
+    </div>
+
+    <div class="reveal">
+        <div class="slides" id="slides-root">
+            <section>
+                <h2>Loading slides…</h2>
+                <p>If this persists, run <code>npm run build</code> and refresh.</p>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/markdown/markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/highlight/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.4/plugin/notes/notes.min.js"></script>
+    <script>
+        (function () {
+            const highlightThemes = {
+                dark: document.getElementById('highlight-theme')?.dataset.darkHref,
+                light: document.getElementById('highlight-theme')?.dataset.lightHref,
+            };
+
+            const THEME_KEY = 'vibe2prize-theme';
+            const controlCluster = document.querySelector('.control-cluster');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const slidesRoot = document.getElementById('slides-root');
+            const navPrevBtn = document.getElementById('nav-prev');
+            const navNextBtn = document.getElementById('nav-next');
+            const slideWarningEl = document.getElementById('slide-warning');
+            const rootElement = document.documentElement;
+            const iconSun = document.getElementById('icon-sun');
+            const iconMoon = document.getElementById('icon-moon');
+            const highlightTheme = document.getElementById('highlight-theme');
+            const slideNumberEl = document.getElementById('slide-number');
+
+            const applyTheme = (theme) => {
+                const resolvedTheme = theme === 'light' ? 'light' : 'dark';
+                rootElement.setAttribute('data-theme', resolvedTheme);
+                if (iconSun && iconMoon) {
+                    iconSun.style.display = resolvedTheme === 'dark' ? 'none' : 'block';
+                    iconMoon.style.display = resolvedTheme === 'dark' ? 'block' : 'none';
+                }
+                if (highlightTheme && highlightThemes[resolvedTheme]) {
+                    highlightTheme.href = highlightThemes[resolvedTheme];
+                }
+            };
+
+            const showControls = () => {
+                controlCluster?.classList.add('is-visible');
+            };
+
+            const hideControls = () => {
+                controlCluster?.classList.remove('is-visible');
+            };
+
+            const initThemeToggle = () => {
+                if (!themeToggleBtn) return;
+                const storedTheme = localStorage.getItem(THEME_KEY);
+                const initialTheme = storedTheme || rootElement.getAttribute('data-theme') || 'dark';
+                applyTheme(initialTheme);
+
+                themeToggleBtn.addEventListener('click', () => {
+                    const nextTheme = rootElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                    applyTheme(nextTheme);
+                    localStorage.setItem(THEME_KEY, nextTheme);
+                });
+            };
+
+            const initControlVisibility = () => {
+                if (!controlCluster) return;
+
+                const HOTSPOT_SIZE = 200;
+
+                const handleMouseMove = (event) => {
+                    const { innerWidth, innerHeight } = window;
+                    const withinHotspotX = event.clientX > innerWidth - HOTSPOT_SIZE;
+                    const withinHotspotY = event.clientY > innerHeight - HOTSPOT_SIZE;
+
+                    if (withinHotspotX && withinHotspotY) {
+                        showControls();
+                    } else if (!controlCluster.matches(':hover')) {
+                        hideControls();
+                    }
+                };
+
+                document.addEventListener('mousemove', handleMouseMove);
+
+                controlCluster.addEventListener('mouseenter', showControls);
+                controlCluster.addEventListener('mouseleave', hideControls);
+
+                controlCluster.addEventListener('focusin', showControls);
+                controlCluster.addEventListener('focusout', (event) => {
+                    if (!controlCluster.contains(event.relatedTarget)) {
+                        hideControls();
+                    }
+                });
+            };
+
+            const setSlideNumber = (event) => {
+                if (!slideNumberEl || typeof Reveal === 'undefined') return;
+                const currentSlide = event?.currentSlide || Reveal.getCurrentSlide();
+                const currentIndex = Reveal.getSlidePastCount(currentSlide) + 1;
+                const totalSlides = Reveal.getTotalSlides();
+                slideNumberEl.textContent = `${currentIndex} / ${totalSlides}`;
+            };
+
+            const evaluateSlideOverflow = (event) => {
+                if (!slideWarningEl || typeof Reveal === 'undefined') return;
+                const slide = event?.currentSlide || Reveal.getCurrentSlide();
+                if (!slide) return;
+
+                const configHeight = Reveal.getConfig()?.height || window.innerHeight;
+                const overflowRatio = slide.scrollHeight / configHeight;
+                const isOverflowing = overflowRatio > 1.05; // give a small buffer
+
+                if (isOverflowing) {
+                    slideWarningEl.textContent = '⚠ Slide content may not fit cleanly in PDF. Consider splitting or simplifying.';
+                    slideWarningEl.classList.add('is-active');
+                } else {
+                    slideWarningEl.textContent = '';
+                    slideWarningEl.classList.remove('is-active');
+                }
+            };
+
+            const loadSlides = async () => {
+                if (!slidesRoot) return;
+
+                try {
+                    const response = await fetch('dist/slides.html', { cache: 'no-store' });
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch slides: ${response.status}`);
+                    }
+                    const html = await response.text();
+                    if (!html.trim()) {
+                        throw new Error('Slide bundle is empty. Run npm run build.');
+                    }
+                    slidesRoot.innerHTML = html;
+                } catch (error) {
+                    console.error('Unable to load compiled slides', error);
+                    slidesRoot.innerHTML = `
+                        <section>
+                            <h2>Unable to load slides</h2>
+                            <p>Run <code>npm run build</code> to generate <code>dist/slides.html</code> and refresh via a local server.</p>
+                            <pre><code>${error.message}</code></pre>
+                        </section>
+                    `;
+                }
+            };
+
+            const initReveal = async () => {
+                await loadSlides();
+
+                Reveal.initialize({
+                    hash: true,
+                    controls: false,
+                    progress: true,
+                    plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+                    width: 1200,
+                    height: 800,
+                    margin: 0.1,
+                    transition: 'slide',
+                    backgroundTransition: 'none',
+                    center: false,
+                });
+
+                const updateNavButtons = () => {
+                    if (!navPrevBtn || !navNextBtn) return;
+                    const shouldDisablePrev = Reveal.isFirstSlide();
+                    const shouldDisableNext = Reveal.isLastSlide();
+                    navPrevBtn.disabled = shouldDisablePrev;
+                    navNextBtn.disabled = shouldDisableNext;
+                };
+
+                const initNavControls = () => {
+                    if (!navPrevBtn || !navNextBtn) return;
+
+                    navPrevBtn.addEventListener('click', () => {
+                        Reveal.prev();
+                    });
+
+                    navNextBtn.addEventListener('click', () => {
+                        Reveal.next();
+                    });
+                };
+
+                initNavControls();
+
+                const handleSlideChange = (event) => {
+                    setSlideNumber(event);
+                    updateNavButtons();
+                    evaluateSlideOverflow(event);
+                };
+
+                Reveal.on('ready', (event) => {
+                    handleSlideChange(event);
+                });
+
+                Reveal.on('slidechanged', handleSlideChange);
+            };
+
+            initThemeToggle();
+            initControlVisibility();
+            initReveal();
+        })();
+    </script>
+</body>
+</html>

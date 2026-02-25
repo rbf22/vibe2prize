@@ -1,0 +1,58 @@
+---
+title: "Custom Hero Layout Example"
+maxWords: 280
+phase: "demo"
+layout:
+  type: "grid-designer"
+  template: "hero-layout"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "hero-title"
+    role: "primary-title"
+    area: "header"
+    maxWords: 15
+  - id: "hero-content"
+    role: "supporting-text"
+    area: "main"
+    maxWords: 200
+  - id: "hero-footer"
+    role: "criteria-list"
+    area: "footer"
+    maxWords: 65
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "demo"
+  - "custom"
+  - "hero"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="hero-layout">
+  <GridArea area="header" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="Hero Section: Custom Layout Demo" />
+  </GridArea>
+  
+  <GridArea area="main" contentType="supporting-text" importance="important">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="This demonstrates a custom hero layout with three distinct sections: a prominent header area for the main title, a generous content area for narrative text, and a footer section for supporting information. The hero layout is perfect for making a strong visual impact while maintaining the magazine-style narrative structure that EPAM presentations require. This layout automatically adapts to different screen sizes while preserving the visual hierarchy and readability." 
+    />
+  </GridArea>
+  
+  <GridArea area="footer" contentType="criteria-list" importance="supporting">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Responsive design adapts to all screen sizes",
+        "Semantic structure ensures AI optimization",
+        "EPAM branding maintains visual consistency",
+        "Narrative focus supports magazine-style content"
+      ]} 
+    />
+  </GridArea>
+</GridDesigner>

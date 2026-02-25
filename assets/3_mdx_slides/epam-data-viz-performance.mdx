@@ -1,0 +1,67 @@
+---
+title: "Performance Analytics: Data-Driven Insights"
+maxWords: 280
+phase: "analytics"
+layout:
+  type: "grid-designer"
+  template: "data-viz"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "chart-visualization"
+    role: "visual-aid"
+    area: "chart"
+    maxWords: 20
+  - id: "chart-legend"
+    role: "criteria-list"
+    area: "legend"
+    maxWords: 40
+  - id: "chart-annotations"
+    role: "supporting-text"
+    area: "annotations"
+    maxWords: 60
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "data-viz"
+  - "analytics"
+  - "performance"
+  - "insights"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="data-viz">
+  <GridArea area="chart" contentType="visual-aid" importance="critical">
+    <ContentRenderer 
+      type="visual-aid" 
+      content={{ 
+        type: "chart", 
+        title: "Q4 Performance Metrics",
+        data: "Revenue growth, customer satisfaction, project delivery rates" 
+      }} 
+    />
+  </GridArea>
+  
+  <GridArea area="legend" contentType="criteria-list" importance="medium">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Blue: Revenue Growth (+23%)",
+        "Green: Customer Satisfaction (94%)",
+        "Orange: Project Delivery (98%)",
+        "Purple: Cost Efficiency (-15%)",
+        "Red: Innovation Index (8.7/10)"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="annotations" contentType="supporting-text" importance="medium">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Key Insights: Revenue growth exceeded targets by 15% due to successful digital transformation initiatives. Customer satisfaction reached all-time high following improved service delivery. Project delivery maintained 98% on-time rate despite increased complexity. Cost efficiency improvements driven by automation and cloud optimization." 
+    />
+  </GridArea>
+</GridDesigner>

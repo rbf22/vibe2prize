@@ -1,0 +1,51 @@
+---
+title: "Executive Summit 2024: Innovation & Growth"
+maxWords: 140
+phase: "title"
+layout:
+  type: "grid-designer"
+  template: "slide-title"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "summit-title"
+    role: "primary-title"
+    area: "title"
+    maxWords: 12
+  - id: "summit-subtitle"
+    role: "secondary-title"
+    area: "subtitle"
+    maxWords: 25
+  - id: "presenter-details"
+    role: "context-info"
+    area: "presenter"
+    maxWords: 15
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "slide-title"
+  - "executive"
+  - "summit"
+  - "innovation"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="slide-title">
+  <GridArea area="title" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="Executive Summit 2024" />
+  </GridArea>
+  
+  <GridArea area="subtitle" contentType="secondary-title" importance="high">
+    <ContentRenderer 
+      type="secondary-title" 
+      content="Innovation & Growth: Charting the Course for Tomorrow's Success" 
+    />
+  </GridArea>
+  
+  <GridArea area="presenter" contentType="context-info" importance="medium">
+    <ContentRenderer type="context-info" content="December 15, 2024 • New York City" />
+  </GridArea>
+</GridDesigner>

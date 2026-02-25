@@ -1,0 +1,148 @@
+---
+title: "Innovation Lifecycle: From Idea to Impact"
+maxWords: 310
+phase: "innovation"
+layout:
+  type: "grid-designer"
+  template: "circular-process"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "innovation-title"
+    role: "primary-title"
+    area: "center"
+    maxWords: 10
+  - id: "discovery"
+    role: "criteria-list"
+    area: "top-left"
+    maxWords: 30
+  - id: "ideation"
+    role: "criteria-list"
+    area: "top-center"
+    maxWords: 30
+  - id: "validation"
+    role: "criteria-list"
+    area: "top-right"
+    maxWords: 30
+  - id: "development"
+    role: "criteria-list"
+    area: "middle-right"
+    maxWords: 30
+  - id: "testing"
+    role: "criteria-list"
+    area: "bottom-right"
+    maxWords: 30
+  - id: "deployment"
+    role: "criteria-list"
+    area: "bottom-center"
+    maxWords: 30
+  - id: "iteration"
+    role: "criteria-list"
+    area: "bottom-left"
+    maxWords: 30
+  - id: "context"
+    role: "context-info"
+    area: "middle-left"
+    maxWords: 25
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "innovation"
+  - "lifecycle"
+  - "process"
+  - "cycle"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="circular-process">
+  <GridArea area="center" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="Innovation Lifecycle" />
+  </GridArea>
+  
+  <GridArea area="top-left" contentType="criteria-list" importance="medium" data-step="1">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Market Research",
+        "Trend Analysis",
+        "Problem Identification"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="top-center" contentType="criteria-list" importance="medium" data-step="2">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Brainstorming Sessions",
+        "Concept Development",
+        "Solution Design"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="top-right" contentType="criteria-list" importance="medium" data-step="3">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Feasibility Studies",
+        "Proof of Concepts",
+        "Stakeholder Validation"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="middle-right" contentType="criteria-list" importance="medium" data-step="4">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Prototype Building",
+        "MVP Development",
+        "Technical Implementation"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="bottom-right" contentType="criteria-list" importance="medium" data-step="5">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "User Testing",
+        "Performance Validation",
+        "Quality Assurance"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="bottom-center" contentType="criteria-list" importance="medium" data-step="6">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Market Launch",
+        "User Training",
+        "Change Management"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="bottom-left" contentType="criteria-list" importance="medium" data-step="7">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Performance Monitoring",
+        "Feedback Collection",
+        "Continuous Enhancement"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="middle-left" contentType="context-info" importance="low">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Our innovation framework transforms creative ideas into impactful solutions through systematic development and continuous refinement." 
+    />
+  </GridArea>
+</GridDesigner>

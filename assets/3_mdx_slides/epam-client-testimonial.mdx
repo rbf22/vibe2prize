@@ -1,0 +1,59 @@
+---
+title: "Client Success: Financial Services Transformation"
+maxWords: 295
+phase: "testimonial"
+layout:
+  type: "grid-designer"
+  template: "dual-panel"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "client-title"
+    role: "primary-title"
+    area: "left"
+    maxWords: 12
+  - id: "testimonial-story"
+    role: "supporting-text"
+    area: "left"
+    maxWords: 185
+  - id: "client-results"
+    role: "key-data"
+    area: "right"
+    maxWords: 60
+  - id: "client-quote"
+    role: "supporting-text"
+    area: "right"
+    maxWords: 38
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "testimonial"
+  - "client-success"
+  - "financial-services"
+  - "transformation"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="dual-panel">
+  <GridArea area="left" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="Client Success: Banking Innovation" />
+    <ContentRenderer 
+      type="supporting-text" 
+      content="A leading global financial institution partnered with EPAM to transform their digital banking platform and modernize their customer experience. The challenge involved migrating legacy systems to a cloud-native architecture while ensuring regulatory compliance and maintaining uninterrupted service for millions of customers. EPAM's comprehensive approach combined technical expertise with deep industry knowledge to deliver a solution that not only met current requirements but also positioned the client for future growth and innovation. The transformation spanned multiple business units and required careful coordination between technical teams, business stakeholders, and regulatory bodies." 
+    />
+  </GridArea>
+  
+  <GridArea area="right" contentType="key-data" importance="important">
+    <ContentRenderer 
+      type="key-data" 
+      content="Transformation achieved 78% improvement in customer satisfaction, 52% reduction in processing time, and 34% increase in digital adoption rates within 18 months." 
+    />
+    <ContentRenderer 
+      type="supporting-text" 
+      content="'EPAM's expertise in financial services and agile delivery made our digital transformation a remarkable success. Their partnership approach exceeded our expectations.'" 
+    />
+  </GridArea>
+</GridDesigner>

@@ -1,0 +1,60 @@
+---
+title: "Process Innovation: Agile Delivery Framework"
+maxWords: 285
+phase: "process"
+layout:
+  type: "grid-designer"
+  template: "triple-panel"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "process-title"
+    role: "primary-title"
+    area: "left"
+    maxWords: 10
+  - id: "process-narrative"
+    role: "supporting-text"
+    area: "center"
+    maxWords: 160
+  - id: "workflow-steps"
+    role: "criteria-list"
+    area: "right"
+    maxWords: 75
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "process"
+  - "agile"
+  - "workflow"
+  - "innovation"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="triple-panel">
+  <GridArea area="left" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="Agile Excellence" />
+  </GridArea>
+  
+  <GridArea area="center" contentType="supporting-text" importance="important">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="EPAM's agile delivery framework represents a sophisticated evolution of traditional project management methodologies, incorporating lean principles, DevOps practices, and continuous improvement cycles. Our approach emphasizes collaborative planning, iterative development, and rapid feedback loops to ensure alignment with client objectives and market dynamics. The framework integrates advanced project management tools, automated testing pipelines, and real-time monitoring systems to provide complete visibility into project progress and quality metrics. This methodology enables teams to respond quickly to changing requirements while maintaining high standards of delivery excellence and technical quality." 
+    />
+  </GridArea>
+  
+  <GridArea area="right" contentType="criteria-list" importance="important">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Sprint planning with stakeholder alignment",
+        "Continuous integration and deployment",
+        "Automated quality assurance and testing",
+        "Performance monitoring and optimization",
+        "Retrospective analysis and process improvement"
+      ]} 
+    />
+  </GridArea>
+</GridDesigner>

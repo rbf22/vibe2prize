@@ -1,0 +1,55 @@
+---
+title: "Executive Summary: Digital Transformation Strategy"
+maxWords: 280
+phase: "executive"
+layout:
+  type: "grid-designer"
+  template: "presentation-grid"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "title"
+    role: "primary-title"
+    area: "title"
+    maxWords: 15
+  - id: "narrative"
+    role: "supporting-text"
+    area: "content"
+    maxWords: 200
+  - id: "key-points"
+    role: "criteria-list"
+    area: "content"
+    maxWords: 65
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "executive"
+  - "strategy"
+  - "transformation"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="presentation-grid">
+  <GridArea area="title" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="Digital Transformation: Executive Overview" />
+  </GridArea>
+  
+  <GridArea area="content" contentType="supporting-text" importance="important">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Our comprehensive digital transformation initiative represents a strategic evolution of how EPAM delivers value to clients in the modern digital economy. Through systematic integration of emerging technologies, process optimization, and talent development, we are positioning ourselves at the forefront of digital innovation while maintaining our commitment to excellence and client success. This transformation spans three critical dimensions: technological modernization, operational efficiency, and cultural evolution." 
+    />
+
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Cloud-native architecture migration across 85% of enterprise applications",
+        "AI-powered development tools reducing delivery time by 40%",
+        "Sustainable computing practices decreasing carbon footprint by 30%"
+      ]} 
+    />
+  </GridArea>
+</GridDesigner>

@@ -1,0 +1,54 @@
+---
+title: "Leadership Vision: Future-Forward Innovation"
+maxWords: 260
+phase: "leadership"
+layout:
+  type: "grid-designer"
+  template: "quote-layout"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "vision-quote"
+    role: "supporting-text"
+    area: "quote"
+    maxWords: 80
+  - id: "speaker-attribution"
+    role: "key-data"
+    area: "attribution"
+    maxWords: 15
+  - id: "quote-context"
+    role: "context-info"
+    area: "context"
+    maxWords: 30
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "quote"
+  - "leadership"
+  - "vision"
+  - "innovation"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="quote-layout">
+  <GridArea area="quote" contentType="supporting-text" importance="critical">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Innovation is not just about technology; it's about transforming how we think, collaborate, and solve problems. The future belongs to organizations that embrace change, foster creativity, and empower their people to challenge the status quo. We must build bridges between today's challenges and tomorrow's opportunities." 
+    />
+  </GridArea>
+  
+  <GridArea area="attribution" contentType="key-data" importance="high">
+    <ContentRenderer type="key-data" content="CEO, EPAM Systems" />
+  </GridArea>
+  
+  <GridArea area="context" contentType="context-info" importance="low">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Delivered at the Global Technology Summit 2024, emphasizing the importance of human-centered innovation in digital transformation." 
+    />
+  </GridArea>
+</GridDesigner>

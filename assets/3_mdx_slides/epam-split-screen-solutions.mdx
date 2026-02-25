@@ -1,0 +1,62 @@
+---
+title: "Technology Solutions: Cloud vs On-Premise"
+maxWords: 300
+phase: "technology"
+layout:
+  type: "grid-designer"
+  template: "split-screen"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "cloud-solution"
+    role: "primary-title"
+    area: "left"
+    maxWords: 15
+  - id: "cloud-details"
+    role: "supporting-text"
+    area: "left"
+    maxWords: 80
+  - id: "onpremise-solution"
+    role: "primary-title"
+    area: "right"
+    maxWords: 15
+  - id: "onpremise-details"
+    role: "supporting-text"
+    area: "right"
+    maxWords: 80
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "split-screen"
+  - "comparison"
+  - "technology"
+  - "cloud"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="split-screen">
+  <GridArea area="left" contentType="primary-title" importance="high">
+    <ContentRenderer type="primary-title" content="Cloud Solutions" />
+  </GridArea>
+  
+  <GridArea area="left" contentType="supporting-text" importance="high">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Cloud computing offers unparalleled scalability, flexibility, and cost efficiency. Organizations benefit from automatic updates, disaster recovery, and global accessibility. Pay-as-you-go pricing eliminates upfront infrastructure costs, while managed services reduce operational overhead. Modern cloud platforms provide advanced security, compliance tools, and seamless integration with existing systems." 
+    />
+  </GridArea>
+  
+  <GridArea area="right" contentType="primary-title" importance="high">
+    <ContentRenderer type="primary-title" content="On-Premise Solutions" />
+  </GridArea>
+  
+  <GridArea area="right" contentType="supporting-text" importance="high">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="On-premise solutions provide maximum control over infrastructure and data security. Organizations maintain complete ownership of hardware and software, enabling custom configurations and specialized compliance requirements. Fixed costs provide predictable budgeting, while internal expertise ensures deep system knowledge. Direct control over performance tuning and integration with legacy systems remains a key advantage." 
+    />
+  </GridArea>
+</GridDesigner>

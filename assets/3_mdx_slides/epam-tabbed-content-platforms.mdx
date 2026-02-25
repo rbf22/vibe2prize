@@ -1,0 +1,72 @@
+---
+title: "Platform Solutions: Multi-Service Integration"
+maxWords: 330
+phase: "platforms"
+layout:
+  type: "grid-designer"
+  template: "tabbed-content"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "tab-navigation"
+    role: "criteria-list"
+    area: "tabs"
+    maxWords: 20
+  - id: "panel-1-content"
+    role: "supporting-text"
+    area: "panel-1"
+    maxWords: 80
+  - id: "panel-2-content"
+    role: "supporting-text"
+    area: "panel-2"
+    maxWords: 80
+  - id: "panel-3-content"
+    role: "supporting-text"
+    area: "panel-3"
+    maxWords: 80
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "tabbed-content"
+  - "platforms"
+  - "integration"
+  - "solutions"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="tabbed-content">
+  <GridArea area="tabs" contentType="criteria-list" importance="critical">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Cloud Platform",
+        "Data Platform", 
+        "AI Platform"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="panel-1" contentType="supporting-text" importance="high">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Cloud Platform: Comprehensive cloud infrastructure management with automated scaling, multi-cloud support, and enterprise-grade security. Features include container orchestration, serverless computing, and integrated monitoring. Supports AWS, Azure, and Google Cloud with unified management interface." 
+    />
+  </GridArea>
+  
+  <GridArea area="panel-2" contentType="supporting-text" importance="high">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Data Platform: End-to-end data management solution with real-time analytics, data warehousing, and business intelligence. Includes ETL pipelines, data governance, and advanced visualization tools. Supports big data processing with Apache Spark and machine learning integration." 
+    />
+  </GridArea>
+  
+  <GridArea area="panel-3" contentType="supporting-text" importance="high">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="AI Platform: Artificial intelligence and machine learning platform with pre-built models, custom training capabilities, and MLOps workflows. Features include natural language processing, computer vision, and predictive analytics with automated model deployment and monitoring." 
+    />
+  </GridArea>
+</GridDesigner>

@@ -1,0 +1,146 @@
+---
+title: "Innovation Timeline: Technology Evolution"
+maxWords: 340
+phase: "innovation"
+layout:
+  type: "grid-designer"
+  template: "flexible-timeline"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "innovation-title"
+    role: "primary-title"
+    area: "center"
+    maxWords: 10
+  - id: "era-1"
+    role: "supporting-text"
+    area: "event-1"
+    maxWords: 50
+  - id: "era-2"
+    role: "supporting-text"
+    area: "event-2"
+    maxWords: 50
+  - id: "era-3"
+    role: "supporting-text"
+    area: "event-3"
+    maxWords: 50
+  - id: "era-4"
+    role: "supporting-text"
+    area: "event-4"
+    maxWords: 50
+  - id: "era-5"
+    role: "supporting-text"
+    area: "event-5"
+    maxWords: 50
+  - id: "era-6"
+    role: "supporting-text"
+    area: "event-6"
+    maxWords: 50
+  - id: "date-1"
+    role: "key-data"
+    area: "date-1"
+    maxWords: 8
+  - id: "date-2"
+    role: "key-data"
+    area: "date-2"
+    maxWords: 8
+  - id: "date-3"
+    role: "key-data"
+    area: "date-3"
+    maxWords: 8
+  - id: "date-4"
+    role: "key-data"
+    area: "date-4"
+    maxWords: 8
+  - id: "date-5"
+    role: "key-data"
+    area: "date-5"
+    maxWords: 8
+  - id: "date-6"
+    role: "key-data"
+    area: "date-6"
+    maxWords: 8
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "timeline"
+  - "innovation"
+  - "technology"
+  - "evolution"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="flexible-timeline">
+  <GridArea area="center" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="Technology Evolution" />
+  </GridArea>
+  
+  <GridArea area="event-1" contentType="supporting-text" importance="high">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Mainframe Era: Centralized computing dominated the enterprise landscape with powerful but inflexible systems. Data processing was batch-oriented, and user interaction was limited to terminal sessions. This era established the foundation for enterprise computing and data management principles." 
+    />
+  </GridArea>
+  
+  <GridArea area="event-2" contentType="supporting-text" importance="high">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Client-Server Revolution: The shift to distributed computing brought unprecedented flexibility and accessibility. Client-server architectures enabled graphical user interfaces, real-time interactions, and the rise of personal computing. This transformation democratized access to enterprise applications." 
+    />
+  </GridArea>
+  
+  <GridArea area="event-3" contentType="supporting-text" importance="high">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Internet Boom: Web-based applications revolutionized business processes and customer engagement. Browser-based interfaces eliminated installation requirements while enabling global connectivity. E-commerce, online services, and digital marketing transformed how businesses operated and reached customers." 
+    />
+  </GridArea>
+  
+  <GridArea area="event-4" contentType="supporting-text" importance="high">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Mobile First Era: Smartphones put computing power in everyone's pocket, creating always-on connectivity and location-aware services. Mobile applications became the primary interface for many services, driving new business models and user experience expectations focused on convenience and immediacy." 
+    />
+  </GridArea>
+  
+  <GridArea area="event-5" contentType="supporting-text" importance="medium">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Cloud Native Transformation: Cloud computing eliminated infrastructure constraints, enabling rapid scaling and global deployment. Microservices architecture, containerization, and DevOps practices transformed how software is developed, deployed, and maintained in production environments." 
+    />
+  </GridArea>
+  
+  <GridArea area="event-6" contentType="supporting-text" importance="medium">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="AI-Driven Future: Artificial intelligence is reshaping how we interact with technology and automate decision-making. Machine learning, natural language processing, and computer vision are creating intelligent systems that learn, adapt, and provide predictive insights across all business domains." 
+    />
+  </GridArea>
+  
+  <GridArea area="date-1" contentType="key-data" importance="critical">
+    <ContentRenderer type="key-data" content="1970s-80s" />
+  </GridArea>
+  
+  <GridArea area="date-2" contentType="key-data" importance="critical">
+    <ContentRenderer type="key-data" content="1990s" />
+  </GridArea>
+  
+  <GridArea area="date-3" contentType="key-data" importance="critical">
+    <ContentRenderer type="key-data" content="2000s" />
+  </GridArea>
+  
+  <GridArea area="date-4" contentType="key-data" importance="critical">
+    <ContentRenderer type="key-data" content="2010s" />
+  </GridArea>
+  
+  <GridArea area="date-5" contentType="key-data" importance="critical">
+    <ContentRenderer type="key-data" content="2020s" />
+  </GridArea>
+  
+  <GridArea area="date-6" contentType="key-data" importance="critical">
+    <ContentRenderer type="key-data" content="2030s+" />
+  </GridArea>
+</GridDesigner>

@@ -1,0 +1,148 @@
+---
+title: "Continuous Improvement: Circular Process Framework"
+maxWords: 320
+phase: "process"
+layout:
+  type: "grid-designer"
+  template: "circular-process"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "process-title"
+    role: "primary-title"
+    area: "center"
+    maxWords: 12
+  - id: "step-1"
+    role: "criteria-list"
+    area: "top-left"
+    maxWords: 35
+  - id: "step-2"
+    role: "criteria-list"
+    area: "top-center"
+    maxWords: 35
+  - id: "step-3"
+    role: "criteria-list"
+    area: "top-right"
+    maxWords: 35
+  - id: "step-4"
+    role: "criteria-list"
+    area: "middle-right"
+    maxWords: 35
+  - id: "step-5"
+    role: "criteria-list"
+    area: "bottom-right"
+    maxWords: 35
+  - id: "step-6"
+    role: "criteria-list"
+    area: "bottom-center"
+    maxWords: 35
+  - id: "step-7"
+    role: "criteria-list"
+    area: "bottom-left"
+    maxWords: 35
+  - id: "context-info"
+    role: "context-info"
+    area: "middle-left"
+    maxWords: 25
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "process"
+  - "circular"
+  - "continuous-improvement"
+  - "framework"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="circular-process">
+  <GridArea area="center" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="Continuous Improvement Cycle" />
+  </GridArea>
+  
+  <GridArea area="top-left" contentType="criteria-list" importance="medium" data-step="1">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Assess Current State",
+        "Identify opportunities",
+        "Gather baseline metrics"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="top-center" contentType="criteria-list" importance="medium" data-step="2">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Define Objectives",
+        "Set measurable goals",
+        "Establish success criteria"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="top-right" contentType="criteria-list" importance="medium" data-step="3">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Design Solutions",
+        "Develop action plans",
+        "Allocate resources"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="middle-right" contentType="criteria-list" importance="medium" data-step="4">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Implement Changes",
+        "Execute action plans",
+        "Monitor progress"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="bottom-right" contentType="criteria-list" importance="medium" data-step="5">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Measure Results",
+        "Collect performance data",
+        "Compare to baseline"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="bottom-center" contentType="criteria-list" importance="medium" data-step="6">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Analyze Outcomes",
+        "Identify lessons learned",
+        "Document insights"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="bottom-left" contentType="criteria-list" importance="medium" data-step="7">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Refine Process",
+        "Update procedures",
+        "Begin next cycle"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="middle-left" contentType="context-info" importance="low">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="This iterative framework drives continuous improvement through systematic assessment, planning, implementation, and refinement cycles." 
+    />
+  </GridArea>
+</GridDesigner>

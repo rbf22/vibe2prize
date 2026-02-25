@@ -1,0 +1,114 @@
+{
+  "slides": [
+    {
+      "file": "../assets/3_mdx_slides/epam-slide-title-main.mdx",
+      "title": "EPAM Digital Transformation Showcase",
+      "maxWords": 150
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-executive-summary.mdx",
+      "title": "Executive Summary",
+      "maxWords": 300
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-innovation-showcase.mdx",
+      "title": "Innovation Showcase",
+      "maxWords": 400
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-strategic-roadmap.mdx",
+      "title": "Strategic Roadmap",
+      "maxWords": 350
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-milestone-timeline.mdx",
+      "title": "Project Milestones",
+      "maxWords": 400
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-card-grid-services.mdx",
+      "title": "Service Portfolio",
+      "maxWords": 350
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-feature-showcase-ai.mdx",
+      "title": "AI & Advanced Analytics",
+      "maxWords": 300
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-tabbed-content-platforms.mdx",
+      "title": "Technology Platforms",
+      "maxWords": 400
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-process-workflow.mdx",
+      "title": "Implementation Workflow",
+      "maxWords": 350
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-circular-process.mdx",
+      "title": "Continuous Improvement Cycle",
+      "maxWords": 350
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-dashboard-overview.mdx",
+      "title": "Performance Dashboard",
+      "maxWords": 300
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-metrics-dashboard.mdx",
+      "title": "Key Metrics & KPIs",
+      "maxWords": 350
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-data-viz-performance.mdx",
+      "title": "Performance Analytics",
+      "maxWords": 300
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-case-study.mdx",
+      "title": "Success Case Study",
+      "maxWords": 400
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-client-testimonial.mdx",
+      "title": "Client Success Stories",
+      "maxWords": 300
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-team-leadership.mdx",
+      "title": "Leadership Team",
+      "maxWords": 250
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-technical-insights.mdx",
+      "title": "Technical Architecture",
+      "maxWords": 350
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-pricing-services.mdx",
+      "title": "Investment & ROI",
+      "maxWords": 300
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-comparison-before-after.mdx",
+      "title": "Transformation Results",
+      "maxWords": 300
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-faq-digital-transformation.mdx",
+      "title": "Frequently Asked Questions",
+      "maxWords": 400
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-quote-leadership.mdx",
+      "title": "Leadership Vision",
+      "maxWords": 200
+    },
+    {
+      "file": "../assets/3_mdx_slides/epam-slide-title-executive.mdx",
+      "title": "Next Steps & Partnership",
+      "maxWords": 150
+    }
+  ]
+}

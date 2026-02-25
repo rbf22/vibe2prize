@@ -1,0 +1,57 @@
+---
+title: "Strategic Roadmap: 2024-2026 Vision"
+maxWords: 315
+phase: "strategy"
+layout:
+  type: "grid-designer"
+  template: "presentation-grid"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "roadmap-title"
+    role: "primary-title"
+    area: "title"
+    maxWords: 12
+  - id: "strategic-narrative"
+    role: "supporting-text"
+    area: "content"
+    maxWords: 200
+  - id: "roadmap-phases"
+    role: "criteria-list"
+    area: "content"
+    maxWords: 103
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "strategy"
+  - "roadmap"
+  - "vision"
+  - "planning"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="presentation-grid">
+  <GridArea area="title" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="Strategic Vision: 2024-2026" />
+  </GridArea>
+  
+  <GridArea area="content" contentType="supporting-text" importance="important">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="EPAM's strategic roadmap for 2024-2026 outlines a transformative journey toward becoming the global leader in digital engineering and platform services. Our vision is built on three core pillars: technological innovation, operational excellence, and sustainable growth. The strategy emphasizes expanding our AI capabilities, deepening industry expertise, and strengthening our global delivery network. We are committed to investing $500 million in research and development, doubling our AI talent pool, and establishing innovation hubs in emerging markets. This comprehensive approach positions EPAM to capture the growing demand for digital transformation services while maintaining our reputation for technical excellence and client success." 
+    />
+
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "2024: AI integration across all service lines, cloud-native platform expansion",
+        "2025: Industry-specific solutions launch, global talent development programs",
+        "2026: Sustainable computing initiatives, next-generation innovation centers",
+        "Continuous: Digital transformation acceleration, client partnership evolution"
+      ]} 
+    />
+  </GridArea>
+</GridDesigner>

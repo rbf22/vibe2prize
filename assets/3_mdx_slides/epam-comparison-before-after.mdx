@@ -1,0 +1,54 @@
+---
+title: "Digital Transformation: Before vs After"
+maxWords: 280
+phase: "transformation"
+layout:
+  type: "grid-designer"
+  template: "comparison-layout"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "before-state"
+    role: "supporting-text"
+    area: "before"
+    maxWords: 80
+  - id: "comparison-indicator"
+    role: "primary-title"
+    area: "divider"
+    maxWords: 8
+  - id: "after-state"
+    role: "supporting-text"
+    area: "after"
+    maxWords: 80
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "comparison"
+  - "before-after"
+  - "transformation"
+  - "digital"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="comparison-layout">
+  <GridArea area="before" contentType="supporting-text" importance="high">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Before transformation, organizations struggled with legacy systems, manual processes, and fragmented data. Siloed departments operated independently, leading to inefficiencies, duplicated efforts, and poor customer experiences. Technology infrastructure was outdated, security was reactive, and innovation was slow and expensive." 
+    />
+  </GridArea>
+  
+  <GridArea area="divider" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="Transformation" />
+  </GridArea>
+  
+  <GridArea area="after" contentType="supporting-text" importance="high">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="After transformation, organizations operate with integrated digital platforms, automated workflows, and unified data ecosystems. Cross-functional teams collaborate seamlessly, delivering superior customer experiences with real-time insights. Modern cloud infrastructure provides scalability, security is proactive, and innovation is continuous and cost-effective." 
+    />
+  </GridArea>
+</GridDesigner>

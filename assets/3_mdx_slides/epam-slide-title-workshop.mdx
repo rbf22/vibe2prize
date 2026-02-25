@@ -1,0 +1,51 @@
+---
+title: "AI Workshop: Practical Implementation Strategies"
+maxWords: 130
+phase: "title"
+layout:
+  type: "grid-designer"
+  template: "slide-title"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "workshop-title"
+    role: "primary-title"
+    area: "title"
+    maxWords: 10
+  - id: "workshop-subtitle"
+    role: "supporting-text"
+    area: "subtitle"
+    maxWords: 20
+  - id: "workshop-presenter"
+    role: "key-data"
+    area: "presenter"
+    maxWords: 15
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "slide-title"
+  - "workshop"
+  - "ai"
+  - "implementation"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="slide-title">
+  <GridArea area="title" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="AI Workshop" />
+  </GridArea>
+  
+  <GridArea area="subtitle" contentType="supporting-text" importance="high">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Practical Implementation Strategies for Enterprise Success" 
+    />
+  </GridArea>
+  
+  <GridArea area="presenter" contentType="key-data" importance="medium">
+    <ContentRenderer type="key-data" content="Led by EPAM AI Research Team" />
+  </GridArea>
+</GridDesigner>

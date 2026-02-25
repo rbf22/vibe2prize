@@ -1,0 +1,72 @@
+---
+title: "Service Portfolio: Comprehensive Solutions"
+maxWords: 320
+phase: "services"
+layout:
+  type: "grid-designer"
+  template: "card-grid"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "service-1"
+    role: "primary-title"
+    area: "card-1"
+    maxWords: 12
+  - id: "service-2"
+    role: "primary-title"
+    area: "card-2"
+    maxWords: 12
+  - id: "service-3"
+    role: "primary-title"
+    area: "card-3"
+    maxWords: 12
+  - id: "service-4"
+    role: "primary-title"
+    area: "card-4"
+    maxWords: 12
+  - id: "service-5"
+    role: "primary-title"
+    area: "card-5"
+    maxWords: 12
+  - id: "service-6"
+    role: "primary-title"
+    area: "card-6"
+    maxWords: 12
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "card-grid"
+  - "services"
+  - "portfolio"
+  - "solutions"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="card-grid">
+  <GridArea area="card-1" contentType="primary-title" importance="medium">
+    <ContentRenderer type="primary-title" content="Digital Engineering" />
+  </GridArea>
+  
+  <GridArea area="card-2" contentType="primary-title" importance="medium">
+    <ContentRenderer type="primary-title" content="Cloud & DevOps" />
+  </GridArea>
+  
+  <GridArea area="card-3" contentType="primary-title" importance="medium">
+    <ContentRenderer type="primary-title" content="Data & Analytics" />
+  </GridArea>
+  
+  <GridArea area="card-4" contentType="primary-title" importance="medium">
+    <ContentRenderer type="primary-title" content="AI & Machine Learning" />
+  </GridArea>
+  
+  <GridArea area="card-5" contentType="primary-title" importance="medium">
+    <ContentRenderer type="primary-title" content="Cybersecurity" />
+  </GridArea>
+  
+  <GridArea area="card-6" contentType="primary-title" importance="medium">
+    <ContentRenderer type="primary-title" content="Enterprise Platforms" />
+  </GridArea>
+</GridDesigner>

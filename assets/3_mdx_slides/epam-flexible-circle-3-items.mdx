@@ -1,0 +1,65 @@
+---
+title: "Strategic Pillars: 3 Core Focus Areas"
+maxWords: 280
+phase: "strategy"
+layout:
+  type: "grid-designer"
+  template: "flexible-circle"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "strategy-title"
+    role: "primary-title"
+    area: "center"
+    maxWords: 8
+  - id: "pillar-1"
+    role: "key-data"
+    area: "top-left"
+    maxWords: 45
+  - id: "pillar-2"
+    role: "key-data"
+    area: "top-right"
+    maxWords: 45
+  - id: "pillar-3"
+    role: "key-data"
+    area: "bottom-center"
+    maxWords: 45
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "strategy"
+  - "pillars"
+  - "flexible-circle"
+  - "3-items"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="flexible-circle">
+  <GridArea area="center" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="Strategic Pillars" />
+  </GridArea>
+  
+  <GridArea area="top-left" contentType="key-data" importance="medium">
+    <ContentRenderer 
+      type="key-data" 
+      content="Innovation Excellence: Driving digital transformation through cutting-edge technology solutions and creative problem-solving approaches that push the boundaries of what's possible in enterprise software development." 
+    />
+  </GridArea>
+  
+  <GridArea area="top-right" contentType="key-data" importance="medium">
+    <ContentRenderer 
+      type="key-data" 
+      content="Client Success: Delivering exceptional value through deep industry expertise, collaborative partnerships, and measurable business outcomes that exceed expectations and drive sustainable growth for our clients worldwide." 
+    />
+  </GridArea>
+  
+  <GridArea area="bottom-center" contentType="key-data" importance="medium">
+    <ContentRenderer 
+      type="key-data" 
+      content="Talent Development: Nurturing world-class engineering talent through continuous learning, knowledge sharing, and a culture of innovation that attracts and retains the best minds in the industry." 
+    />
+  </GridArea>
+</GridDesigner>

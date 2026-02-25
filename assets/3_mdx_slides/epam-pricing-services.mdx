@@ -1,0 +1,73 @@
+---
+title: "Service Pricing: Flexible Solutions"
+maxWords: 320
+phase: "pricing"
+layout:
+  type: "grid-designer"
+  template: "pricing-table"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "pricing-header"
+    role: "criteria-list"
+    area: "header"
+    maxWords: 20
+  - id: "basic-plan"
+    role: "key-data"
+    area: "basic"
+    maxWords: 50
+  - id: "pro-plan"
+    role: "key-data"
+    area: "pro"
+    maxWords: 50
+  - id: "enterprise-plan"
+    role: "key-data"
+    area: "enterprise"
+    maxWords: 50
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "pricing"
+  - "services"
+  - "solutions"
+  - "flexible"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="pricing-table">
+  <GridArea area="header" contentType="criteria-list" importance="critical">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "Features",
+        "Basic",
+        "Professional", 
+        "Enterprise"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="basic" contentType="key-data" importance="medium">
+    <ContentRenderer 
+      type="key-data" 
+      content="Basic Plan: $5,000/month. Core consulting services, standard support, basic analytics, monthly reporting, email support, 5 user licenses." 
+    />
+  </GridArea>
+  
+  <GridArea area="pro" contentType="key-data" importance="high">
+    <ContentRenderer 
+      type="key-data" 
+      content="Professional Plan: $15,000/month. Advanced consulting, priority support, enhanced analytics, real-time reporting, 24/7 support, 20 user licenses, custom integrations." 
+    />
+  </GridArea>
+  
+  <GridArea area="enterprise" contentType="key-data" importance="high">
+    <ContentRenderer 
+      type="key-data" 
+      content="Enterprise Plan: Custom pricing. Full consulting suite, dedicated support, predictive analytics, custom dashboards, on-premise support, unlimited users, SLA guarantees." 
+    />
+  </GridArea>
+</GridDesigner>

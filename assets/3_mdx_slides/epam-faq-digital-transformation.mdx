@@ -1,0 +1,61 @@
+---
+title: "Digital Transformation FAQ"
+maxWords: 340
+phase: "faq"
+layout:
+  type: "grid-designer"
+  template: "faq-layout"
+  components:
+    - "GridDesigner"
+    - "GridArea"
+    - "ContentRenderer"
+regions:
+  - id: "faq-header"
+    role: "primary-title"
+    area: "header"
+    maxWords: 8
+  - id: "faq-questions"
+    role: "criteria-list"
+    area: "questions"
+    maxWords: 80
+  - id: "faq-details"
+    role: "supporting-text"
+    area: "details"
+    maxWords: 120
+assets:
+  logo: "1_Logo_Assets/EPAM_Logo_2023/epam_logo_primary.svg"
+tags:
+  - "faq"
+  - "digital-transformation"
+  - "questions"
+  - "answers"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../layouts/components.js";
+
+<GridDesigner template="faq-layout">
+  <GridArea area="header" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="Digital Transformation FAQ" />
+  </GridArea>
+  
+  <GridArea area="questions" contentType="criteria-list" importance="high">
+    <ContentRenderer 
+      type="criteria-list" 
+      content={[
+        "How long does digital transformation take?",
+        "What are the typical costs involved?",
+        "How do we measure success?",
+        "What technologies are essential?",
+        "How do we handle change management?",
+        "What about data security and compliance?"
+      ]} 
+    />
+  </GridArea>
+  
+  <GridArea area="details" contentType="supporting-text" importance="medium">
+    <ContentRenderer 
+      type="supporting-text" 
+      content="Digital transformation typically takes 12-24 months depending on scope and complexity. Costs vary based on organization size and requirements, with ROI typically realized within 18 months. Success is measured through KPIs including efficiency gains, customer satisfaction, and revenue growth. Essential technologies include cloud platforms, AI/ML tools, and data analytics. Change management requires executive sponsorship, employee training, and clear communication. Security and compliance are built into every solution with industry-standard protocols and regular audits." 
+    />
+  </GridArea>
+</GridDesigner>
