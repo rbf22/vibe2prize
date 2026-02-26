@@ -1,0 +1,266 @@
+import { validateFrontmatter } from '../../../core/mdx/schema.js';
+
+const DEFAULT_LAYOUT_TYPE = 'grid-designer';
+
+function escapeYamlString(value) {
+  return String(value ?? '')
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\n');
+}
+
+function quote(value) {
+  return `"${escapeYamlString(value)}"`;
+}
+
+function slugToTitle(slug) {
+  if (!slug) return 'Generated Layout';
+  return slug
+    .replace(/[-_]+/g, ' ')
+    .replace(/\b\w/g, (ch) => ch.toUpperCase())
+    .trim();
+}
+
+function normalizeBoxMetadata(box = {}, fallbackMetadata = {}) {
+  const metadataSource = (fallbackMetadata && Object.keys(fallbackMetadata).length)
+    ? fallbackMetadata
+    : (box.metadata || {});
+  const metadata = metadataSource || {};
+  const fieldTypes = Array.isArray(metadata.fieldTypes) ? [...metadata.fieldTypes] : [];
+  const normalizedFieldTypes = fieldTypes.length
+    ? fieldTypes
+    : metadata.type
+      ? [metadata.type]
+      : [];
+  return {
+    required: Boolean(metadata.required),
+    inputType: metadata.inputType || 'any',
+    fieldTypes: normalizedFieldTypes,
+    llmHint: metadata.llmHint || '',
+    maxWords: typeof metadata.maxWords === 'number' ? metadata.maxWords : undefined,
+    type: metadata.type || normalizedFieldTypes[0] || ''
+  };
+}
+
+export function buildFrontmatterFromState(state) {
+  if (!state) throw new Error('State is required to build MDX frontmatter');
+  const templateName = state.templateName || 'grid-template';
+  const workingBoxes = state.boxes.length ? state.boxes : [{
+    id: 'region-1',
+    name: 'region-1',
+    gridX: 0,
+    gridY: 0,
+    gridWidth: Math.max(1, Number(state.columns) || 1),
+    gridHeight: Math.max(1, Number(state.rows) || 1),
+    metadata: {}
+  }];
+
+  const components = [];
+
+  workingBoxes.forEach((box) => {
+    const metadata = normalizeBoxMetadata(box, state.metadata?.[box.id]);
+    const role = metadata.fieldTypes[0] || 'supporting-text';
+    const component = {
+      type: 'GridArea',
+      id: box.id,
+      role,
+      area: box.name
+    };
+    if (typeof metadata.maxWords === 'number') {
+      component.maxWords = metadata.maxWords;
+    }
+    components.push(component);
+  });
+  const templateSettings = {
+    canvasWidth: Number(state.canvasWidth) || 0,
+    canvasHeight: Number(state.canvasHeight) || 0,
+    columns: Number(state.columns) || 0,
+    rows: Number(state.rows) || 0,
+    columnSize: state.columnSize || '',
+    rowSize: state.rowSize || '',
+    gap: state.gap || ''
+  };
+
+  const layout = {
+    type: DEFAULT_LAYOUT_TYPE,
+    template: templateName,
+    components,
+    rows: Number(state.rows) || 0,
+    columns: Number(state.columns) || 0,
+    gap: state.gap || '1rem',
+  };
+
+  const regions = workingBoxes.map((box) => {
+    const metadata = normalizeBoxMetadata(box, state.metadata?.[box.id]);
+    const role = metadata.fieldTypes[0] || 'supporting-text';
+    const region = {
+      id: box.id,
+      area: box.name,
+      role,
+      required: metadata.required,
+      inputType: metadata.inputType,
+      type: metadata.type || role,
+      fieldTypes: metadata.fieldTypes.length ? metadata.fieldTypes : [role],
+      grid: {
+        x: box.gridX,
+        y: box.gridY,
+        width: box.gridWidth,
+        height: box.gridHeight,
+      },
+    };
+
+    if (metadata.maxWords !== undefined) {
+      region.maxWords = metadata.maxWords;
+    }
+    if (metadata.llmHint) {
+      region.llmHint = metadata.llmHint;
+    }
+    return region;
+  });
+
+  const exclusions = {
+    top: Number(state.exclusions?.top) || 0,
+    bottom: Number(state.exclusions?.bottom) || 0,
+    left: Number(state.exclusions?.left) || 0,
+    right: Number(state.exclusions?.right) || 0
+  };
+
+  const frontmatter = {
+    title: slugToTitle(templateName),
+    phase: 'draft',
+    maxWords: 280,
+    templateSettings,
+    layout,
+    exclusions,
+    regions,
+  };
+
+  validateFrontmatter(frontmatter);
+  return frontmatter;
+}
+
+function serializeLayout(layout) {
+  return [
+    'layout:',
+    `  type: ${quote(layout.type)}`,
+    `  template: ${quote(layout.template)}`,
+    '  components:',
+    ...layout.components.map((component) => `    - ${quote(component)}`),
+    `  rows: ${layout.rows}`,
+    `  columns: ${layout.columns}`,
+    `  gap: ${quote(layout.gap)}`,
+  ].join('\n');
+}
+
+function serializeRegions(regions) {
+  if (!regions.length) return 'regions: []';
+  const lines = ['regions:'];
+  regions.forEach((region) => {
+    lines.push(`  - id: ${quote(region.id)}`);
+    lines.push(`    area: ${quote(region.area)}`);
+    lines.push(`    role: ${quote(region.role)}`);
+    lines.push(`    required: ${region.required ? 'true' : 'false'}`);
+    lines.push(`    inputType: ${quote(region.inputType)}`);
+    if (region.type) {
+      lines.push(`    type: ${quote(region.type)}`);
+    }
+    if (Array.isArray(region.fieldTypes) && region.fieldTypes.length) {
+      lines.push('    fieldTypes:');
+      region.fieldTypes.forEach((fieldType) => {
+        lines.push(`      - ${quote(fieldType)}`);
+      });
+    }
+    if (typeof region.maxWords === 'number') {
+      lines.push(`    maxWords: ${region.maxWords}`);
+    }
+    if (region.llmHint) {
+      lines.push(`    llmHint: ${quote(region.llmHint)}`);
+    }
+    lines.push('    grid:');
+    lines.push(`      x: ${region.grid.x}`);
+    lines.push(`      y: ${region.grid.y}`);
+    lines.push(`      width: ${region.grid.width}`);
+    lines.push(`      height: ${region.grid.height}`);
+  });
+  return lines.join('\n');
+}
+
+function serializeTemplateSettings(settings) {
+  if (!settings) return '';
+  const lines = ['templateSettings:'];
+  lines.push(`  canvasWidth: ${settings.canvasWidth ?? 0}`);
+  lines.push(`  canvasHeight: ${settings.canvasHeight ?? 0}`);
+  lines.push(`  columns: ${settings.columns ?? 0}`);
+  lines.push(`  rows: ${settings.rows ?? 0}`);
+  lines.push(`  columnSize: ${quote(settings.columnSize || '')}`);
+  lines.push(`  rowSize: ${quote(settings.rowSize || '')}`);
+  lines.push(`  gap: ${quote(settings.gap || '')}`);
+  return lines.join('\n');
+}
+
+function serializeExclusions(exclusions) {
+  if (!exclusions) return '';
+  const lines = ['exclusions:'];
+  lines.push(`  top: ${exclusions.top ?? 0}`);
+  lines.push(`  bottom: ${exclusions.bottom ?? 0}`);
+  lines.push(`  left: ${exclusions.left ?? 0}`);
+  lines.push(`  right: ${exclusions.right ?? 0}`);
+  return lines.join('\n');
+}
+
+export function buildMdxSource(state) {
+  const frontmatter = buildFrontmatterFromState(state);
+  const layoutYaml = serializeLayout(frontmatter.layout);
+  const regionsYaml = serializeRegions(frontmatter.regions);
+  const templateSettingsYaml = serializeTemplateSettings(frontmatter.templateSettings);
+  const exclusionsYaml = serializeExclusions(frontmatter.exclusions);
+  const frontmatterYaml = [
+    '---',
+    `title: ${quote(frontmatter.title)}`,
+    `maxWords: ${frontmatter.maxWords}`,
+    `phase: ${quote(frontmatter.phase)}`,
+    templateSettingsYaml,
+    layoutYaml,
+    exclusionsYaml,
+    regionsYaml,
+    '---',
+  ].join('\n');
+
+  const body = buildMdxBody(frontmatter.layout.template, frontmatter.regions);
+  const source = `${frontmatterYaml}\n\n${body}\n`;
+  const filename = `${frontmatter.layout.template}.mdx`;
+
+  return { frontmatter, body, source, filename };
+}
+
+function buildMdxBody(templateName, regions) {
+  const lines = [
+    'import { GridDesigner, GridArea, ContentRenderer } from "../../core/layout/components.js";',
+    '',
+    `<GridDesigner template="${escapeYamlString(templateName)}">`,
+  ];
+
+  regions.forEach((region) => {
+    const importance = region.required ? 'critical' : 'supporting';
+    lines.push(
+      `  <GridArea area="${escapeYamlString(region.area)}" contentType="${escapeYamlString(region.role)}" importance="${importance}">`
+    );
+    lines.push(`    <ContentRenderer type="${escapeYamlString(region.role)}" content={""} />`);
+    lines.push('  </GridArea>');
+  });
+
+  lines.push('</GridDesigner>');
+  return lines.join('\n');
+}
+
+export function downloadMdxFile(state) {
+  const { source, filename } = buildMdxSource(state);
+  const blob = new Blob([source], { type: 'text/mdx;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}

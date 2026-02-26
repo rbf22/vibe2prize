@@ -10,506 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Newsreader:opsz,wght@6..72,600&display=swap"
       rel="stylesheet"
     />
-    <style>
-      :root {
-        --bg: radial-gradient(circle at top left, #0f1c34, #040715 65%);
-        --panel: rgba(6, 12, 24, 0.85);
-        --panel-border: rgba(255, 255, 255, 0.09);
-        --primary: #81f0c8;
-        --accent: #f6b36c;
-        --muted: rgba(255, 255, 255, 0.7);
-        --grid-line: rgba(255, 255, 255, 0.2);
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        margin: 0;
-        background: var(--bg);
-        color: #eef2ff;
-        font-family: "Space Grotesk", "Segoe UI", sans-serif;
-        line-height: 1.5;
-        padding: 2rem;
-      }
-
-      header {
-        margin-bottom: 2rem;
-      }
-
-      h1 {
-        font-family: "Newsreader", serif;
-        font-size: 2.5rem;
-        margin: 0 0 0.5rem;
-      }
-
-      .subtitle {
-        color: var(--muted);
-        margin-bottom: 1rem;
-      }
-
-      .app-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-      }
-
-      .settings-panel {
-        background: var(--panel);
-        border: 1px solid var(--panel-border);
-        border-radius: 1.5rem;
-        padding: 1.5rem;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-      }
-
-      .settings-panel h2 {
-        grid-column: 1 / -1;
-        margin: 0 0 1rem 0;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        font-size: 1rem;
-        color: var(--muted);
-      }
-
-      .canvas-panel {
-        background: var(--panel);
-        border: 1px solid var(--panel-border);
-        border-radius: 1.5rem;
-        padding: 1.5rem;
-      }
-
-      .canvas-panel h2 {
-        margin: 0 0 1rem 0;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        font-size: 1rem;
-        color: var(--muted);
-      }
-
-      .controls-stack {
-        display: flex;
-        flex-direction: column;
-      }
-
-      label {
-        display: flex;
-        flex-direction: column;
-        gap: 0.35rem;
-        font-size: 0.82rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
-
-      input[type="text"],
-      input[type="number"],
-      textarea,
-      select {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        border-radius: 0.95rem;
-        color: inherit;
-        padding: 0.65rem 0.8rem;
-        font-family: inherit;
-        transition: border 0.2s ease;
-      }
-
-      input:focus,
-      textarea:focus,
-      select:focus {
-        outline: none;
-        border-color: var(--primary);
-      }
-
-      .dual-input-row {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.75rem;
-      }
-
-      .region-presets {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-      }
-
-      .preset-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.75rem;
-        border-radius: 0.5rem;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        color: var(--muted);
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-
-      .preset-btn:hover {
-        background: rgba(255, 255, 255, 0.12);
-        transform: translateY(-1px);
-      }
-
-      .preset-btn.active {
-        background: var(--primary);
-        color: #081325;
-        border-color: var(--primary);
-      }
-
-      .canvas-container {
-        position: relative;
-        border: none;
-        border-radius: 0;
-        overflow: hidden;
-        background: rgba(10, 25, 50, 0.8);
-        width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        aspect-ratio: 16/9; /* Maintain 16:9 ratio */
-      }
-
-      .preview-grid {
-        --grid-columns: 80;
-        --grid-rows: 45;
-        width: 100%;
-        height: 100%;
-        border: none;
-        border-radius: 0;
-        padding: 0;
-        display: grid;
-        cursor: crosshair;
-        background: transparent;
-        position: relative;
-        transform-origin: top left;
-        outline: none;
-        box-shadow: none;
-      }
-
-      .preview-grid::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image:
-          linear-gradient(to right, rgba(150, 200, 255, 0.5) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(150, 200, 255, 0.5) 1px, transparent 1px);
-        background-size: calc(100% / var(--grid-columns)) 100%, 100% calc(100% / var(--grid-rows));
-        background-position: 0 0;
-        background-repeat: repeat;
-        border-right: 1px solid rgba(150, 200, 255, 0.5);
-        border-bottom: 1px solid rgba(150, 200, 255, 0.5);
-        pointer-events: none;
-        z-index: 0;
-      }
-
-      .preview-grid.drawing {
-        cursor: crosshair;
-      }
-
-      .preview-grid.selecting {
-        cursor: pointer;
-      }
-
-      .preview-grid::after {
-        content: attr(data-canvas);
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        font-size: 0.75rem;
-        letter-spacing: 0.08em;
-        background: rgba(4, 6, 13, 0.8);
-        border-radius: 999px;
-        padding: 0.2rem 0.6rem;
-        color: var(--muted);
-      }
-
-      .grid-block {
-        border-radius: 0;
-        padding: 2px;
-        font-weight: 600;
-        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
-        position: relative;
-        cursor: move;
-        user-select: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        min-height: 16px;
-        z-index: 2;
-      }
-
-      .grid-block:hover {
-        box-shadow: inset 0 0 0 2px var(--primary);
-      }
-
-      .grid-block.selected {
-        box-shadow: inset 0 0 0 2px var(--primary);
-      }
-
-      .resize-handle {
-        position: absolute;
-        width: 8px;
-        height: 8px;
-        background: var(--primary);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        cursor: nwse-resize;
-      }
-
-      .resize-handle.se {
-        bottom: -4px;
-        right: -4px;
-        cursor: nwse-resize;
-      }
-
-      .resize-handle.ne {
-        top: -4px;
-        right: -4px;
-        cursor: nesw-resize;
-      }
-
-      .resize-handle.sw {
-        bottom: -4px;
-        left: -4px;
-        cursor: nesw-resize;
-      }
-
-      .resize-handle.nw {
-        top: -4px;
-        left: -4px;
-        cursor: nwse-resize;
-      }
-
-      .grid-block .region-label {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: rgba(255, 255, 255, 0.9);
-        font-weight: 600;
-        text-align: center;
-        line-height: 1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-        padding: 1px;
-      }
-
-      /* Smaller text for thin regions */
-      .grid-block.thin-horizontal .region-label {
-        font-size: 0.6rem;
-        letter-spacing: 0.05em;
-      }
-
-      .grid-block.thin-vertical .region-label {
-        font-size: 0.6rem;
-        letter-spacing: 0.05em;
-        writing-mode: vertical-rl;
-        text-orientation: mixed;
-      }
-
-      .grid-block.very-small .region-label {
-        font-size: 0.5rem;
-        letter-spacing: 0.02em;
-      }
-
-      .regions-table-container {
-        margin-top: 2rem;
-        background: var(--panel);
-        border: 1px solid var(--panel-border);
-        border-radius: 1.1rem;
-        padding: 1.5rem;
-      }
-
-      .regions-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.85rem;
-      }
-
-      .regions-table th,
-      .regions-table td {
-        padding: 0.75rem;
-        text-align: left;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      }
-
-      .regions-table th {
-        background: rgba(255, 255, 255, 0.05);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--muted);
-      }
-
-      .regions-table td {
-        background: rgba(255, 255, 255, 0.02);
-      }
-
-      .regions-table input,
-      .regions-table select,
-      .regions-table textarea {
-        width: 100%;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        border-radius: 0.5rem;
-        color: inherit;
-        padding: 0.5rem;
-        font-family: inherit;
-        font-size: 0.85rem;
-      }
-
-      .regions-table input:focus,
-      .regions-table select:focus,
-      .regions-table textarea:focus {
-        outline: none;
-        border-color: var(--primary);
-      }
-
-      .regions-table textarea {
-        min-height: 60px;
-        resize: vertical;
-      }
-
-      .regions-table .checkbox-cell {
-        text-align: center;
-      }
-
-      .regions-table .checkbox-cell input {
-        width: auto;
-        margin: 0;
-      }
-
-      .regions-table .delete-btn {
-        background: rgba(255, 67, 54, 0.2);
-        border: 1px solid rgba(255, 67, 54, 0.4);
-        color: #ff4336;
-        padding: 0.4rem 0.8rem;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-
-      .regions-table .delete-btn:hover {
-        background: rgba(255, 67, 54, 0.3);
-        transform: translateY(-1px);
-      }
-
-      .table-actions {
-        margin-top: 1rem;
-        display: flex;
-        gap: 1rem;
-      }
-
-      .table-actions button {
-        padding: 0.6rem 1.2rem;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 0.5rem;
-        color: var(--muted);
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-size: 0.85rem;
-      }
-
-      .table-actions button:hover {
-        background: rgba(255, 255, 255, 0.12);
-        transform: translateY(-1px);
-      }
-
-      .export-panel {
-        background: var(--panel);
-        border: 1px solid var(--panel-border);
-        border-radius: 1.5rem;
-        padding: 1.5rem;
-      }
-
-      .export-panel h3 {
-        margin: 0 0 1rem 0;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        font-size: 1rem;
-        color: var(--muted);
-      }
-
-      .export-panel textarea {
-        width: 100%;
-        min-height: 200px;
-        resize: vertical;
-        font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
-        background: rgba(5, 11, 26, 0.9);
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        border-radius: 0.95rem;
-        color: inherit;
-        padding: 0.65rem 0.8rem;
-      }
-
-      .button-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        margin-bottom: 1rem;
-      }
-
-      button {
-        border: none;
-        border-radius: 999px;
-        padding: 0.65rem 1.2rem;
-        font-size: 0.9rem;
-        font-weight: 600;
-        font-family: inherit;
-        cursor: pointer;
-        transition: transform 0.2s ease;
-      }
-
-      button:hover {
-        transform: translateY(-1px);
-      }
-
-      .primary-btn {
-        background: linear-gradient(120deg, var(--primary), #5dd0ff);
-        color: #081325;
-      }
-
-      .ghost-btn {
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: var(--muted);
-      }
-
-      .import-btn {
-        padding: 0.5rem 1rem;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 0.5rem;
-        color: var(--muted);
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-size: 0.82rem;
-      }
-
-      .import-btn:hover {
-        background: rgba(255, 255, 255, 0.12);
-        transform: translateY(-1px);
-      }
-
-      @media (max-width: 960px) {
-        .app-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      /* Hide any overlay buttons that might still exist */
-      button[style*="position: fixed"],
-      button[style*="z-index: 9999"] {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-      }
-    </style>
+    <link rel="stylesheet" href="./styles/main.css" />
   </head>
   <body>
     <header>
@@ -572,6 +73,39 @@
 
       <section class="canvas-panel">
         <h2>Grid Canvas</h2>
+        <div class="guide-panel">
+          <h3>Guides</h3>
+          <div class="guide-button-row">
+            <button type="button" class="guide-btn active" data-guide="center">Center</button>
+            <button type="button" class="guide-btn" data-guide="halves">Halves</button>
+            <button type="button" class="guide-btn" data-guide="thirds">Thirds</button>
+            <button type="button" class="guide-btn" data-guide="quarters">Quarters</button>
+            <button type="button" class="guide-btn" data-guide="sixths">Sixths</button>
+            <button type="button" class="guide-btn" data-guide="eighths">Eighths</button>
+            <button type="button" class="guide-btn active" data-guide="margin">Margin 1-grid</button>
+          </div>
+          <div class="exclusion-panel">
+            <h4>Exclusions (grid units)</h4>
+            <div class="exclusion-grid">
+              <div class="exclusion-group">
+                <label for="exclusionTop">Header</label>
+                <input type="number" id="exclusionTop" min="0" value="0" />
+              </div>
+              <div class="exclusion-group">
+                <label for="exclusionBottom">Footer</label>
+                <input type="number" id="exclusionBottom" min="0" value="0" />
+              </div>
+              <div class="exclusion-group">
+                <label for="exclusionLeft">Left</label>
+                <input type="number" id="exclusionLeft" min="0" value="0" />
+              </div>
+              <div class="exclusion-group">
+                <label for="exclusionRight">Right</label>
+                <input type="number" id="exclusionRight" min="0" value="0" />
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="region-presets">
           <button type="button" class="preset-btn" data-preset="header">Header</button>
           <button type="button" class="preset-btn" data-preset="footer">Footer</button>
@@ -582,10 +116,15 @@
           <button type="button" class="preset-btn" data-preset="caption">Caption</button>
           <button type="button" class="preset-btn" data-preset="clear">Clear All</button>
         </div>
+        <p class="preset-helper" id="presetStatus">Select a region, then choose a semantic role to auto-fill metadata.</p>
         <div class="canvas-container">
+          <div class="guide-layer" id="guideLayer"></div>
           <div id="previewGrid" class="preview-grid" data-canvas="1920×1080"></div>
         </div>
         <div class="grid-info">Click and drag to draw regions. Click regions to edit metadata.</div>
+        <div class="grid-actions">
+          <button type="button" id="deleteSelectedBtn" class="danger-btn" disabled>Delete Selected</button>
+        </div>
       </section>
 
     <section class="regions-table-container" id="regionsTableContainer">
@@ -625,1278 +164,257 @@
       </section>
     </main>
 
+    <dialog id="mdxImportDialog" class="modal">
+      <h3>Import MDX Template</h3>
+      <p>Select an existing MDX file to load its regions and metadata into the canvas.</p>
+      <div class="modal-actions">
+        <button type="button" id="cancelImportMdx" class="ghost-btn">Cancel</button>
+        <button type="button" id="confirmImportMdx" class="primary-btn">Choose File</button>
+      </div>
+    </dialog>
+
+    <dialog id="mdxExportDialog" class="modal">
+      <h3>Export MDX Template</h3>
+      <p>
+        File name: <strong id="exportFilenameDisplay">template.mdx</strong><br />
+        Regions: <strong id="exportRegionCount">0</strong>
+      </p>
+      <div class="modal-actions">
+        <button type="button" id="cancelExportMdx" class="ghost-btn">Cancel</button>
+        <button type="button" id="confirmExportMdx" class="primary-btn">Save</button>
+      </div>
+    </dialog>
+
     <script>
-      // Aggressive button removal - runs continuously
-      document.addEventListener('DOMContentLoaded', function() {
-        // Immediate cleanup
-        const buttons = document.querySelectorAll('button');
-        buttons.forEach(btn => {
-          if (btn.textContent?.includes('Toggle') || 
-              btn.textContent?.includes('Overlay') ||
-              btn.style?.position === 'fixed' ||
-              btn.style?.background === 'blue' ||
-              btn.style?.zIndex === '9999') {
-            btn.remove();
-          }
-        });
-        
-        // Continuous cleanup every 50ms
-        setInterval(() => {
-          const allElements = document.querySelectorAll('*');
-          allElements.forEach(el => {
-            if (el.tagName === 'BUTTON' && 
-                (el.textContent?.includes('Toggle') || 
-                 el.textContent?.includes('Overlay') ||
-                 el.style?.position === 'fixed' ||
-                 el.style?.background === 'blue' ||
-                 el.style?.zIndex === '9999')) {
-              el.remove();
+      (function() {
+        const isDevelopment = window.location.hostname === 'localhost' || 
+          window.location.hostname === '127.0.0.1' ||
+          window.location.protocol === 'file:';
+
+        const moduleSrc = isDevelopment ? './src/main.js' : './dist/main.js';
+
+        function setupApplication() {
+          const ensureReady = () => {
+            if (!window.TemplateStudio || !window.TemplateStudio.attachControlHandlers) {
+              requestAnimationFrame(ensureReady);
+              return;
             }
-            // Also remove any fixed position elements
-            if (el.style?.position === 'fixed' && 
-                (el.textContent?.includes('Toggle') || 
-                 el.textContent?.includes('Overlay') ||
-                 el.style?.background === 'blue')) {
-              el.remove();
-            }
-          });
-          
-          // Specific targeting by exact attributes
-          const fixedButtons = document.querySelectorAll('button[style*="position: fixed"]');
-          fixedButtons.forEach(btn => btn.remove());
-          
-          const blueButtons = document.querySelectorAll('button[style*="background: blue"]');
-          blueButtons.forEach(btn => btn.remove());
-          
-          const highZButtons = document.querySelectorAll('button[style*="z-index: 9999"]');
-          highZButtons.forEach(btn => btn.remove());
-        }, 50);
-      });
-
-      const defaultAccepts = [
-        'primary-title',
-        'secondary-title',
-        'supporting-text',
-        'key-data',
-        'visual-aid'
-      ];
-
-      function slugify(value, fallback) {
-        const slug = value
-          .toLowerCase()
-          .replace(/[^a-z0-9\s-]/g, '')
-          .trim()
-          .replace(/\s+/g, '-');
-        return slug || fallback;
-      }
-
-      function ensureMatrix(rows, cols) {
-        // This function is no longer needed with canvas-based approach
-        // Keeping for compatibility with existing code
-      }
-
-      function renderAreaInputs() {
-        // This function is no longer needed with canvas-based approach
-        // Keeping for compatibility with existing code
-      }
-
-      function hashColor(str) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-          hash = str.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        const hue = Math.abs(hash) % 360;
-        return `hsl(${hue}, 65%, 55%)`;
-      }
-
-      function applyPreset(preset) {
-        const { rows, columns } = state;
-        let newBox = null;
-        
-        switch (preset) {
-          case 'header':
-            newBox = createBox(0, 0, canvas.width, canvas.height / 8, 'header');
-            newBox.metadata = {
-              required: true,
-              inputType: 'text',
-              fieldTypes: ['primary-title', 'secondary-title'],
-              llmHint: 'title page'
-            };
-            break;
-          case 'footer':
-            newBox = createBox(0, canvas.height * 7/8, canvas.width, canvas.height / 8, 'footer');
-            newBox.metadata = {
-              required: false,
-              inputType: 'text',
-              fieldTypes: ['footer', 'page-number'],
-              llmHint: 'footer information'
-            };
-            break;
-          case 'left-sidebar':
-            newBox = createBox(0, 0, canvas.width / 6, canvas.height, 'left-sidebar');
-            newBox.metadata = {
-              required: false,
-              inputType: 'any',
-              fieldTypes: ['visual-aid', 'supporting-data'],
-              llmHint: 'supporting information'
-            };
-            break;
-          case 'right-sidebar':
-            newBox = createBox(canvas.width * 5/6, 0, canvas.width / 6, canvas.height, 'right-sidebar');
-            newBox.metadata = {
-              required: false,
-              inputType: 'any',
-              fieldTypes: ['visual-aid', 'supporting-data'],
-              llmHint: 'supporting information'
-            };
-            break;
-          case 'hero':
-            newBox = createBox(0, 0, canvas.width, canvas.height / 3, 'hero');
-            newBox.metadata = {
-              required: true,
-              inputType: 'any',
-              fieldTypes: ['primary-title', 'visual-aid'],
-              llmHint: 'hero section with visual'
-            };
-            break;
-          case 'content':
-            newBox = createBox(canvas.width / 8, canvas.height / 3, canvas.width * 3/4, canvas.height / 2, 'content');
-            newBox.metadata = {
-              required: true,
-              inputType: 'text',
-              fieldTypes: ['supporting-text', 'key-data'],
-              llmHint: 'main content area'
-            };
-            break;
-          case 'caption':
-            newBox = createBox(0, canvas.height * 5/6, canvas.width, canvas.height / 6, 'caption');
-            newBox.metadata = {
-              required: false,
-              inputType: 'text',
-              fieldTypes: ['supporting-text'],
-              llmHint: 'caption or description'
-            };
-            break;
-          case 'clear':
-            state.boxes = [];
-            state.metadata = {};
-            state.selectedBoxId = null;
-            hideMetadataPanel();
-            renderRegionsTable();
-            break;
-        }
-        
-        if (newBox) {
-          state.metadata[newBox.id] = newBox.metadata;
-          selectBox(newBox.id);
-          renderRegionsTable();
-        }
-        
-        renderPreview();
-        renderSnippet();
-      }
-
-      function applyCanvasDimensions() {
-        const ratio = `${state.canvasWidth} / ${state.canvasHeight}`;
-        controls.previewGrid.style.aspectRatio = ratio;
-        controls.previewGrid.dataset.canvas = `${state.canvasWidth}×${state.canvasHeight}`;
-      }
-
-      function applyReferenceOverlay() {
-        if (state.referenceBackground) {
-          controls.previewGrid.style.backgroundImage = `url(${state.referenceBackground})`;
-        } else {
-          controls.previewGrid.style.backgroundImage = 'none';
-        }
-      }
-
-      function boxesToAreaMatrix() {
-        const matrix = Array.from({ length: state.rows }, () => Array(state.columns).fill('.'));
-        
-        state.boxes.forEach(box => {
-          for (let r = box.gridY; r < Math.min(box.gridY + box.gridHeight, state.rows); r++) {
-            for (let c = box.gridX; c < Math.min(box.gridX + box.gridWidth, state.columns); c++) {
-              matrix[r][c] = box.name;
-            }
-          }
-        });
-        
-        return matrix;
-      }
-
-      function renderPreview() {
-        const { columns, rows, columnSize, rowSize, gap } = state;
-        const grid = previewGrid;
-        
-        // Get actual container dimensions
-        const containerRect = grid.getBoundingClientRect();
-        const containerWidth = containerRect.width;
-        const containerHeight = containerRect.height;
-        
-        // Calculate cell size to exactly fill container
-        const cellPixelSizeX = containerWidth / columns;
-        const cellPixelSizeY = containerHeight / rows;
-        
-        // Use calculated cell sizes for exact fill
-        grid.style.gridTemplateColumns = `repeat(${columns}, ${cellPixelSizeX}px)`;
-        grid.style.gridTemplateRows = `repeat(${rows}, ${cellPixelSizeY}px)`;
-        grid.style.gap = '0px'; // No gap for exact alignment
-        
-        // Set CSS variables for grid background to match actual cell size
-        grid.style.setProperty('--cell-width', `${cellPixelSizeX}px`);
-        grid.style.setProperty('--cell-height', `${cellPixelSizeY}px`);
-        
-        const areas = boxesToAreaMatrix();
-        const templateAreas = areas.map((row) => `"${row.join(' ')}"`).join(' ');
-        grid.style.gridTemplateAreas = templateAreas;
-        grid.innerHTML = '';
-
-        // Keep the fixed background grid size for consistent visibility
-
-        const uniqueAreas = [...new Set(state.boxes.map(box => box.name))];
-        uniqueAreas.forEach((name) => {
-          const block = document.createElement('div');
-          block.className = 'grid-block';
-          block.style.background = hashColor(name);
-          block.style.gridArea = name;
-          
-          // Add responsive classes based on box dimensions
-          const box = state.boxes.find(b => b.name === name);
-          if (box) {
-            // Add classes for thin regions
-            if (box.gridHeight === 1 && box.gridWidth > 1) {
-              block.classList.add('thin-horizontal');
-            } else if (box.gridWidth === 1 && box.gridHeight > 1) {
-              block.classList.add('thin-vertical');
-            } else if (box.gridWidth === 1 && box.gridHeight === 1) {
-              block.classList.add('very-small');
-            }
-            
-            // Truncate long names for small regions
-            let displayName = name;
-            if ((box.gridWidth === 1 || box.gridHeight === 1) && name.length > 8) {
-              displayName = name.substring(0, 6) + '...';
-            } else if (box.gridWidth === 1 && box.gridHeight === 1 && name.length > 4) {
-              displayName = name.substring(0, 3) + '...';
-            }
-            
-            // Create the label
-            const label = document.createElement('div');
-            label.className = 'region-label';
-            label.textContent = displayName;
-            block.appendChild(label);
-          }
-          
-          // Add resize handles
-          const handles = ['nw', 'ne', 'sw', 'se'];
-          handles.forEach(position => {
-            const handle = document.createElement('div');
-            handle.className = `resize-handle ${position}`;
-            handle.dataset.position = position;
-            block.appendChild(handle);
-          });
-          
-          // Add drag and resize event listeners
-          block.addEventListener('mousedown', (e) => {
-            const box = state.boxes.find(b => b.name === name);
-            if (!box) return;
-            
-            if (e.target.classList.contains('resize-handle')) {
-              startResize(e, box, e.target.dataset.position);
-            } else {
-              startDrag(e, box);
-            }
-          });
-          
-          grid.appendChild(block);
-        });
-
-        // Draw preview box while dragging
-        if (state.isDrawing && state.dragStart) {
-          const startGridX = state.dragStart.startGridX;
-          const startGridY = state.dragStart.startGridY;
-          const currentGridX = state.dragStart.currentGridX;
-          const currentGridY = state.dragStart.currentGridY;
-          
-          // Calculate grid dimensions
-          const gridX = Math.min(startGridX, currentGridX);
-          const gridY = Math.min(startGridY, currentGridY);
-          const gridWidth = Math.abs(currentGridX - startGridX) + 1;
-          const gridHeight = Math.abs(currentGridY - startGridY) + 1;
-          
-          // Convert to pixels for display
-          const pixelX = gridX * cellPixelSizeX;
-          const pixelY = gridY * cellPixelSizeY;
-          const pixelWidth = gridWidth * cellPixelSizeX;
-          const pixelHeight = gridHeight * cellPixelSizeY;
-          
-          const previewBox = document.createElement('div');
-          previewBox.style.position = 'absolute';
-          previewBox.style.left = `${pixelX}px`;
-          previewBox.style.top = `${pixelY}px`;
-          previewBox.style.width = `${pixelWidth}px`;
-          previewBox.style.height = `${pixelHeight}px`;
-          previewBox.style.border = '2px dashed var(--primary)';
-          previewBox.style.background = 'rgba(129, 240, 200, 0.2)';
-          previewBox.style.pointerEvents = 'none';
-          previewBox.style.borderRadius = '0';
-          previewBox.style.zIndex = '1000';
-          grid.appendChild(previewBox);
-        }
-      }
-
-      function startDrag(e, box) {
-        isDragging = true;
-        draggedBox = box;
-        const rect = previewGrid.getBoundingClientRect();
-        const cellPixelSizeX = rect.width / state.columns;
-        const cellPixelSizeY = rect.height / state.rows;
-        dragOffset.x = e.clientX - rect.left - (box.gridX * cellPixelSizeX);
-        dragOffset.y = e.clientY - rect.top - (box.gridY * cellPixelSizeY);
-        originalBoxState = { ...box };
-        e.preventDefault();
-      }
-
-      function startResize(e, box, handle) {
-        isResizing = true;
-        draggedBox = box;
-        resizeHandle = handle;
-        originalBoxState = { ...box };
-        e.preventDefault();
-        e.stopPropagation();
-      }
-
-      function renderSnippet() {
-        const { templateName, columns, rows, columnSize, rowSize, gap } = state;
-        const areas = boxesToAreaMatrix();
-        const templateAreas = areas.map((row) => `"${row.join(' ')}"`).join(' ');
-        
-        // Build semanticAreas from box metadata
-        const semanticAreas = {};
-        state.boxes.forEach(box => {
-          semanticAreas[box.name] = {
-            accepts: box.metadata.fieldTypes.length > 0 ? box.metadata.fieldTypes : ['supporting-text'],
-            required: box.metadata.required || false,
-            inputType: box.metadata.inputType || 'any',
-            llmHint: box.metadata.llmHint || '',
-            maxContent: 8,
-            priority: box.metadata.required ? 'high' : 'medium',
-            description: box.metadata.llmHint || `${box.name} region`
+            initializeDom();
           };
-        });
-
-        const snippet = {
-          name: templateName,
-          css: `
-  display: grid;
-  grid-template-columns: repeat(${columns}, ${columnSize});
-  grid-template-rows: repeat(${rows}, ${rowSize});
-  grid-template-areas: ${templateAreas};
-  gap: ${gap};
-  min-height: 500px;
-  position: relative;
-`,
-          areas: areas.flat().filter(cell => cell !== '.'),
-          semanticAreas
-        };
-
-        controls.snippetOutput.value = JSON.stringify(snippet, null, 2);
-      }
-
-      function attachControlHandlers() {
-        controls.templateName.addEventListener('input', (e) => {
-          state.templateName = slugify(e.target.value, 'cssgrid-template');
-          e.target.value = state.templateName;
-          renderSnippet();
-        });
-
-        controls.canvasWidth.addEventListener('input', (e) => {
-          state.canvasWidth = Math.max(320, Math.min(7680, Number(e.target.value) || 1920));
-          e.target.value = state.canvasWidth;
-          applyCanvasDimensions();
-          renderPreview();
-        });
-
-        controls.canvasHeight.addEventListener('input', (e) => {
-          state.canvasHeight = Math.max(240, Math.min(4320, Number(e.target.value) || 1080));
-          e.target.value = state.canvasHeight;
-          applyCanvasDimensions();
-          renderPreview();
-        });
-
-        controls.columnCount.addEventListener('input', (e) => {
-          state.columns = Math.max(1, Math.min(100, Number(e.target.value)));
-          e.target.value = state.columns;
-          renderCanvas();
-          renderPreview();
-          renderSnippet();
-        });
-
-        controls.rowCount.addEventListener('input', (e) => {
-          state.rows = Math.max(1, Math.min(60, Number(e.target.value)));
-          e.target.value = state.rows;
-          renderCanvas();
-          renderPreview();
-          renderSnippet();
-        });
-
-        controls.columnSize.addEventListener('input', (e) => {
-          state.columnSize = e.target.value || '1fr';
-          renderPreview();
-          renderSnippet();
-        });
-
-        controls.rowSize.addEventListener('input', (e) => {
-          state.rowSize = e.target.value || 'auto';
-          renderPreview();
-          renderSnippet();
-        });
-
-        controls.gridGap.addEventListener('input', (e) => {
-          state.gap = e.target.value || '1rem';
-          renderPreview();
-          renderSnippet();
-        });
-
-        controls.resetNames.addEventListener('click', () => {
-          state.boxes = [];
-          state.metadata = {};
-          state.selectedBoxId = null;
-          hideMetadataPanel();
-          renderCanvas();
-          renderPreview();
-          renderSnippet();
-        });
-
-        controls.openCssGrid.addEventListener('click', () => {
-          window.open('https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout', '_blank');
-        });
-
-        // Preset buttons
-        document.querySelectorAll('.preset-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const preset = btn.dataset.preset;
-            applyPreset(preset);
-            
-            // Update active state
-            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-            if (preset !== 'clear') btn.classList.add('active');
-          });
-        });
-
-        controls.copySnippet.addEventListener('click', async () => {
-          try {
-            await navigator.clipboard.writeText(controls.snippetOutput.value);
-            controls.copySnippet.textContent = 'Copied!';
-            setTimeout(() => (controls.copySnippet.textContent = 'Copy Snippet'), 1500);
-          } catch (error) {
-            alert('Clipboard access denied. Copy manually.');
-          }
-        });
-
-        // Function to force reset drawing state
-        function forceResetDrawingState() {
-          state.isDrawing = false;
-          state.dragStart = null;
-          previewGrid.classList.remove('drawing');
-          isDragging = false;
-          isResizing = false;
-          draggedBox = null;
-          resizeHandle = null;
-          originalBoxState = null;
-          renderPreview();
+          ensureReady();
         }
-      }
 
-      // Initialize state and controls
-      const state = {
-        templateName: 'cssgrid-template',
-        canvasWidth: 1920,
-        canvasHeight: 1080,
-        rows: 45,
-        columns: 80,
-        columnSize: '1fr',
-        rowSize: '1fr',
-        gap: '0.5rem',
-        areas: [],
-        referenceBackground: null,
-        currentPreset: null,
-        boxes: [],
-        selectedBoxId: null,
-        isDrawing: false,
-        dragStart: null,
-        metadata: {}
-      };
-
-      // Canvas and drawing state - now using preview grid
-      const previewGrid = document.getElementById('previewGrid');
-      
-      // Drawing overlay element
-      let drawingOverlay = null;
-
-      // Drag and resize state
-      let isDragging = false;
-      let isResizing = false;
-      let draggedBox = null;
-      let resizeHandle = null;
-      let dragOffset = { x: 0, y: 0 };
-      let originalBoxState = null;
-
-      // Controls object - moved here to fix temporal dead zone
-      const controls = {
-        templateName: document.getElementById('templateName'),
-        canvasWidth: document.getElementById('canvasWidth'),
-        canvasHeight: document.getElementById('canvasHeight'),
-        columnCount: document.getElementById('columnCount'),
-        rowCount: document.getElementById('rowCount'),
-        columnSize: document.getElementById('columnSize'),
-        rowSize: document.getElementById('rowSize'),
-        gridGap: document.getElementById('gridGap'),
-        areaGrid: document.getElementById('areaGrid'),
-        previewGrid: document.getElementById('previewGrid'),
-        snippetOutput: document.getElementById('snippetOutput'),
-        resetNames: document.getElementById('resetNames'),
-        openCssGrid: document.getElementById('openCssGrid'),
-        copySnippet: document.getElementById('copySnippet')
-      };
-
-      // Helper function to check for overlaps
-      function hasOverlap(testBox, excludeId = null) {
-        for (const box of state.boxes) {
-          if (excludeId && box.id === excludeId) continue;
-          
-          if (!(testBox.gridX + testBox.gridWidth <= box.gridX || 
-                testBox.gridX >= box.gridX + box.gridWidth ||
-                testBox.gridY + testBox.gridHeight <= box.gridY || 
-                testBox.gridY >= box.gridY + box.gridHeight)) {
-            return true;
-          }
-        }
-        return false;
-      }
-
-      // Alias for renderPreview for compatibility
-      function renderCanvas() {
-        renderPreview();
-      }
-
-      // Function to get actual cell dimensions
-      function getCellDimensions() {
-        const rect = previewGrid.getBoundingClientRect();
-        return {
-          cellWidth: rect.width / state.columns,
-          cellHeight: rect.height / state.rows
-        };
-      }
-
-      // Box management
-      function createBox(x, y, width, height, name = null) {
-        // Use the same cell size calculation as renderPreview for consistency
-        const rect = previewGrid.getBoundingClientRect();
-        const cellWidth = rect.width / state.columns;
-        const cellHeight = rect.height / state.rows;
-        
-        const gridX1 = Math.floor(x / cellWidth);
-        const gridY1 = Math.floor(y / cellHeight);
-        const gridX2 = Math.ceil((x + width) / cellWidth);
-        const gridY2 = Math.ceil((y + height) / cellHeight);
-        
-        // Debug: Show the grid coordinates being calculated
-        console.log(`createBox calculation: ${gridX2 - gridX1} x ${gridY2 - gridY1} grid cells (coords: ${gridX1},${gridY1} to ${gridX2},${gridY2})`);
-        
-        // Check for overlaps with existing boxes
-        for (const box of state.boxes) {
-          if (!(gridX2 <= box.gridX || gridX1 >= box.gridX + box.gridWidth ||
-                gridY2 <= box.gridY || gridY1 >= box.gridY + box.gridHeight)) {
-            // Overlap detected
-            alert('Regions cannot overlap. Please draw in an empty area.');
-            return null;
-          }
-        }
-        
-        const id = `box-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        const box = {
-          id,
-          name: name || `region-${state.boxes.length + 1}`,
-          gridX: gridX1,
-          gridY: gridY1,
-          gridWidth: gridX2 - gridX1,
-          gridHeight: gridY2 - gridY1,
-          metadata: {
-            required: false,
-            inputType: 'any',
-            fieldTypes: [],
-            llmHint: ''
-          }
-        };
-        state.boxes.push(box);
-        state.metadata[id] = box.metadata;
-        
-        console.log('Box added to state. Total boxes:', state.boxes.length);
-        console.log('Box details:', box);
-        
-        // Update the regions table when a new box is created
-        renderRegionsTable();
-        
-        return box;
-      }
-
-      function deleteBox(id) {
-        state.boxes = state.boxes.filter(box => box.id !== id);
-        delete state.metadata[id];
-        if (state.selectedBoxId === id) {
-          state.selectedBoxId = null;
-          hideMetadataPanel();
-        }
-      }
-
-      function getBoxAtGrid(gridX, gridY) {
-        for (const box of state.boxes) {
-          if (gridX >= box.gridX && gridX < box.gridX + box.gridWidth &&
-              gridY >= box.gridY && gridY < box.gridY + box.gridHeight) {
-            return box;
-          }
-        }
-        return null;
-      }
-
-      function createBoxFromGrid(gridX, gridY, gridWidth, gridHeight, name = null) {
-        // Check for overlaps with existing boxes
-        for (const box of state.boxes) {
-          if (!(gridX + gridWidth <= box.gridX || gridX >= box.gridX + box.gridWidth ||
-                gridY + gridHeight <= box.gridY || gridY >= box.gridY + box.gridHeight)) {
-            // Overlap detected
-            alert('Regions cannot overlap. Please draw in an empty area.');
-            return null;
-          }
-        }
-        
-        const id = `box-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-        const box = {
-          id,
-          name: name || `region-${state.boxes.length + 1}`,
-          gridX: gridX,
-          gridY: gridY,
-          gridWidth: gridWidth,
-          gridHeight: gridHeight,
-          metadata: {
-            required: false,
-            inputType: 'any',
-            fieldTypes: [],
-            llmHint: ''
-          }
-        };
-        state.boxes.push(box);
-        state.metadata[id] = box.metadata;
-        
-        // Update the regions table when a new box is created
-        renderRegionsTable();
-        
-        return box;
-      }
-
-      // Mouse event handlers for preview grid
-      previewGrid.addEventListener('mousedown', (e) => {
-        if (isDragging || isResizing) return;
-        
-        const rect = previewGrid.getBoundingClientRect();
-        const cellPixelSizeX = rect.width / state.columns;
-        const cellPixelSizeY = rect.height / state.rows;
-        
-        // Immediately snap to grid coordinates
-        const mouseGridX = Math.floor((e.clientX - rect.left) / cellPixelSizeX);
-        const mouseGridY = Math.floor((e.clientY - rect.top) / cellPixelSizeY);
-        
-        const box = getBoxAtGrid(mouseGridX, mouseGridY);
-        if (box) {
-          selectBox(box.id);
-        } else {
-          state.isDrawing = true;
-          // Store grid coordinates directly
-          state.dragStart = {
-            startGridX: mouseGridX,
-            startGridY: mouseGridY,
-            currentGridX: mouseGridX,
-            currentGridY: mouseGridY
-          };
-          previewGrid.classList.add('drawing');
-        }
-      });
-
-      document.addEventListener('mousemove', (e) => {
-        if (state.isDrawing && state.dragStart) {
-          const rect = previewGrid.getBoundingClientRect();
-          const cellPixelSizeX = rect.width / state.columns;
-          const cellPixelSizeY = rect.height / state.rows;
-          
-          // Update grid coordinates directly
-          state.dragStart.currentGridX = Math.floor((e.clientX - rect.left) / cellPixelSizeX);
-          state.dragStart.currentGridY = Math.floor((e.clientY - rect.top) / cellPixelSizeY);
-          
-          renderPreview();
-        } else if (isDragging && draggedBox) {
-          const rect = previewGrid.getBoundingClientRect();
-          const cellPixelSizeX = rect.width / state.columns;
-          const cellPixelSizeY = rect.height / state.rows;
-          const newX = Math.floor((e.clientX - rect.left - dragOffset.x) / cellPixelSizeX);
-          const newY = Math.floor((e.clientY - rect.top - dragOffset.y) / cellPixelSizeY);
-          
-          // Constrain to grid bounds
-          const constrainedX = Math.max(0, Math.min(newX, state.columns - draggedBox.gridWidth));
-          const constrainedY = Math.max(0, Math.min(newY, state.rows - draggedBox.gridHeight));
-          
-          // Check for overlaps
-          const testBox = {
-            ...draggedBox,
-            gridX: constrainedX,
-            gridY: constrainedY
-          };
-          
-          if (!hasOverlap(testBox, draggedBox.id)) {
-            draggedBox.gridX = constrainedX;
-            draggedBox.gridY = constrainedY;
-            renderPreview();
-            renderRegionsTable();
-          }
-        } else if (isResizing && draggedBox) {
-          const rect = previewGrid.getBoundingClientRect();
-          const cellPixelSizeX = rect.width / state.columns;
-          const cellPixelSizeY = rect.height / state.rows;
-          const mouseX = e.clientX - rect.left;
-          const mouseY = e.clientY - rect.top;
-          
-          let newX = originalBoxState.gridX;
-          let newY = originalBoxState.gridY;
-          let newWidth = originalBoxState.gridWidth;
-          let newHeight = originalBoxState.gridHeight;
-          
-          switch (resizeHandle) {
-            case 'se':
-              newWidth = Math.ceil(mouseX / cellPixelSizeX) - originalBoxState.gridX;
-              newHeight = Math.ceil(mouseY / cellPixelSizeY) - originalBoxState.gridY;
-              break;
-            case 'ne':
-              newWidth = Math.ceil(mouseX / cellPixelSizeX) - originalBoxState.gridX;
-              newHeight = originalBoxState.gridHeight;
-              newY = Math.floor(mouseY / cellPixelSizeY);
-              newHeight = originalBoxState.gridY + originalBoxState.gridHeight - newY;
-              break;
-            case 'sw':
-              newWidth = originalBoxState.gridWidth;
-              newX = Math.floor(mouseX / cellPixelSizeX);
-              newWidth = originalBoxState.gridX + originalBoxState.gridWidth - newX;
-              newHeight = Math.ceil(mouseY / cellPixelSizeY) - originalBoxState.gridY;
-              break;
-            case 'nw':
-              newX = Math.floor(mouseX / cellPixelSizeX);
-              newY = Math.floor(mouseY / cellPixelSizeY);
-              newWidth = originalBoxState.gridX + originalBoxState.gridWidth - newX;
-              newHeight = originalBoxState.gridY + originalBoxState.gridHeight - newY;
-              break;
-          }
-          
-          // Ensure minimum size and positive dimensions
-          if (newWidth >= 1 && newHeight >= 1 && newX >= 0 && newY >= 0 && 
-              newX + newWidth <= state.columns && newY + newHeight <= state.rows) {
-            
-            const testBox = {
-              ...draggedBox,
-              gridX: newX,
-              gridY: newY,
-              gridWidth: newWidth,
-              gridHeight: newHeight
-            };
-            
-            if (!hasOverlap(testBox, draggedBox.id)) {
-              draggedBox.gridX = newX;
-              draggedBox.gridY = newY;
-              draggedBox.gridWidth = newWidth;
-              draggedBox.gridHeight = newHeight;
-              renderPreview();
-              renderRegionsTable();
+        function initializeDom() {
+          const previewGrid = document.getElementById('previewGrid');
+          const guideLayer = document.getElementById('guideLayer');
+          const controls = {
+            templateName: document.getElementById('templateName'),
+            canvasWidth: document.getElementById('canvasWidth'),
+            canvasHeight: document.getElementById('canvasHeight'),
+            columnCount: document.getElementById('columnCount'),
+            rowCount: document.getElementById('rowCount'),
+            columnSize: document.getElementById('columnSize'),
+            rowSize: document.getElementById('rowSize'),
+            gridGap: document.getElementById('gridGap'),
+            previewGrid: document.getElementById('previewGrid'),
+            presetButtons: Array.from(document.querySelectorAll('.preset-btn')),
+            presetStatus: document.getElementById('presetStatus'),
+            snippetOutput: document.getElementById('snippetOutput'),
+            resetNames: document.getElementById('resetNames'),
+            openCssGrid: document.getElementById('openCssGrid'),
+            copySnippet: document.getElementById('copySnippet'),
+            saveMdx: document.getElementById('saveMdx'),
+            importMdxBtn: document.getElementById('importMdxBtn'),
+            mdxFileInput: document.getElementById('mdxFileInput'),
+            mdxImportDialog: document.getElementById('mdxImportDialog'),
+            confirmImportMdx: document.getElementById('confirmImportMdx'),
+            cancelImportMdx: document.getElementById('cancelImportMdx'),
+            mdxExportDialog: document.getElementById('mdxExportDialog'),
+            confirmExportMdx: document.getElementById('confirmExportMdx'),
+            cancelExportMdx: document.getElementById('cancelExportMdx'),
+            exportFilenameDisplay: document.getElementById('exportFilenameDisplay'),
+            exportRegionCount: document.getElementById('exportRegionCount'),
+            deleteSelectedBtn: document.getElementById('deleteSelectedBtn'),
+            exclusions: {
+              top: document.getElementById('exclusionTop'),
+              bottom: document.getElementById('exclusionBottom'),
+              left: document.getElementById('exclusionLeft'),
+              right: document.getElementById('exclusionRight')
             }
-          }
-        }
-      });
+          };
 
-      document.addEventListener('mouseup', (e) => {
-        if (state.isDrawing && state.dragStart) {
-          const startGridX = state.dragStart.startGridX;
-          const startGridY = state.dragStart.startGridY;
-          const endGridX = state.dragStart.currentGridX;
-          const endGridY = state.dragStart.currentGridY;
-          
-          const gridWidth = Math.abs(endGridX - startGridX) + 1;
-          const gridHeight = Math.abs(endGridY - startGridY) + 1;
-          
-          // Reset drawing state BEFORE creating the box
-          state.isDrawing = false;
-          state.dragStart = null;
-          previewGrid.classList.remove('drawing');
-          
-          if (gridWidth >= 1 && gridHeight >= 1) {
-            const gridX = Math.min(startGridX, endGridX);
-            const gridY = Math.min(startGridY, endGridY);
-            const box = createBoxFromGrid(gridX, gridY, gridWidth, gridHeight);
+          const { TemplateStudio } = window;
+
+          TemplateStudio.attachControlHandlers(
+            controls,
+            () => {
+              TemplateStudio.renderPreview(previewGrid);
+              TemplateStudio.renderGuides(guideLayer, previewGrid);
+            },
+            TemplateStudio.renderSnippet,
+            TemplateStudio.renderRegionsTable
+          );
+
+          TemplateStudio.renderPreview(previewGrid);
+          TemplateStudio.renderGuides(guideLayer, previewGrid);
+          TemplateStudio.renderRegionsTable();
+          TemplateStudio.renderSnippet();
+          TemplateStudio.updateSelectionControls(controls);
+
+          previewGrid.addEventListener('mousedown', (e) => {
+            if (TemplateStudio.isEditableTarget(e)) return;
+            if (e.target.classList.contains('grid-block') || e.target.closest('.grid-block')) {
+              return;
+            }
+
+            const rect = previewGrid.getBoundingClientRect();
+            const cellPixelSizeX = rect.width / TemplateStudio.state.columns;
+            const cellPixelSizeY = rect.height / TemplateStudio.state.rows;
+
+            const mouseGridX = Math.floor((e.clientX - rect.left) / cellPixelSizeX);
+            const mouseGridY = Math.floor((e.clientY - rect.top) / cellPixelSizeY);
+
+            const box = TemplateStudio.getBoxAtGrid(mouseGridX, mouseGridY);
             if (box) {
-              // Clear selection after creating the box
-              state.selectedBoxId = null;
-              hideMetadataPanel();
-              renderRegionsTable();
-            }
-          }
-          
-          // Render preview after all state is reset and box is created
-          renderPreview();
-        }
-        
-        // Always reset drag/resize states on mouse up
-        if (isDragging || isResizing) {
-          isDragging = false;
-          isResizing = false;
-          draggedBox = null;
-          resizeHandle = null;
-          originalBoxState = null;
-          renderPreview();
-          renderSnippet();
-        }
-      });
-
-      
-            function renderRegionsTable() {
-        const tbody = document.getElementById('regionsTableBody');
-        tbody.innerHTML = '';
-        
-        state.boxes.forEach((box, index) => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td><input type="text" value="${box.name}" data-box-id="${box.id}" data-field="name" /></td>
-            <td>(${box.gridX}, ${box.gridY})</td>
-            <td>${box.gridWidth}×${box.gridHeight}</td>
-            <td class="checkbox-cell">
-              <input type="checkbox" ${box.metadata.required ? 'checked' : ''} 
-                     data-box-id="${box.id}" data-field="required" />
-            </td>
-            <td>
-              <select data-box-id="${box.id}" data-field="inputType">
-                <option value="text" ${box.metadata.inputType === 'text' ? 'selected' : ''}>Text</option>
-                <option value="image" ${box.metadata.inputType === 'image' ? 'selected' : ''}>Image</option>
-                <option value="any" ${box.metadata.inputType === 'any' ? 'selected' : ''}>Any</option>
-              </select>
-            </td>
-            <td>
-              <select data-box-id="${box.id}" data-field="fieldTypes">
-                <option value="" ${!box.metadata.fieldTypes.length || box.metadata.fieldTypes[0] === '' ? 'selected' : ''}>None</option>
-                <option value="primary-title" ${box.metadata.fieldTypes[0] === 'primary-title' ? 'selected' : ''}>Primary Title</option>
-                <option value="secondary-title" ${box.metadata.fieldTypes[0] === 'secondary-title' ? 'selected' : ''}>Secondary Title</option>
-                <option value="section-title" ${box.metadata.fieldTypes[0] === 'section-title' ? 'selected' : ''}>Section Title</option>
-                <option value="supporting-content" ${box.metadata.fieldTypes[0] === 'supporting-content' ? 'selected' : ''}>Supporting Content</option>
-                <option value="footer" ${box.metadata.fieldTypes[0] === 'footer' ? 'selected' : ''}>Footer</option>
-                <option value="page-number" ${box.metadata.fieldTypes[0] === 'page-number' ? 'selected' : ''}>Page Number</option>
-                <option value="key-data" ${box.metadata.fieldTypes[0] === 'key-data' ? 'selected' : ''}>Key Data</option>
-                <option value="visual-aid" ${box.metadata.fieldTypes[0] === 'visual-aid' ? 'selected' : ''}>Visual Aid</option>
-                <option value="quote" ${box.metadata.fieldTypes[0] === 'quote' ? 'selected' : ''}>Quote</option>
-                <option value="list" ${box.metadata.fieldTypes[0] === 'list' ? 'selected' : ''}>List</option>
-                <option value="chart" ${box.metadata.fieldTypes[0] === 'chart' ? 'selected' : ''}>Chart</option>
-                <option value="image" ${box.metadata.fieldTypes[0] === 'image' ? 'selected' : ''}>Image</option>
-                <option value="video" ${box.metadata.fieldTypes[0] === 'video' ? 'selected' : ''}>Video</option>
-                <option value="logo" ${box.metadata.fieldTypes[0] === 'logo' ? 'selected' : ''}>Logo</option>
-                <option value="cta-button" ${box.metadata.fieldTypes[0] === 'cta-button' ? 'selected' : ''}>CTA Button</option>
-              </select>
-            </td>
-            <td>
-              <textarea data-box-id="${box.id}" data-field="llmHint" placeholder="LLM hint...">${box.metadata.llmHint}</textarea>
-            </td>
-            <td>
-              <button type="button" class="delete-btn" data-box-id="${box.id}">Delete</button>
-            </td>
-          `;
-          tbody.appendChild(row);
-        });
-
-      // Add table button handlers (moved outside renderRegionsTable)
-      document.getElementById('addRegionBtn').addEventListener('click', addNewRegion);
-      
-      document.getElementById('clearAllBtn').addEventListener('click', () => {
-        if (confirm('Are you sure you want to clear all regions?')) {
-          state.boxes = [];
-          state.metadata = {};
-          state.selectedBoxId = null;
-          hideMetadataPanel();
-          renderRegionsTable();
-          renderCanvas();
-          renderPreview();
-          renderSnippet();
-        }
-      });
-
-      // Add form event listeners for table inputs
-      tbody.querySelectorAll('input, select, textarea').forEach(input => {
-        input.addEventListener('change', (e) => {
-          const boxId = e.target.dataset.boxId;
-          const field = e.target.dataset.field;
-          const box = state.boxes.find(b => b.id === boxId);
-          
-          if (!box) return;
-          
-          if (field === 'name') {
-            box.name = e.target.value;
-          } else if (field === 'required') {
-            box.metadata.required = e.target.checked;
-          } else if (field === 'inputType') {
-            box.metadata.inputType = e.target.value;
-          } else if (field === 'fieldTypes') {
-            const selectedValue = e.target.value;
-            box.metadata.fieldTypes = selectedValue ? [selectedValue] : [];
-          } else if (field === 'llmHint') {
-            box.metadata.llmHint = e.target.value;
-          }
-          
-          state.metadata[boxId] = box.metadata;
-          renderCanvas();
-          renderPreview();
-          renderSnippet();
-        });
-      });
-      
-      // Add delete button handlers
-      tbody.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const boxId = e.target.dataset.boxId;
-          deleteBox(boxId);
-          renderRegionsTable();
-          renderCanvas();
-          renderPreview();
-          renderSnippet();
-        });
-      });
-      }
-
-      function addNewRegion() {
-        // Find empty space for new region
-        for (let y = 0; y < state.rows; y++) {
-          for (let x = 0; x < state.columns; x++) {
-            const testBox = {
-              gridX: x,
-              gridY: y,
-              gridWidth: 10,
-              gridHeight: 5
-            };
-            
-            let hasOverlap = false;
-            for (const box of state.boxes) {
-              if (!(testBox.gridX + testBox.gridWidth <= box.gridX || 
-                    testBox.gridX >= box.gridX + box.gridWidth ||
-                    testBox.gridY + testBox.gridHeight <= box.gridY || 
-                    testBox.gridY >= box.gridY + box.gridHeight)) {
-                hasOverlap = true;
-                break;
-              }
-            }
-            
-            if (!hasOverlap) {
-              const rect = previewGrid.getBoundingClientRect();
-              const cellWidth = rect.width / state.columns;
-              const cellHeight = rect.height / state.rows;
-              
-              const canvasX = x * cellWidth;
-              const canvasY = y * cellHeight;
-              const canvasWidth = testBox.gridWidth * cellWidth;
-              const canvasHeight = testBox.gridHeight * cellHeight;
-              
-              const box = createBox(canvasX, canvasY, canvasWidth, canvasHeight);
-              if (box) {
-                renderRegionsTable();
-                renderCanvas();
-                renderPreview();
-                renderSnippet();
-              }
-              return;
-            }
-          }
-        }
-        
-        alert('No empty space available for new region. Please delete existing regions first.');
-      }
-      function showMetadataPanel() {
-        const panel = document.getElementById('metadataPanel');
-        if (panel) {
-          panel.classList.add('open');
-        }
-      }
-
-      function hideMetadataPanel() {
-        const panel = document.getElementById('metadataPanel');
-        if (panel) {
-          panel.classList.remove('open');
-        }
-      }
-
-      function selectBox(id) {
-        state.selectedBoxId = id;
-        const box = state.boxes.find(b => b.id === id);
-        if (box) {
-          populateMetadataForm(box);
-          updateRegionList();
-          showMetadataPanel();
-          renderPreview();
-        }
-      }
-
-      function populateMetadataForm(box) {
-        const regionName = document.getElementById('regionName');
-        const regionRequired = document.getElementById('regionRequired');
-        const regionInputType = document.getElementById('regionInputType');
-        const regionLLMHint = document.getElementById('regionLLMHint');
-        const fieldTypesTags = document.getElementById('fieldTypesTags');
-        
-        if (regionName) regionName.value = box.name;
-        if (regionRequired) regionRequired.checked = box.metadata.required;
-        if (regionInputType) regionInputType.value = box.metadata.inputType;
-        if (regionLLMHint) regionLLMHint.value = box.metadata.llmHint;
-        
-        // Update field types multi-select
-        if (fieldTypesTags) {
-          fieldTypesTags.innerHTML = '';
-          
-          if (box.metadata.fieldTypes.length === 0) {
-            fieldTypesTags.innerHTML = '<span style="color: var(--muted);">Click to add field types...</span>';
-          } else {
-            box.metadata.fieldTypes.forEach(fieldType => {
-              const tag = document.createElement('span');
-              tag.className = 'multi-select-tag';
-              tag.textContent = fieldType;
-              fieldTypesTags.appendChild(tag);
-            });
-          }
-        }
-        
-        // Update dropdown selection
-        const dropdown = document.getElementById('fieldTypesDropdown');
-        if (dropdown) {
-          dropdown.querySelectorAll('.multi-select-option').forEach(option => {
-            option.classList.toggle('selected', box.metadata.fieldTypes.includes(option.dataset.value));
-          });
-        }
-      }
-
-      function updateMetadataFromForm() {
-        if (!state.selectedBoxId) return;
-        
-        const box = state.boxes.find(b => b.id === state.selectedBoxId);
-        if (!box) return;
-        
-        box.name = document.getElementById('regionName').value || box.name;
-        box.metadata.required = document.getElementById('regionRequired').checked;
-        box.metadata.inputType = document.getElementById('regionInputType').value;
-        box.metadata.llmHint = document.getElementById('regionLLMHint').value;
-        
-        // Update field types from selected options
-        const selectedOptions = document.querySelectorAll('#fieldTypesDropdown .multi-select-option.selected');
-        box.metadata.fieldTypes = Array.from(selectedOptions).map(option => option.dataset.value);
-        
-        state.metadata[box.id] = box.metadata;
-        updateRegionList();
-        renderPreview();
-        renderSnippet();
-      }
-
-      function updateRegionList() {
-        const regionList = document.getElementById('regionList');
-        if (!regionList) return; // Skip if element doesn't exist
-        
-        const regionsHtml = state.boxes.map(box => `
-          <div class="region-item ${box.id === state.selectedBoxId ? 'selected' : ''}" data-id="${box.id}">
-            ${box.name}
-          </div>
-        `).join('');
-        
-        regionList.innerHTML = '<h4>Regions</h4>' + regionsHtml;
-        
-        // Add click handlers
-        regionList.querySelectorAll('.region-item').forEach(item => {
-          item.addEventListener('click', () => {
-            selectBox(item.dataset.id);
-          });
-        });
-      }
-
-      // Multi-select dropdown functionality
-      const fieldTypesMultiSelect = document.getElementById('fieldTypesMultiSelect');
-      const fieldTypesDropdown = document.getElementById('fieldTypesDropdown');
-      
-      if (fieldTypesMultiSelect && fieldTypesDropdown) {
-        fieldTypesMultiSelect.addEventListener('click', () => {
-          fieldTypesDropdown.classList.toggle('open');
-        });
-        
-        document.addEventListener('click', (e) => {
-          if (!fieldTypesMultiSelect.contains(e.target)) {
-            fieldTypesDropdown.classList.remove('open');
-          }
-        });
-      }
-      
-      previewGrid.addEventListener('mouseleave', () => {
-        if (state.isDrawing) {
-          state.isDrawing = false;
-          state.dragStart = null;
-          previewGrid.classList.remove('drawing');
-          renderPreview();
-        }
-      });
-
-      if (fieldTypesDropdown) {
-        fieldTypesDropdown.querySelectorAll('.multi-select-option').forEach(option => {
-          option.addEventListener('click', (e) => {
-            e.stopPropagation();
-            option.classList.toggle('selected');
-            updateMetadataFromForm();
-          });
-        });
-      }
-
-      // MDX Import functionality
-      function parseMDXFrontmatter(content) {
-        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-        if (!frontmatterMatch) return null;
-        
-        const frontmatterText = frontmatterMatch[1];
-        const frontmatter = {};
-        
-        // Simple YAML parser for our specific needs
-        const lines = frontmatterText.split('\n');
-        let currentKey = null;
-        let inArray = false;
-        let currentArray = [];
-        
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed) continue;
-          
-          if (trimmed.startsWith('- ') && currentKey) {
-            const value = trimmed.substring(2).replace(/^["']|["']$/g, '');
-            currentArray.push(value);
-            inArray = true;
-          } else if (trimmed.includes(':')) {
-            if (inArray && currentKey) {
-              frontmatter[currentKey] = currentArray;
-              currentArray = [];
-              inArray = false;
-            }
-            
-            const [key, ...valueParts] = trimmed.split(':');
-            const value = valueParts.join(':').trim();
-            
-            if (value) {
-              const cleanValue = value.replace(/^["']|["']$/g, '');
-              frontmatter[key.trim()] = cleanValue;
+              TemplateStudio.state.selectedBoxId = box.id;
+              TemplateStudio.updateSelectionControls(controls);
+              TemplateStudio.renderPreview(previewGrid);
+              TemplateStudio.renderGuides(guideLayer, previewGrid);
+              TemplateStudio.renderRegionsTable();
+              TemplateStudio.renderSnippet();
             } else {
-              currentKey = key.trim();
-              inArray = true;
-              currentArray = [];
-            }
-          }
-        }
-        
-        if (inArray && currentKey) {
-          frontmatter[currentKey] = currentArray;
-        }
-        
-        return frontmatter;
-      }
-
-      function importMDXFile(file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          try {
-            const content = e.target.result;
-            const frontmatter = parseMDXFrontmatter(content);
-            
-            if (!frontmatter) {
-              alert('Invalid MDX file format');
-              return;
-            }
-            
-            // Clear existing boxes
-            state.boxes = [];
-            state.metadata = {};
-            state.selectedBoxId = null;
-            
-            // Extract template information
-            const layout = frontmatter.layout || {};
-            const templateName = layout.template;
-            const regions = frontmatter.regions || [];
-            
-            // For now, create a simple layout based on regions
-            // In a full implementation, we'd load the actual template from grid-templates.js
-            regions.forEach((region, index) => {
-              const areaName = region.area || `area-${index}`;
-              const roleName = region.role || 'supporting-text';
-              
-              // Create a box for each region
-              const boxHeight = canvas.height / (regions.length || 1);
-              const box = createBox(0, index * boxHeight, canvas.width, boxHeight, areaName);
-              
-              // Map role to field types
-              const fieldTypes = [roleName];
-              const inputType = roleName.includes('image') || roleName.includes('visual') ? 'image' : 'text';
-              
-              box.metadata = {
-                required: region.maxWords > 0,
-                inputType: inputType,
-                fieldTypes: fieldTypes,
-                llmHint: `${roleName} region`
+              TemplateStudio.state.selectedBoxId = null;
+              TemplateStudio.updateSelectionControls(controls);
+              TemplateStudio.state.isDrawing = true;
+              TemplateStudio.state.dragStart = {
+                startGridX: mouseGridX,
+                startGridY: mouseGridY,
+                currentGridX: mouseGridX,
+                currentGridY: mouseGridY,
+                startClientX: e.clientX,
+                startClientY: e.clientY,
+                hasMoved: false
               };
-              
-              state.metadata[box.id] = box.metadata;
-            });
-            
-            // Update UI
-            updateRegionList();
-            renderCanvas();
-            renderPreview();
-            renderSnippet();
-            
-            // Show success message
-            alert(`Successfully imported ${frontmatter.title || 'MDX file'} with ${regions.length} regions`);
-            
-          } catch (error) {
-            console.error('Failed to import MDX:', error);
-            alert('Failed to import MDX file. Please check the format.');
-          }
-        };
-        
-        reader.readAsText(file);
-      }
+              previewGrid.classList.add('drawing');
+            }
+          });
 
-      // MDX import event handler
-      document.getElementById('importMdxBtn').addEventListener('click', () => {
-        document.getElementById('mdxFileInput').click();
-      });
-      
-      document.getElementById('mdxFileInput').addEventListener('change', (e) => {
-        const file = e.target.files?.[0];
-        if (file && file.name.endsWith('.mdx')) {
-          importMDXFile(file);
-        } else {
-          alert('Please select a valid MDX file');
+          previewGrid.addEventListener('mousemove', (e) => {
+            TemplateStudio.handleMouseMove(
+              e,
+              previewGrid,
+              () => {
+                TemplateStudio.renderPreview(previewGrid);
+                TemplateStudio.renderGuides(guideLayer, previewGrid);
+              }
+            );
+          });
+
+          document.addEventListener('mouseup', (e) => {
+            TemplateStudio.handleMouseUp(
+              e,
+              previewGrid,
+              () => {
+                TemplateStudio.renderPreview(previewGrid);
+                TemplateStudio.renderGuides(guideLayer, previewGrid);
+              },
+              () => {
+                TemplateStudio.renderRegionsTable();
+                document.dispatchEvent(new CustomEvent('regionsTableChanged'));
+              },
+              () => {
+                TemplateStudio.renderSnippet();
+                document.dispatchEvent(new CustomEvent('snippetChanged'));
+              }
+            );
+
+            TemplateStudio.updateSelectionControls(controls);
+          });
+
+          document.addEventListener('keydown', (e) => {
+            if (TemplateStudio.isEditableTarget(e)) return;
+            if ((e.key === 'Delete' || e.key === 'Backspace') && TemplateStudio.state.selectedBoxId) {
+              e.preventDefault();
+              TemplateStudio.deleteSelectedRegion();
+              TemplateStudio.renderRegionsTable();
+              TemplateStudio.renderPreview(previewGrid);
+              TemplateStudio.renderGuides(guideLayer, previewGrid);
+              TemplateStudio.renderSnippet();
+              TemplateStudio.updateSelectionControls(controls);
+            }
+          });
+
+          document.addEventListener('keydown', (e) => {
+            if (TemplateStudio.isEditableTarget(e)) return;
+            if ((e.metaKey || e.ctrlKey) && !e.altKey) {
+              const key = e.key.toLowerCase();
+              if (key === 'z') {
+                e.preventDefault();
+                TemplateStudio.handleUndo();
+              } else if (key === 'y') {
+                e.preventDefault();
+                TemplateStudio.handleRedo();
+              } else if (key === 's') {
+                e.preventDefault();
+                if (controls.saveMdx) {
+                  controls.saveMdx.click();
+                } else {
+                  try {
+                    TemplateStudio.downloadMdxFile(TemplateStudio.state);
+                  } catch (error) {
+                    console.error('Failed to export MDX', error);
+                    alert('Failed to export MDX. Please check your template metadata.');
+                  }
+                }
+              }
+            }
+          });
+
+          document.addEventListener('regionsTableChanged', () => {
+            TemplateStudio.renderPreview(previewGrid);
+            TemplateStudio.renderGuides(guideLayer, previewGrid);
+            TemplateStudio.renderSnippet();
+          });
+
+          document.addEventListener('regionDeleted', () => {
+            TemplateStudio.renderPreview(previewGrid);
+            TemplateStudio.renderGuides(guideLayer, previewGrid);
+            TemplateStudio.renderSnippet();
+            TemplateStudio.updateSelectionControls(controls);
+          });
+
+          document.addEventListener('regionAdded', () => {
+            TemplateStudio.renderPreview(previewGrid);
+            TemplateStudio.renderGuides(guideLayer, previewGrid);
+            TemplateStudio.renderSnippet();
+          });
+
+          document.addEventListener('allRegionsCleared', () => {
+            TemplateStudio.renderPreview(previewGrid);
+            TemplateStudio.renderGuides(guideLayer, previewGrid);
+            TemplateStudio.renderSnippet();
+            TemplateStudio.updateSelectionControls(controls);
+          });
+
+          document.addEventListener('mdxImported', () => {
+            TemplateStudio.renderRegionsTable();
+            TemplateStudio.renderPreview(previewGrid);
+            TemplateStudio.renderGuides(guideLayer, previewGrid);
+            TemplateStudio.renderSnippet();
+            TemplateStudio.updateSelectionControls(controls);
+          });
+
+          TemplateStudio.applyCanvasDimensions(controls);
+          TemplateStudio.applyReferenceOverlay(controls);
         }
-        e.target.value = ''; // Reset input
-      });
 
-      
-      function init() {
-        renderPreview();
-        renderSnippet();
-        applyCanvasDimensions();
-        applyReferenceOverlay();
-        attachControlHandlers();
-        updateRegionList();
-        renderRegionsTable();
-      }
-
-      init();
+        const moduleScript = document.createElement('script');
+        moduleScript.type = 'module';
+        moduleScript.src = moduleSrc;
+        moduleScript.onload = setupApplication;
+        moduleScript.onerror = () => console.error('Failed to load Template Studio module');
+        document.head.appendChild(moduleScript);
+      })();
     </script>
   </body>
 </html>

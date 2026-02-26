@@ -1,0 +1,190 @@
+# Template Studio
+
+A browser-based visual designer for creating CSS Grid layout templates that export to valid MDX frontmatter for use with the Vibe-to-Enterprise framework.
+
+## Architecture
+
+Template Studio is now organized as a modular ESM application:
+
+```
+template-studio/
+├── grid-template-studio.html    # Main HTML entry point
+├── styles/
+│   └── main.css               # Extracted styles
+├── src/
+│   ├── main.js                 # Module bootstrap and API
+│   ├── state.js                # State and history management
+│   ├── persistence/
+│   │   ├── mdx.js             # MDX export functionality
+│   │   └── importer.js        # MDX import functionality
+│   ├── canvas/
+│   │   ├── renderer.js        # Canvas rendering logic
+│   │   ├── interactions.js     # Mouse/drag/resize handlers
+│   │   └── guides.js          # Grid guides and exclusions
+│   ├── ui/
+│   │   ├── controls.js        # UI control handlers
+│   │   └── regions-table.js   # Regions table management
+│   └── utils/
+│       ├── grid-math.js       # Grid coordinate utilities
+│       └── snippet.js         # CSS snippet generation
+└── test/
+    ├── importer.test.js        # MDX importer tests
+    ├── exporter.test.js        # MDX exporter tests
+    └── schema-validation.test.js # Shared schema tests
+```
+
+## Key Features
+
+- **Visual Grid Design**: Click and drag to create grid regions
+- **Real-time Preview**: See your CSS Grid layout update as you work
+- **MDX Export**: Generate valid MDX frontmatter compatible with the shared schema
+- **MDX Import**: Load existing MDX templates and continue editing
+- **Guides & Exclusions**: Visual guides and exclusion zones for precise layouts
+- **Region Metadata**: Configure input types, field types, and LLM hints per region
+- **Undo/Redo**: Full history support for design iterations
+- **Responsive Preview**: See how regions adapt to different screen sizes
+
+## Getting Started
+
+### Development Server
+
+```bash
+# Start the Template Studio development server
+npm run studio
+
+# Or run the static server directly
+cd template-studio
+python3 -m http.server 8080
+```
+
+Open `http://localhost:4174` in your browser.
+
+### Production Build
+
+```bash
+# Build Template Studio for production
+npm run build:studio
+
+# This creates template-studio/dist/main.js - a bundled, minified version
+# suitable for deployment or inclusion in other projects
+```
+
+### Testing
+
+```bash
+# Run all MDX-related tests
+npm run test:mdx
+
+# Run all tests
+npm run test
+
+# Run tests in watch mode
+npm run test:watch
+```
+
+## Usage
+
+1. **Create Regions**: Click and drag on the canvas to create grid regions
+2. **Configure Metadata**: Select regions to set required fields, input types, and LLM hints
+3. **Adjust Grid**: Modify columns, rows, gaps, and canvas dimensions
+4. **Use Guides**: Enable visual guides (center, thirds, quarters, etc.) for alignment
+5. **Export MDX**: Save your template as valid MDX frontmatter
+6. **Import MDX**: Load existing templates to continue editing
+
+## MDX Schema
+
+Template Studio exports MDX files that conform to the shared schema defined in `core/mdx/schema.js`:
+
+```yaml
+---
+title: "Template Name"
+maxWords: 120
+phase: "concept"
+layout:
+  type: "grid-designer"
+  template: "template-name"
+  components:
+    - "GridDesigner"
+    - "GridArea" 
+    - "ContentRenderer"
+regions:
+  - id: "header"
+    role: "header"
+    area: "header"
+    maxWords: 20
+    required: true
+    inputType: "text"
+    llmHint: "Main title area"
+---
+```
+
+## Module API
+
+The modular architecture exposes the following API through `src/main.js`:
+
+```javascript
+import * as TemplateStudio from './src/main.js';
+
+// State management
+TemplateStudio.state
+TemplateStudio.pushHistory()
+TemplateStudio.handleUndo()
+TemplateStudio.handleRedo()
+
+// Canvas operations
+TemplateStudio.renderPreview(canvas, callback)
+TemplateStudio.renderGuides(guideLayer, canvas)
+TemplateStudio.handleMouseMove(event, canvas, callback)
+TemplateStudio.handleMouseUp(event, canvas, ...callbacks)
+
+// UI operations
+TemplateStudio.attachControlHandlers(controls, ...callbacks)
+TemplateStudio.renderRegionsTable()
+TemplateStudio.updateSelectionControls(controls)
+
+// MDX operations
+TemplateStudio.importMDXFile(file)
+TemplateStudio.downloadMdxFile(state)
+
+// Utilities
+TemplateStudio.isEditableTarget(event)
+TemplateStudio.getBoxAtGrid(x, y)
+TemplateStudio.deleteSelectedRegion()
+```
+
+## Shared Dependencies
+
+Template Studio integrates with the core MDX utilities:
+
+- **Schema Validation**: Uses `core/mdx/schema.js` for frontmatter validation
+- **Import/Export**: Leverages shared parsing and validation logic
+- **Type Safety**: Consistent data structures across the application
+
+## Development Notes
+
+- **ESM Modules**: All code uses native ES modules
+- **No Build Step**: Direct browser module loading
+- **CSS Extraction**: Styles moved to `styles/main.css` for maintainability  
+- **Event-Driven**: Uses custom events for UI updates
+- **Browser APIs**: Uses FileReader, Blob, and URL APIs for file operations
+
+## Browser Compatibility
+
+Template Studio requires a modern browser with ES module support:
+- Chrome 61+
+- Firefox 60+
+- Safari 10.1+
+- Edge 16+
+
+## Contributing
+
+When adding new features:
+
+1. Keep modules focused and single-purpose
+2. Use the shared MDX schema for any frontmatter operations
+3. Add tests for new functionality
+4. Update this README for API changes
+
+## License
+
+MIT

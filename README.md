@@ -15,6 +15,7 @@ This repo contains the EPAM "Vibe-to-Enterprise" deck plus the tools used to des
 npm run build:slides   # Compile templates/slide_sets → dist/slides.html
 npm run dev            # Builder watch mode (rebuilds dist/slides.html)
 npm run dev:static     # Builder watch + lightweight static server (index.html + dist/)
+npm run studio         # Serve template-studio/ at http://localhost:4174 (auto-opens browser)
 npm run lint:slides    # Validate slide configs and MDX frontmatter/content
 npm run analyze:content# Generate semantic/content analysis reports
 ```
@@ -32,7 +33,8 @@ npm run analyze:content# Generate semantic/content analysis reports
 3. Serve `index.html` as the entry point; it fetches `dist/slides.html` at runtime.
 
 ## Template Studio
-- Launch `template-studio/grid-template-studio.html` in a browser for a standalone layout designer.
+- Run `npm run studio` to start a lightweight static server (defaults to `http://localhost:4174`) that auto-opens the Studio UI.
+- Alternatively, open `template-studio/grid-template-studio.html` directly in a browser for an offline experience.
 - Designed regions can be exported as JSON/MDX and moved into `core/layout/grid-templates.js` & `templates/mdx/`.
 
 ## Slide Authoring Flow

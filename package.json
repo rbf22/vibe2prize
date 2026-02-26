@@ -11,13 +11,19 @@
     "build:slides": "node builder/build-slides.js",
     "dev": "node builder/build-slides.js --watch",
     "dev:static": "node scripts/dev-static.js",
+    "studio": "node scripts/template-studio.js",
+    "build:studio": "node scripts/build-template-studio.js",
     "lint:slides": "node builder/lint-slides.js",
     "analyze:content": "node builder/content-analyzer.js",
-    "build": "npm run build:slides"
+    "build": "npm run build:slides",
+    "test": "node --test template-studio/test/*.test.js",
+    "test:mdx": "node --test template-studio/test/importer.test.js template-studio/test/exporter.test.js template-studio/test/schema-validation.test.js",
+    "test:regression": "node --test template-studio/test/regression.test.js template-studio/test/integration.test.js template-studio/test/visual-regression.test.js",
+    "test:watch": "node --test --watch template-studio/test/*.test.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "FLOCC",
+  "license": "MIT",
   "dependencies": {
     "@mdx-js/esbuild": "^3.1.1",
     "@mdx-js/mdx": "^3.1.1",
@@ -28,5 +34,8 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.1"
   }
 }

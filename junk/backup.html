@@ -1,0 +1,2600 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grid Template Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Newsreader:opsz,wght@6..72,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: radial-gradient(circle at top left, #0f1c34, #040715 65%);
+        --panel: rgba(6, 12, 24, 0.85);
+        --panel-border: rgba(255, 255, 255, 0.09);
+        --primary: #81f0c8;
+        --accent: #f6b36c;
+        --muted: rgba(255, 255, 255, 0.7);
+        --grid-line: rgba(160, 170, 190, 0.35);
+        --indicator: rgba(255, 94, 214, 0.9);
+        --indicator-soft: rgba(255, 94, 214, 0.35);
+        --guide-line: var(--indicator-soft);
+        --guide-accent: var(--indicator);
+        --guide-label: rgba(8, 19, 37, 0.7);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: #eef2ff;
+        font-family: "Space Grotesk", "Segoe UI", sans-serif;
+        line-height: 1.5;
+        padding: 2rem;
+      }
+
+      header {
+        margin-bottom: 2rem;
+      }
+
+      h1 {
+        font-family: "Newsreader", serif;
+        font-size: 2.5rem;
+        margin: 0 0 0.5rem;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        margin-bottom: 1rem;
+      }
+
+      .app-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .settings-panel {
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      .settings-panel h2 {
+        grid-column: 1 / -1;
+        margin: 0 0 1rem 0;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: 1rem;
+        color: var(--muted);
+      }
+
+      .canvas-panel {
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+      }
+
+      .canvas-panel h2 {
+        margin: 0 0 1rem 0;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: 1rem;
+        color: var(--muted);
+      }
+
+      .controls-stack {
+        display: flex;
+        flex-direction: column;
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        font-size: 0.82rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      input[type="text"],
+      input[type="number"],
+      textarea,
+      select {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 0.95rem;
+        color: inherit;
+        padding: 0.65rem 0.8rem;
+        font-family: inherit;
+        transition: border 0.2s ease;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      .dual-input-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      .region-presets {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .guide-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+        margin-bottom: 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 0.85rem;
+        padding: 0.85rem 1rem;
+      }
+
+      .guide-panel h3 {
+        margin: 0;
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .guide-button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+
+      .guide-btn {
+        padding: 0.35rem 0.85rem;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .guide-btn:hover {
+        border-color: rgba(255, 255, 255, 0.35);
+      }
+
+      .guide-btn.active {
+        background: var(--indicator);
+        color: #080312;
+        border-color: var(--indicator);
+      }
+
+      .guide-btn[data-guide="center"].active,
+      .guide-btn[data-guide="margin"].active {
+        background: var(--primary);
+        color: #081325;
+        border-color: var(--primary);
+      }
+
+      .preset-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+        border-radius: 0.5rem;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .preset-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-1px);
+      }
+
+      .preset-btn.active {
+        background: var(--primary);
+        color: #081325;
+        border-color: var(--primary);
+      }
+
+      .exclusion-panel {
+        margin-top: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .exclusion-panel h4 {
+        margin: 0;
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .exclusion-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+      }
+
+      .exclusion-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+
+      .exclusion-group label {
+        font-size: 0.68rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .exclusion-group input {
+        width: 100%;
+        padding: 0.4rem 0.6rem;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 0.5rem;
+        color: inherit;
+        font-family: inherit;
+      }
+
+      .canvas-container {
+        position: relative;
+        border: none;
+        border-radius: 0;
+        overflow: hidden;
+        background: rgba(10, 25, 50, 0.8);
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        aspect-ratio: 16/9; /* Maintain 16:9 ratio */
+      }
+
+      .preview-grid {
+        --grid-columns: 80;
+        --grid-rows: 45;
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        display: grid;
+        cursor: crosshair;
+        background: transparent;
+        position: relative;
+        transform-origin: top left;
+        outline: none;
+        box-shadow: none;
+      }
+
+      .preview-grid::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+          linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+        background-size: calc(100% / var(--grid-columns)) 100%, 100% calc(100% / var(--grid-rows));
+        background-position: 0 0;
+        background-repeat: repeat;
+        border-right: 1px solid var(--grid-line);
+        border-bottom: 1px solid var(--grid-line);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .guide-layer {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 3;
+      }
+
+      .guide-line {
+        position: absolute;
+        background: var(--guide-line);
+        opacity: 0.6;
+      }
+
+      .guide-line.vertical {
+        top: 0;
+        bottom: 0;
+        width: 1px;
+      }
+
+      .guide-line.horizontal {
+        left: 0;
+        right: 0;
+        height: 1px;
+      }
+
+      .guide-line.accent {
+        background: var(--guide-accent);
+        opacity: 0.9;
+      }
+
+      .guide-line.center {
+        background: var(--primary);
+        opacity: 0.9;
+      }
+
+      .guide-label {
+        position: absolute;
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--primary);
+        background: var(--guide-label);
+        padding: 0.1rem 0.35rem;
+        border-radius: 999px;
+        transform: translate(-50%, -50%);
+      }
+
+      .guide-label.horizontal {
+        transform: translate(-10%, -50%);
+      }
+
+      .margin-outline {
+        position: absolute;
+        border: 1px dashed var(--primary);
+        border-radius: 0.25rem;
+        box-shadow: 0 0 0 1px rgba(129, 240, 200, 0.3);
+      }
+
+      .exclusion-zone {
+        position: absolute;
+        background: rgba(255, 94, 214, 0.08);
+        border: 1px dashed var(--indicator-soft);
+        color: var(--indicator);
+        font-size: 0.65rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 0.2rem 0.4rem;
+        pointer-events: none;
+      }
+
+      .preview-grid.drawing {
+        cursor: crosshair;
+      }
+
+      .preview-grid.selecting {
+        cursor: pointer;
+      }
+
+      .preview-grid::after {
+        content: attr(data-canvas);
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        background: rgba(4, 6, 13, 0.8);
+        border-radius: 999px;
+        padding: 0.2rem 0.6rem;
+        color: var(--muted);
+      }
+
+      .grid-block {
+        border-radius: 0;
+        padding: 2px;
+        font-weight: 600;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+        position: relative;
+        cursor: move;
+        user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        min-height: 16px;
+        z-index: 2;
+      }
+
+      .grid-block:hover {
+        box-shadow: inset 0 0 0 2px var(--primary);
+      }
+
+      .grid-block.selected {
+        box-shadow: inset 0 0 0 2px var(--primary);
+      }
+
+      .resize-handle {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: var(--primary);
+        border: 1px solid rgba(0, 0, 0, 0.35);
+        border-radius: 2px;
+        cursor: nwse-resize;
+        display: none;
+        box-shadow: 0 0 6px rgba(129, 240, 200, 0.6);
+      }
+
+      .grid-block.selected .resize-handle {
+        display: block;
+      }
+
+      .resize-handle.se {
+        bottom: -4px;
+        right: -4px;
+        cursor: nwse-resize;
+      }
+
+      .resize-handle.ne {
+        top: -4px;
+        right: -4px;
+        cursor: nesw-resize;
+      }
+
+      .resize-handle.sw {
+        bottom: -4px;
+        left: -4px;
+        cursor: nesw-resize;
+      }
+
+      .resize-handle.nw {
+        top: -4px;
+        left: -4px;
+        cursor: nwse-resize;
+      }
+
+      .grid-block .region-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        text-align: center;
+        line-height: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        padding: 1px;
+      }
+
+      /* Smaller text for thin regions */
+      .grid-block.thin-horizontal .region-label {
+        font-size: 0.6rem;
+        letter-spacing: 0.05em;
+      }
+
+      .grid-block.thin-vertical .region-label {
+        font-size: 0.6rem;
+        letter-spacing: 0.05em;
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+      }
+
+      .grid-block.very-small .region-label {
+        font-size: 0.5rem;
+        letter-spacing: 0.02em;
+      }
+
+      .regions-table-container {
+        margin-top: 2rem;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 1.1rem;
+        padding: 1.5rem;
+      }
+
+      .regions-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+      }
+
+      .regions-table th,
+      .regions-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .regions-table th {
+        background: rgba(255, 255, 255, 0.05);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+      }
+
+      .regions-table td {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .regions-table input,
+      .regions-table select,
+      .regions-table textarea {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 0.5rem;
+        color: inherit;
+        padding: 0.5rem;
+        font-family: inherit;
+        font-size: 0.85rem;
+      }
+
+      .regions-table textarea {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 0.5rem;
+        color: inherit;
+        padding: 0.5rem;
+        font-family: inherit;
+        font-size: 0.85rem;
+      }
+
+      .grid-info {
+        margin-top: 0.75rem;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .grid-actions {
+        margin-top: 0.6rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+      }
+
+      .grid-actions .danger-btn {
+        background: rgba(255, 67, 54, 0.15);
+        border: 1px solid rgba(255, 67, 54, 0.4);
+        color: #ff4336;
+        border-radius: 999px;
+        padding: 0.5rem 1rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+      }
+
+      .grid-actions .danger-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        border-color: rgba(255, 67, 54, 0.25);
+      }
+
+      .regions-table input:focus,
+      .regions-table select:focus,
+      .regions-table textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      .regions-table textarea {
+        min-height: 60px;
+        resize: vertical;
+      }
+
+      .regions-table .checkbox-cell {
+        text-align: center;
+      }
+
+      .regions-table .checkbox-cell input {
+        width: auto;
+        margin: 0;
+      }
+
+      .regions-table .delete-btn {
+        background: rgba(255, 67, 54, 0.2);
+        border: 1px solid rgba(255, 67, 54, 0.4);
+        color: #ff4336;
+        padding: 0.4rem 0.8rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .regions-table .delete-btn:hover {
+        background: rgba(255, 67, 54, 0.3);
+        transform: translateY(-1px);
+      }
+
+      .table-actions {
+        margin-top: 1rem;
+        display: flex;
+        gap: 1rem;
+      }
+
+      .table-actions button {
+        padding: 0.6rem 1.2rem;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 0.5rem;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.85rem;
+      }
+
+      .table-actions button:hover {
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-1px);
+      }
+
+      .export-panel {
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+      }
+
+      .export-panel h3 {
+        margin: 0 0 1rem 0;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: 1rem;
+        color: var(--muted);
+      }
+
+      .export-panel textarea {
+        width: 100%;
+        min-height: 200px;
+        resize: vertical;
+        font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+        background: rgba(5, 11, 26, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 0.95rem;
+        color: inherit;
+        padding: 0.65rem 0.8rem;
+      }
+
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      button {
+        border: none;
+        border-radius: 999px;
+        padding: 0.65rem 1.2rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      .primary-btn {
+        background: linear-gradient(120deg, var(--primary), #5dd0ff);
+        color: #081325;
+      }
+
+      .ghost-btn {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--muted);
+      }
+
+      .import-btn {
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 0.5rem;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.82rem;
+      }
+
+      .import-btn:hover {
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(-1px);
+      }
+
+      @media (max-width: 960px) {
+        .app-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Hide any overlay buttons that might still exist */
+      button[style*="position: fixed"],
+      button[style*="z-index: 9999"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Grid Template Studio</h1>
+      <p class="subtitle">Design grid layouts with metadata for LLM content generation</p>
+    </header>
+
+    <main class="app-grid">
+      <section class="settings-panel">
+        <h2>Template Settings</h2>
+        
+        <label>
+          Template Name
+          <input id="templateName" type="text" value="cssgrid-template" />
+        </label>
+
+        <div class="dual-input-row">
+          <label>
+            Canvas Width (px)
+            <input id="canvasWidth" type="number" min="320" max="7680" value="1920" />
+          </label>
+          <label>
+            Canvas Height (px)
+            <input id="canvasHeight" type="number" min="240" max="4320" value="1080" />
+          </label>
+        </div>
+
+        <div class="dual-input-row">
+          <label>
+            Grid Rows
+            <input id="rowCount" type="number" min="1" max="60" value="45" />
+          </label>
+          <label>
+            Grid Columns
+            <input id="columnCount" type="number" min="1" max="100" value="80" />
+          </label>
+        </div>
+
+        <div class="dual-input-row">
+          <label>
+            Column Size
+            <input id="columnSize" type="text" value="1fr" />
+          </label>
+          <label>
+            Row Size
+            <input id="rowSize" type="text" value="auto" />
+          </label>
+        </div>
+
+        <label>
+          Gap
+          <input id="gridGap" type="text" value="1.5rem" />
+        </label>
+
+        <div class="import-controls">
+          <button type="button" class="import-btn" id="importMdxBtn">Import MDX</button>
+          <input type="file" id="mdxFileInput" accept=".mdx" style="display: none;" />
+        </div>
+      </section>
+
+      <section class="canvas-panel">
+        <h2>Grid Canvas</h2>
+        <div class="guide-panel">
+          <h3>Guides</h3>
+          <div class="guide-button-row">
+            <button type="button" class="guide-btn active" data-guide="center">Center</button>
+            <button type="button" class="guide-btn" data-guide="halves">Halves</button>
+            <button type="button" class="guide-btn" data-guide="thirds">Thirds</button>
+            <button type="button" class="guide-btn" data-guide="quarters">Quarters</button>
+            <button type="button" class="guide-btn" data-guide="sixths">Sixths</button>
+            <button type="button" class="guide-btn" data-guide="eighths">Eighths</button>
+            <button type="button" class="guide-btn active" data-guide="margin">Margin 1-grid</button>
+          </div>
+          <div class="exclusion-panel">
+            <h4>Exclusions (grid units)</h4>
+            <div class="exclusion-grid">
+              <div class="exclusion-group">
+                <label for="exclusionTop">Header</label>
+                <input type="number" id="exclusionTop" min="0" value="0" />
+              </div>
+              <div class="exclusion-group">
+                <label for="exclusionBottom">Footer</label>
+                <input type="number" id="exclusionBottom" min="0" value="0" />
+              </div>
+              <div class="exclusion-group">
+                <label for="exclusionLeft">Left</label>
+                <input type="number" id="exclusionLeft" min="0" value="0" />
+              </div>
+              <div class="exclusion-group">
+                <label for="exclusionRight">Right</label>
+                <input type="number" id="exclusionRight" min="0" value="0" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="region-presets">
+          <button type="button" class="preset-btn" data-preset="header">Header</button>
+          <button type="button" class="preset-btn" data-preset="footer">Footer</button>
+          <button type="button" class="preset-btn" data-preset="left-sidebar">Left Sidebar</button>
+          <button type="button" class="preset-btn" data-preset="right-sidebar">Right Sidebar</button>
+          <button type="button" class="preset-btn" data-preset="hero">Hero</button>
+          <button type="button" class="preset-btn" data-preset="content">Content</button>
+          <button type="button" class="preset-btn" data-preset="caption">Caption</button>
+          <button type="button" class="preset-btn" data-preset="clear">Clear All</button>
+        </div>
+        <div class="canvas-container">
+          <div class="guide-layer" id="guideLayer"></div>
+          <div id="previewGrid" class="preview-grid" data-canvas="1920×1080"></div>
+        </div>
+        <div class="grid-info">Click and drag to draw regions. Click regions to edit metadata.</div>
+        <div class="grid-actions">
+          <button type="button" id="deleteSelectedBtn" class="danger-btn" disabled>Delete Selected</button>
+        </div>
+      </section>
+
+    <section class="regions-table-container" id="regionsTableContainer">
+        <h3>Regions Table</h3>
+        <table class="regions-table" id="regionsTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Position (X,Y)</th>
+              <th>Size (W×H)</th>
+              <th>Required</th>
+              <th>Input Type</th>
+              <th>Field Types</th>
+              <th>LLM Hint</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="regionsTableBody">
+            <!-- Regions will be populated here -->
+          </tbody>
+        </table>
+        <div class="table-actions">
+          <button type="button" id="addRegionBtn">Add Region</button>
+          <button type="button" id="clearAllBtn">Clear All</button>
+        </div>
+      </section>
+
+      <section class="export-panel">
+        <h3>Export Template</h3>
+        <div class="button-row">
+          <button id="resetNames" class="ghost-btn" type="button">Reset Names</button>
+          <button id="openCssGrid" class="ghost-btn" type="button">CSS Grid Guide</button>
+          <button id="copySnippet" class="primary-btn" type="button">Copy Snippet</button>
+          <button id="saveMdx" class="primary-btn" type="button">Save to MDX</button>
+        </div>
+        <textarea id="snippetOutput" readonly placeholder="Template JSON will appear here..."></textarea>
+      </section>
+    </main>
+
+    <script type="module">
+      import { downloadMdxFile } from './src/persistence/mdx.js';
+      // Aggressive button removal - runs continuously
+      document.addEventListener('DOMContentLoaded', function() {
+        // Immediate cleanup
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(btn => {
+          if (btn.textContent?.includes('Toggle') || 
+              btn.textContent?.includes('Overlay') ||
+              btn.style?.position === 'fixed' ||
+              btn.style?.background === 'blue' ||
+              btn.style?.zIndex === '9999') {
+            btn.remove();
+          }
+        });
+        
+        // Continuous cleanup every 50ms
+        setInterval(() => {
+          const allElements = document.querySelectorAll('*');
+          allElements.forEach(el => {
+            if (el.tagName === 'BUTTON' && 
+                (el.textContent?.includes('Toggle') || 
+                 el.textContent?.includes('Overlay') ||
+                 el.style?.position === 'fixed' ||
+                 el.style?.background === 'blue' ||
+                 el.style?.zIndex === '9999')) {
+              el.remove();
+            }
+            // Also remove any fixed position elements
+            if (el.style?.position === 'fixed' && 
+                (el.textContent?.includes('Toggle') || 
+                 el.textContent?.includes('Overlay') ||
+                 el.style?.background === 'blue')) {
+              el.remove();
+            }
+          });
+          
+          // Specific targeting by exact attributes
+          const fixedButtons = document.querySelectorAll('button[style*="position: fixed"]');
+          fixedButtons.forEach(btn => btn.remove());
+          
+          const blueButtons = document.querySelectorAll('button[style*="background: blue"]');
+          blueButtons.forEach(btn => btn.remove());
+          
+          const highZButtons = document.querySelectorAll('button[style*="z-index: 9999"]');
+          highZButtons.forEach(btn => btn.remove());
+        }, 50);
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (isEditableTarget(e)) return;
+        if ((e.key === 'Delete' || e.key === 'Backspace') && state.selectedBoxId) {
+          e.preventDefault();
+          deleteSelectedRegion();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (isEditableTarget(e)) return;
+
+        if ((e.metaKey || e.ctrlKey) && !e.altKey) {
+          const key = e.key.toLowerCase();
+          if (key === 'z') {
+            e.preventDefault();
+            if (e.shiftKey) {
+              handleRedo();
+            } else {
+              handleUndo();
+            }
+            return;
+          }
+          if (key === 'y') {
+            e.preventDefault();
+            handleRedo();
+            return;
+          }
+        }
+      });
+
+      const defaultAccepts = [
+        'primary-title',
+        'secondary-title',
+        'supporting-text',
+        'key-data',
+        'visual-aid'
+      ];
+
+      function slugify(value, fallback) {
+        const slug = value
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-');
+        return slug || fallback;
+      }
+
+      function ensureMatrix(rows, cols) {
+        // This function is no longer needed with canvas-based approach
+        // Keeping for compatibility with existing code
+      }
+
+      function renderAreaInputs() {
+        // This function is no longer needed with canvas-based approach
+        // Keeping for compatibility with existing code
+      }
+
+      function hashColor(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+          hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        const hue = Math.abs(hash) % 360;
+        return `hsl(${hue}, 65%, 55%)`;
+      }
+
+      function applyPreset(preset) {
+        const { rows, columns } = state;
+        let newBox = null;
+        
+        switch (preset) {
+          case 'header':
+            newBox = createBox(0, 0, canvas.width, canvas.height / 8, 'header');
+            newBox.metadata = {
+              required: true,
+              inputType: 'text',
+              fieldTypes: ['primary-title', 'secondary-title'],
+              llmHint: 'title page'
+            };
+            break;
+          case 'footer':
+            newBox = createBox(0, canvas.height * 7/8, canvas.width, canvas.height / 8, 'footer');
+            newBox.metadata = {
+              required: false,
+              inputType: 'text',
+              fieldTypes: ['footer', 'page-number'],
+              llmHint: 'footer information'
+            };
+            break;
+          case 'left-sidebar':
+            newBox = createBox(0, 0, canvas.width / 6, canvas.height, 'left-sidebar');
+            newBox.metadata = {
+              required: false,
+              inputType: 'any',
+              fieldTypes: ['visual-aid', 'supporting-data'],
+              llmHint: 'supporting information'
+            };
+            break;
+          case 'right-sidebar':
+            newBox = createBox(canvas.width * 5/6, 0, canvas.width / 6, canvas.height, 'right-sidebar');
+            newBox.metadata = {
+              required: false,
+              inputType: 'any',
+              fieldTypes: ['visual-aid', 'supporting-data'],
+              llmHint: 'supporting information'
+            };
+            break;
+          case 'hero':
+            newBox = createBox(0, 0, canvas.width, canvas.height / 3, 'hero');
+            newBox.metadata = {
+              required: true,
+              inputType: 'any',
+              fieldTypes: ['primary-title', 'visual-aid'],
+              llmHint: 'hero section with visual'
+            };
+            break;
+          case 'content':
+            newBox = createBox(canvas.width / 8, canvas.height / 3, canvas.width * 3/4, canvas.height / 2, 'content');
+            newBox.metadata = {
+              required: true,
+              inputType: 'text',
+              fieldTypes: ['supporting-text', 'key-data'],
+              llmHint: 'main content area'
+            };
+            break;
+          case 'caption':
+            newBox = createBox(0, canvas.height * 5/6, canvas.width, canvas.height / 6, 'caption');
+            newBox.metadata = {
+              required: false,
+              inputType: 'text',
+              fieldTypes: ['supporting-text'],
+              llmHint: 'caption or description'
+            };
+            break;
+          case 'clear':
+            state.boxes = [];
+            state.metadata = {};
+            state.selectedBoxId = null;
+            hideMetadataPanel();
+            renderRegionsTable();
+            break;
+        }
+        
+        if (newBox) {
+          state.metadata[newBox.id] = newBox.metadata;
+          selectBox(newBox.id);
+          renderRegionsTable();
+        }
+        
+        renderPreview();
+        renderSnippet();
+      }
+
+      function applyCanvasDimensions() {
+        const ratio = `${state.canvasWidth} / ${state.canvasHeight}`;
+        controls.previewGrid.style.aspectRatio = ratio;
+        controls.previewGrid.dataset.canvas = `${state.canvasWidth}×${state.canvasHeight}`;
+      }
+
+      function applyReferenceOverlay() {
+        if (state.referenceBackground) {
+          controls.previewGrid.style.backgroundImage = `url(${state.referenceBackground})`;
+        } else {
+          controls.previewGrid.style.backgroundImage = 'none';
+        }
+      }
+
+      function boxesToAreaMatrix() {
+        const matrix = Array.from({ length: state.rows }, () => Array(state.columns).fill('.'));
+        
+        state.boxes.forEach(box => {
+          for (let r = box.gridY; r < Math.min(box.gridY + box.gridHeight, state.rows); r++) {
+            for (let c = box.gridX; c < Math.min(box.gridX + box.gridWidth, state.columns); c++) {
+              matrix[r][c] = box.name;
+            }
+          }
+        });
+        
+        return matrix;
+      }
+
+      function renderPreview() {
+        const { columns, rows, columnSize, rowSize, gap } = state;
+        const grid = previewGrid;
+        
+        // Get actual container dimensions
+        const containerRect = grid.getBoundingClientRect();
+        const containerWidth = containerRect.width;
+        const containerHeight = containerRect.height;
+        
+        // Calculate cell size to exactly fill container
+        const cellPixelSizeX = containerWidth / columns;
+        const cellPixelSizeY = containerHeight / rows;
+        
+        // Use calculated cell sizes for exact fill
+        grid.style.gridTemplateColumns = `repeat(${columns}, ${cellPixelSizeX}px)`;
+        grid.style.gridTemplateRows = `repeat(${rows}, ${cellPixelSizeY}px)`;
+        grid.style.gap = '0px'; // No gap for exact alignment
+        
+        // Set CSS variables for grid background to match actual cell size
+        grid.style.setProperty('--cell-width', `${cellPixelSizeX}px`);
+        grid.style.setProperty('--cell-height', `${cellPixelSizeY}px`);
+        
+        const areas = boxesToAreaMatrix();
+        const templateAreas = areas.map((row) => `"${row.join(' ')}"`).join(' ');
+        grid.style.gridTemplateAreas = templateAreas;
+        grid.innerHTML = '';
+
+        // Keep the fixed background grid size for consistent visibility
+
+        const uniqueAreas = [...new Set(state.boxes.map(box => box.name))];
+        uniqueAreas.forEach((name) => {
+          const block = document.createElement('div');
+          block.className = 'grid-block';
+          block.style.background = hashColor(name);
+          block.style.gridArea = name;
+          
+          // Add responsive classes based on box dimensions
+          const box = state.boxes.find(b => b.name === name);
+          if (box) {
+            if (box.id === state.selectedBoxId) {
+              block.classList.add('selected');
+            }
+            // Add classes for thin regions
+            if (box.gridHeight === 1 && box.gridWidth > 1) {
+              block.classList.add('thin-horizontal');
+            } else if (box.gridWidth === 1 && box.gridHeight > 1) {
+              block.classList.add('thin-vertical');
+            } else if (box.gridWidth === 1 && box.gridHeight === 1) {
+              block.classList.add('very-small');
+            }
+            
+            // Truncate long names for small regions
+            let displayName = name;
+            if ((box.gridWidth === 1 || box.gridHeight === 1) && name.length > 8) {
+              displayName = name.substring(0, 6) + '...';
+            } else if (box.gridWidth === 1 && box.gridHeight === 1 && name.length > 4) {
+              displayName = name.substring(0, 3) + '...';
+            }
+            
+            // Create the label
+            const label = document.createElement('div');
+            label.className = 'region-label';
+            label.textContent = displayName;
+            block.appendChild(label);
+          }
+          
+          // Add resize handles
+          const handles = ['nw', 'ne', 'sw', 'se'];
+          handles.forEach(position => {
+            const handle = document.createElement('div');
+            handle.className = `resize-handle ${position}`;
+            handle.dataset.position = position;
+            block.appendChild(handle);
+          });
+          
+          // Add drag and resize event listeners
+          block.addEventListener('mousedown', (e) => {
+            const box = state.boxes.find(b => b.name === name);
+            if (!box) return;
+
+            selectBox(box.id);
+            
+            if (e.target.classList.contains('resize-handle')) {
+              startResize(e, box, e.target.dataset.position);
+            } else {
+              startDrag(e, box);
+            }
+          });
+          
+          grid.appendChild(block);
+        });
+
+        // Draw preview box while dragging
+        if (state.isDrawing && state.dragStart) {
+          const startGridX = state.dragStart.startGridX;
+          const startGridY = state.dragStart.startGridY;
+          const currentGridX = state.dragStart.currentGridX;
+          const currentGridY = state.dragStart.currentGridY;
+          
+          // Calculate grid dimensions
+          const gridX = Math.min(startGridX, currentGridX);
+          const gridY = Math.min(startGridY, currentGridY);
+          const gridWidth = Math.abs(currentGridX - startGridX) + 1;
+          const gridHeight = Math.abs(currentGridY - startGridY) + 1;
+          
+          // Convert to pixels for display
+          const pixelX = gridX * cellPixelSizeX;
+          const pixelY = gridY * cellPixelSizeY;
+          const pixelWidth = gridWidth * cellPixelSizeX;
+          const pixelHeight = gridHeight * cellPixelSizeY;
+          
+          const previewBox = document.createElement('div');
+          previewBox.style.position = 'absolute';
+          previewBox.style.left = `${pixelX}px`;
+          previewBox.style.top = `${pixelY}px`;
+          previewBox.style.width = `${pixelWidth}px`;
+          previewBox.style.height = `${pixelHeight}px`;
+          previewBox.style.border = '2px dashed var(--primary)';
+          previewBox.style.background = 'rgba(129, 240, 200, 0.2)';
+          previewBox.style.pointerEvents = 'none';
+          previewBox.style.borderRadius = '0';
+          previewBox.style.zIndex = '1000';
+          grid.appendChild(previewBox);
+        }
+
+        renderGuides();
+      }
+
+      function renderGuides() {
+        if (!guideLayer || !previewGrid) return;
+        const rect = previewGrid.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+        if (!width || !height) {
+          guideLayer.innerHTML = '';
+          return;
+        }
+
+        guideLayer.innerHTML = '';
+        const cellWidth = width / state.columns;
+        const cellHeight = height / state.rows;
+
+        const horizontalStart = state.exclusions.left * cellWidth;
+        const verticalStart = state.exclusions.top * cellHeight;
+        const horizontalSpan = width - (state.exclusions.left + state.exclusions.right) * cellWidth;
+        const verticalSpan = height - (state.exclusions.top + state.exclusions.bottom) * cellHeight;
+
+        const addGuideLine = (orientation, fraction, options = {}) => {
+          const { label = '', accent = true, start = 0, span, center = false } = options;
+          const total = span ?? (orientation === 'vertical' ? width : height);
+          if (total <= 0) return;
+          const position = start + fraction * total;
+          const line = document.createElement('div');
+          line.className = `guide-line ${orientation}`;
+          if (center) {
+            line.classList.add('center');
+          } else if (accent) {
+            line.classList.add('accent');
+          }
+          if (orientation === 'vertical') {
+            line.style.left = `${position}px`;
+          } else {
+            line.style.top = `${position}px`;
+          }
+          guideLayer.appendChild(line);
+
+          if (label) {
+            const labelEl = document.createElement('div');
+            labelEl.className = `guide-label${orientation === 'horizontal' ? ' horizontal' : ''}`;
+            if (orientation === 'vertical') {
+              labelEl.style.left = `${position}px`;
+              labelEl.style.top = '12px';
+            } else {
+              labelEl.style.left = '12px';
+              labelEl.style.top = `${position}px`;
+            }
+            labelEl.textContent = label;
+            guideLayer.appendChild(labelEl);
+          }
+        };
+
+        const canDrawHorizontalGuides = verticalSpan > 0;
+        const canDrawVerticalGuides = horizontalSpan > 0;
+
+        if (state.guideSettings.center) {
+          if (canDrawVerticalGuides) {
+            addGuideLine('vertical', 0.5, { label: 'Center', start: horizontalStart, span: horizontalSpan, center: true, accent: false });
+          }
+          if (canDrawHorizontalGuides) {
+            addGuideLine('horizontal', 0.5, { label: 'Center', start: verticalStart, span: verticalSpan, center: true, accent: false });
+          }
+        }
+
+        const fractionSets = {
+          halves: [0.5],
+          thirds: [1 / 3, 2 / 3],
+          quarters: [0.25, 0.5, 0.75],
+          sixths: [1 / 6, 2 / 6, 3 / 6, 4 / 6, 5 / 6],
+          eighths: [1 / 8, 2 / 8, 3 / 8, 4 / 8, 5 / 8, 6 / 8, 7 / 8]
+        };
+
+        Object.entries(fractionSets).forEach(([key, fractions]) => {
+          if (!state.guideSettings[key]) return;
+          fractions.forEach((fraction) => {
+            const skipCenter = fraction === 0.5 && state.guideSettings.center;
+            if (skipCenter) return;
+            if (canDrawVerticalGuides) {
+              addGuideLine('vertical', fraction, { start: horizontalStart, span: horizontalSpan });
+            }
+            if (canDrawHorizontalGuides) {
+              addGuideLine('horizontal', fraction, { start: verticalStart, span: verticalSpan });
+            }
+          });
+        });
+
+        renderExclusionZones(cellWidth, cellHeight, width, height);
+
+        if (state.guideSettings.margin && state.columns > 2 && state.rows > 2) {
+          const marginOutline = document.createElement('div');
+          marginOutline.className = 'margin-outline';
+          const offsetX = cellWidth;
+          const offsetY = cellHeight;
+          const marginWidth = width - offsetX * 2;
+          const marginHeight = height - offsetY * 2;
+          if (marginWidth > 0 && marginHeight > 0) {
+            marginOutline.style.left = `${offsetX}px`;
+            marginOutline.style.top = `${offsetY}px`;
+            marginOutline.style.width = `${marginWidth}px`;
+            marginOutline.style.height = `${marginHeight}px`;
+            guideLayer.appendChild(marginOutline);
+          }
+        }
+      }
+
+      function renderExclusionZones(cellWidth, cellHeight, width, height) {
+        const createZone = (x, y, w, h, label) => {
+          if (w <= 0 || h <= 0) return;
+          const zone = document.createElement('div');
+          zone.className = 'exclusion-zone';
+          zone.style.left = `${x}px`;
+          zone.style.top = `${y}px`;
+          zone.style.width = `${w}px`;
+          zone.style.height = `${h}px`;
+          zone.textContent = label;
+          guideLayer.appendChild(zone);
+        };
+
+        const topHeight = state.exclusions.top * cellHeight;
+        const bottomHeight = state.exclusions.bottom * cellHeight;
+        const leftWidth = state.exclusions.left * cellWidth;
+        const rightWidth = state.exclusions.right * cellWidth;
+
+        if (topHeight > 0) {
+          createZone(0, 0, width, topHeight, 'Header exclusion');
+        }
+        if (bottomHeight > 0) {
+          createZone(0, height - bottomHeight, width, bottomHeight, 'Footer exclusion');
+        }
+        if (leftWidth > 0) {
+          const verticalStart = state.exclusions.top * cellHeight;
+          const verticalHeight = height - (state.exclusions.top + state.exclusions.bottom) * cellHeight;
+          createZone(0, Math.max(0, verticalStart), leftWidth, Math.max(0, verticalHeight), 'Left exclusion');
+        }
+        if (rightWidth > 0) {
+          const verticalStart = state.exclusions.top * cellHeight;
+          const verticalHeight = height - (state.exclusions.top + state.exclusions.bottom) * cellHeight;
+          createZone(width - rightWidth, Math.max(0, verticalStart), rightWidth, Math.max(0, verticalHeight), 'Right exclusion');
+        }
+      }
+
+      function startDrag(e, box) {
+        isDragging = true;
+        draggedBox = box;
+        resetInteractionHistory();
+        captureHistoryForInteraction();
+        const rect = previewGrid.getBoundingClientRect();
+        const cellPixelSizeX = rect.width / state.columns;
+        const cellPixelSizeY = rect.height / state.rows;
+        dragOffset.x = e.clientX - rect.left - (box.gridX * cellPixelSizeX);
+        dragOffset.y = e.clientY - rect.top - (box.gridY * cellPixelSizeY);
+        originalBoxState = { ...box };
+        e.preventDefault();
+      }
+
+      function startResize(e, box, handle) {
+        isResizing = true;
+        draggedBox = box;
+        resizeHandle = handle;
+        resetInteractionHistory();
+        captureHistoryForInteraction();
+        originalBoxState = { ...box };
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      function renderSnippet() {
+        const { templateName, columns, rows, columnSize, rowSize, gap } = state;
+        const areas = boxesToAreaMatrix();
+        const templateAreas = areas.map((row) => `"${row.join(' ')}"`).join(' ');
+        
+        // Build semanticAreas from box metadata
+        const semanticAreas = {};
+        state.boxes.forEach(box => {
+          semanticAreas[box.name] = {
+            accepts: box.metadata.fieldTypes.length > 0 ? box.metadata.fieldTypes : ['supporting-text'],
+            required: box.metadata.required || false,
+            inputType: box.metadata.inputType || 'any',
+            llmHint: box.metadata.llmHint || '',
+            maxContent: 8,
+            priority: box.metadata.required ? 'high' : 'medium',
+            description: box.metadata.llmHint || `${box.name} region`
+          };
+        });
+
+        const snippet = {
+          name: templateName,
+          css: `
+  display: grid;
+  grid-template-columns: repeat(${columns}, ${columnSize});
+  grid-template-rows: repeat(${rows}, ${rowSize});
+  grid-template-areas: ${templateAreas};
+  gap: ${gap};
+  min-height: 500px;
+  position: relative;
+`,
+          areas: areas.flat().filter(cell => cell !== '.'),
+          semanticAreas
+        };
+
+        controls.snippetOutput.value = JSON.stringify(snippet, null, 2);
+      }
+
+
+      function attachControlHandlers() {
+        controls.templateName.addEventListener('input', (e) => {
+          state.templateName = slugify(e.target.value, 'cssgrid-template');
+          e.target.value = state.templateName;
+          renderSnippet();
+        });
+
+        controls.canvasWidth.addEventListener('input', (e) => {
+          state.canvasWidth = Math.max(320, Math.min(7680, Number(e.target.value) || 1920));
+          e.target.value = state.canvasWidth;
+          applyCanvasDimensions();
+          renderPreview();
+        });
+
+        controls.canvasHeight.addEventListener('input', (e) => {
+          state.canvasHeight = Math.max(240, Math.min(4320, Number(e.target.value) || 1080));
+          e.target.value = state.canvasHeight;
+          applyCanvasDimensions();
+          renderPreview();
+        });
+
+        controls.columnCount.addEventListener('input', (e) => {
+          state.columns = Math.max(1, Math.min(100, Number(e.target.value)));
+          e.target.value = state.columns;
+          normalizeExclusions();
+          renderCanvas();
+          renderPreview();
+          renderSnippet();
+        });
+
+        controls.rowCount.addEventListener('input', (e) => {
+          state.rows = Math.max(1, Math.min(60, Number(e.target.value)));
+          e.target.value = state.rows;
+          normalizeExclusions();
+          renderCanvas();
+          renderPreview();
+          renderSnippet();
+        });
+
+        controls.columnSize.addEventListener('input', (e) => {
+          state.columnSize = e.target.value || '1fr';
+          renderPreview();
+          renderSnippet();
+        });
+
+        controls.rowSize.addEventListener('input', (e) => {
+          state.rowSize = e.target.value || 'auto';
+          renderPreview();
+          renderSnippet();
+        });
+
+        controls.gridGap.addEventListener('input', (e) => {
+          state.gap = e.target.value || '1rem';
+          renderPreview();
+          renderSnippet();
+        });
+
+        controls.resetNames.addEventListener('click', () => {
+          state.boxes = [];
+          state.metadata = {};
+          state.selectedBoxId = null;
+          hideMetadataPanel();
+          renderCanvas();
+          renderPreview();
+          renderSnippet();
+        });
+
+        controls.openCssGrid.addEventListener('click', () => {
+          window.open('https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Grid_layout', '_blank');
+        });
+
+        // Preset buttons
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const preset = btn.dataset.preset;
+            applyPreset(preset);
+            
+            // Update active state
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            if (preset !== 'clear') btn.classList.add('active');
+          });
+        });
+
+        controls.copySnippet.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(controls.snippetOutput.value);
+            controls.copySnippet.textContent = 'Copied!';
+            setTimeout(() => (controls.copySnippet.textContent = 'Copy Snippet'), 1500);
+          } catch (error) {
+            alert('Clipboard access denied. Copy manually.');
+          }
+        });
+
+        if (controls.saveMdx) {
+          controls.saveMdx.addEventListener('click', () => {
+            if (!state.boxes.length) {
+              alert('Add at least one region before exporting to MDX.');
+              return;
+            }
+            try {
+              downloadMdxFile(state);
+            } catch (error) {
+              console.error('Failed to export MDX', error);
+              alert('Failed to export MDX. Please check your template metadata.');
+            }
+          });
+        }
+
+        if (controls.deleteSelectedBtn) {
+          controls.deleteSelectedBtn.addEventListener('click', () => {
+            deleteSelectedRegion();
+          });
+        }
+
+        // Guide toggles
+        document.querySelectorAll('.guide-btn').forEach(btn => {
+          const key = btn.dataset.guide;
+          const toggleButtonState = () => btn.classList.toggle('active', !!state.guideSettings[key]);
+          toggleButtonState();
+          btn.addEventListener('click', () => {
+            state.guideSettings[key] = !state.guideSettings[key];
+            toggleButtonState();
+            renderGuides();
+          });
+        });
+
+        // Exclusion inputs
+        Object.entries(controls.exclusions).forEach(([key, input]) => {
+          input.addEventListener('input', () => {
+            const numericValue = Math.max(0, Number(input.value) || 0);
+            state.exclusions[key] = numericValue;
+            normalizeExclusions();
+            input.value = state.exclusions[key];
+            renderGuides();
+          });
+        });
+
+        function forceResetDrawingState() {
+          state.isDrawing = false;
+          state.dragStart = null;
+          previewGrid.classList.remove('drawing');
+          isDragging = false;
+          isResizing = false;
+          draggedBox = null;
+          resizeHandle = null;
+          originalBoxState = null;
+          renderPreview();
+        }
+      }
+
+      // Initialize state and controls
+      const state = {
+        templateName: 'cssgrid-template',
+        canvasWidth: 1920,
+        canvasHeight: 1080,
+        rows: 45,
+        columns: 80,
+        columnSize: '1fr',
+        rowSize: '1fr',
+        gap: '0.5rem',
+        areas: [],
+        referenceBackground: null,
+        currentPreset: null,
+        boxes: [],
+        selectedBoxId: null,
+        isDrawing: false,
+        dragStart: null,
+        metadata: {},
+        guideSettings: {
+          center: true,
+          halves: false,
+          thirds: false,
+          quarters: false,
+          sixths: false,
+          eighths: false,
+          margin: true
+        },
+        exclusions: {
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0
+        },
+        undoStack: [],
+        redoStack: [],
+        historyLimit: 50,
+        interactionHistoryCaptured: false
+      };
+
+      // Capture initial state so the first undo has a baseline
+      pushHistory();
+
+      function captureHistoryForInteraction() {
+        if (!state.interactionHistoryCaptured) {
+          pushHistory();
+          state.interactionHistoryCaptured = true;
+        }
+      }
+
+      function cloneBoxes(boxes) {
+        return boxes.map(box => ({
+          ...box,
+          metadata: { ...box.metadata }
+        }));
+      }
+
+      function snapshotState() {
+        return {
+          boxes: cloneBoxes(state.boxes),
+          metadata: Object.fromEntries(
+            Object.entries(state.metadata).map(([id, metadata]) => [id, { ...metadata }])
+          ),
+          selectedBoxId: state.selectedBoxId || null
+        };
+      }
+
+      function pushHistory() {
+        const snapshot = snapshotState();
+        state.undoStack.push(snapshot);
+        if (state.undoStack.length > state.historyLimit) {
+          state.undoStack.shift();
+        }
+        state.redoStack = [];
+      }
+
+      function restoreSnapshot(snapshot) {
+        state.boxes = cloneBoxes(snapshot.boxes);
+        state.metadata = {};
+        state.boxes.forEach(box => {
+          state.metadata[box.id] = box.metadata;
+        });
+        state.selectedBoxId = snapshot.selectedBoxId || null;
+        hideMetadataPanel();
+        if (state.selectedBoxId) {
+          const hasBox = state.boxes.find(box => box.id === state.selectedBoxId);
+          if (!hasBox) {
+            state.selectedBoxId = null;
+          }
+        }
+        updateRegionList();
+        renderRegionsTable();
+        renderCanvas();
+        renderPreview();
+        renderSnippet();
+        updateSelectionControls();
+      }
+
+      function captureHistoryForInteraction() {
+        if (!state.interactionHistoryCaptured) {
+          pushHistory();
+          state.interactionHistoryCaptured = true;
+        }
+      }
+
+      function resetInteractionHistory() {
+        state.interactionHistoryCaptured = false;
+      }
+
+      function handleUndo() {
+        if (!state.undoStack.length) return;
+        state.redoStack.push(snapshotState());
+        const snapshot = state.undoStack.pop();
+        restoreSnapshot(snapshot);
+      }
+
+      function handleRedo() {
+        if (!state.redoStack.length) return;
+        state.undoStack.push(snapshotState());
+        const snapshot = state.redoStack.pop();
+        restoreSnapshot(snapshot);
+      }
+
+      function isEditableTarget(event) {
+        const target = event.target;
+        if (!target) return false;
+        const tagName = target.tagName ? target.tagName.toLowerCase() : '';
+        return (
+          target.isContentEditable ||
+          tagName === 'input' ||
+          tagName === 'textarea' ||
+          tagName === 'select'
+        );
+      }
+
+      // Canvas and drawing state - now using preview grid
+      const previewGrid = document.getElementById('previewGrid');
+      const guideLayer = document.getElementById('guideLayer');
+      
+      // Drawing overlay element
+      let drawingOverlay = null;
+
+      // Drag and resize state
+      let isDragging = false;
+      let isResizing = false;
+      let draggedBox = null;
+      let resizeHandle = null;
+      let dragOffset = { x: 0, y: 0 };
+      let originalBoxState = null;
+
+      // Controls object - moved here to fix temporal dead zone
+      const controls = {
+        templateName: document.getElementById('templateName'),
+        canvasWidth: document.getElementById('canvasWidth'),
+        canvasHeight: document.getElementById('canvasHeight'),
+        columnCount: document.getElementById('columnCount'),
+        rowCount: document.getElementById('rowCount'),
+        columnSize: document.getElementById('columnSize'),
+        rowSize: document.getElementById('rowSize'),
+        gridGap: document.getElementById('gridGap'),
+        areaGrid: document.getElementById('areaGrid'),
+        previewGrid: document.getElementById('previewGrid'),
+        snippetOutput: document.getElementById('snippetOutput'),
+        resetNames: document.getElementById('resetNames'),
+        openCssGrid: document.getElementById('openCssGrid'),
+        copySnippet: document.getElementById('copySnippet'),
+        saveMdx: document.getElementById('saveMdx'),
+        deleteSelectedBtn: document.getElementById('deleteSelectedBtn'),
+        exclusions: {
+          top: document.getElementById('exclusionTop'),
+          bottom: document.getElementById('exclusionBottom'),
+          left: document.getElementById('exclusionLeft'),
+          right: document.getElementById('exclusionRight')
+        }
+      };
+
+      // Helper function to check for overlaps
+      function hasOverlap(testBox, excludeId = null) {
+        for (const box of state.boxes) {
+          if (excludeId && box.id === excludeId) continue;
+          
+          if (!(testBox.gridX + testBox.gridWidth <= box.gridX || 
+                testBox.gridX >= box.gridX + box.gridWidth ||
+                testBox.gridY + testBox.gridHeight <= box.gridY || 
+                testBox.gridY >= box.gridY + box.gridHeight)) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      // Alias for renderPreview for compatibility
+      function renderCanvas() {
+        renderPreview();
+      }
+
+      // Function to get actual cell dimensions
+      function getCellDimensions() {
+        const rect = previewGrid.getBoundingClientRect();
+        return {
+          cellWidth: rect.width / state.columns,
+          cellHeight: rect.height / state.rows
+        };
+      }
+
+      function updateSelectionControls() {
+        if (controls.deleteSelectedBtn) {
+          controls.deleteSelectedBtn.disabled = !state.selectedBoxId;
+        }
+      }
+
+      function normalizeExclusions() {
+        const maxHorizontal = Math.max(0, state.columns - 1);
+        const maxVertical = Math.max(0, state.rows - 1);
+
+        state.exclusions.left = Math.max(0, Math.min(state.exclusions.left, state.columns));
+        state.exclusions.right = Math.max(0, Math.min(state.exclusions.right, state.columns));
+        if (state.exclusions.left + state.exclusions.right > maxHorizontal) {
+          state.exclusions.right = Math.max(0, maxHorizontal - state.exclusions.left);
+        }
+
+        state.exclusions.top = Math.max(0, Math.min(state.exclusions.top, state.rows));
+        state.exclusions.bottom = Math.max(0, Math.min(state.exclusions.bottom, state.rows));
+        if (state.exclusions.top + state.exclusions.bottom > maxVertical) {
+          state.exclusions.bottom = Math.max(0, maxVertical - state.exclusions.top);
+        }
+
+        if (controls.exclusions) {
+          Object.entries(controls.exclusions).forEach(([key, input]) => {
+            if (input) input.value = state.exclusions[key];
+          });
+        }
+      }
+
+      // Box management
+      function createBox(x, y, width, height, name = null) {
+        // Use the same cell size calculation as renderPreview for consistency
+        const rect = previewGrid.getBoundingClientRect();
+        const cellWidth = rect.width / state.columns;
+        const cellHeight = rect.height / state.rows;
+        
+        const gridX1 = Math.floor(x / cellWidth);
+        const gridY1 = Math.floor(y / cellHeight);
+        const gridX2 = Math.ceil((x + width) / cellWidth);
+        const gridY2 = Math.ceil((y + height) / cellHeight);
+        
+        // Debug: Show the grid coordinates being calculated
+        console.log(`createBox calculation: ${gridX2 - gridX1} x ${gridY2 - gridY1} grid cells (coords: ${gridX1},${gridY1} to ${gridX2},${gridY2})`);
+        
+        // Check for overlaps with existing boxes
+        for (const box of state.boxes) {
+          if (!(gridX2 <= box.gridX || gridX1 >= box.gridX + box.gridWidth ||
+                gridY2 <= box.gridY || gridY1 >= box.gridY + box.gridHeight)) {
+            // Overlap detected
+            alert('Regions cannot overlap. Please draw in an empty area.');
+            return null;
+          }
+        }
+        
+        pushHistory();
+
+        const id = `box-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const box = {
+          id,
+          name: name || `region-${state.boxes.length + 1}`,
+          gridX: gridX1,
+          gridY: gridY1,
+          gridWidth: gridX2 - gridX1,
+          gridHeight: gridY2 - gridY1,
+          metadata: {
+            required: false,
+            inputType: 'any',
+            fieldTypes: [],
+            llmHint: ''
+          }
+        };
+        state.boxes.push(box);
+        state.metadata[id] = box.metadata;
+        
+        console.log('Box added to state. Total boxes:', state.boxes.length);
+        console.log('Box details:', box);
+        
+        // Update the regions table when a new box is created
+        renderRegionsTable();
+        
+        return box;
+      }
+
+      function deleteBox(id) {
+        state.boxes = state.boxes.filter(box => box.id !== id);
+        delete state.metadata[id];
+        if (state.selectedBoxId === id) {
+          state.selectedBoxId = null;
+          hideMetadataPanel();
+          updateSelectionControls();
+        }
+      }
+
+      function deleteSelectedRegion() {
+        if (!state.selectedBoxId) return;
+        pushHistory();
+        deleteBox(state.selectedBoxId);
+        state.selectedBoxId = null;
+        hideMetadataPanel();
+        renderRegionsTable();
+        renderCanvas();
+        renderPreview();
+        renderSnippet();
+        updateSelectionControls();
+      }
+
+      function getBoxAtGrid(gridX, gridY) {
+        for (const box of state.boxes) {
+          if (gridX >= box.gridX && gridX < box.gridX + box.gridWidth &&
+              gridY >= box.gridY && gridY < box.gridY + box.gridHeight) {
+            return box;
+          }
+        }
+        return null;
+      }
+
+      function createBoxFromGrid(gridX, gridY, gridWidth, gridHeight, name = null) {
+        // Check for overlaps with existing boxes
+        for (const box of state.boxes) {
+          if (!(gridX + gridWidth <= box.gridX || gridX >= box.gridX + box.gridWidth ||
+                gridY + gridHeight <= box.gridY || gridY >= box.gridY + box.gridHeight)) {
+            // Overlap detected
+            alert('Regions cannot overlap. Please draw in an empty area.');
+            return null;
+          }
+        }
+        
+        pushHistory();
+
+        const id = `box-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        const box = {
+          id,
+          name: name || `region-${state.boxes.length + 1}`,
+          gridX: gridX,
+          gridY: gridY,
+          gridWidth: gridWidth,
+          gridHeight: gridHeight,
+          metadata: {
+            required: false,
+            inputType: 'any',
+            fieldTypes: [],
+            llmHint: ''
+          }
+        };
+        state.boxes.push(box);
+        state.metadata[id] = box.metadata;
+        
+        // Update the regions table when a new box is created
+        renderRegionsTable();
+        
+        return box;
+      }
+
+      // Mouse event handlers for preview grid
+      const DRAW_DRAG_THRESHOLD = 6; // pixels
+
+      previewGrid.addEventListener('mousedown', (e) => {
+        if (isDragging || isResizing) return;
+        
+        const rect = previewGrid.getBoundingClientRect();
+        const cellPixelSizeX = rect.width / state.columns;
+        const cellPixelSizeY = rect.height / state.rows;
+        
+        // Immediately snap to grid coordinates
+        const mouseGridX = Math.floor((e.clientX - rect.left) / cellPixelSizeX);
+        const mouseGridY = Math.floor((e.clientY - rect.top) / cellPixelSizeY);
+        
+        const box = getBoxAtGrid(mouseGridX, mouseGridY);
+        if (box) {
+          selectBox(box.id);
+        } else {
+          state.selectedBoxId = null;
+          updateSelectionControls();
+          hideMetadataPanel();
+          updateRegionList();
+          renderPreview();
+          state.isDrawing = true;
+          // Store grid coordinates directly
+          state.dragStart = {
+            startGridX: mouseGridX,
+            startGridY: mouseGridY,
+            currentGridX: mouseGridX,
+            currentGridY: mouseGridY,
+            startClientX: e.clientX,
+            startClientY: e.clientY,
+            hasMoved: false
+          };
+          previewGrid.classList.add('drawing');
+        }
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (state.isDrawing && state.dragStart) {
+          const rect = previewGrid.getBoundingClientRect();
+          const cellPixelSizeX = rect.width / state.columns;
+          const cellPixelSizeY = rect.height / state.rows;
+          
+          // Update grid coordinates directly
+          const nextGridX = Math.floor((e.clientX - rect.left) / cellPixelSizeX);
+          const nextGridY = Math.floor((e.clientY - rect.top) / cellPixelSizeY);
+          state.dragStart.currentGridX = nextGridX;
+          state.dragStart.currentGridY = nextGridY;
+
+          const deltaX = Math.abs(e.clientX - state.dragStart.startClientX);
+          const deltaY = Math.abs(e.clientY - state.dragStart.startClientY);
+          const gridChanged =
+            nextGridX !== state.dragStart.startGridX ||
+            nextGridY !== state.dragStart.startGridY;
+          if (!state.dragStart.hasMoved && (gridChanged || deltaX >= DRAW_DRAG_THRESHOLD || deltaY >= DRAW_DRAG_THRESHOLD)) {
+            state.dragStart.hasMoved = true;
+          }
+          
+          renderPreview();
+        } else if (isDragging && draggedBox) {
+          const rect = previewGrid.getBoundingClientRect();
+          const cellPixelSizeX = rect.width / state.columns;
+          const cellPixelSizeY = rect.height / state.rows;
+          const newX = Math.floor((e.clientX - rect.left - dragOffset.x) / cellPixelSizeX);
+          const newY = Math.floor((e.clientY - rect.top - dragOffset.y) / cellPixelSizeY);
+          
+          // Constrain to grid bounds
+          const constrainedX = Math.max(0, Math.min(newX, state.columns - draggedBox.gridWidth));
+          const constrainedY = Math.max(0, Math.min(newY, state.rows - draggedBox.gridHeight));
+          
+          // Check for overlaps
+          const testBox = {
+            ...draggedBox,
+            gridX: constrainedX,
+            gridY: constrainedY
+          };
+          
+          if (!hasOverlap(testBox, draggedBox.id)) {
+            draggedBox.gridX = constrainedX;
+            draggedBox.gridY = constrainedY;
+            renderPreview();
+            renderRegionsTable();
+          }
+        } else if (isResizing && draggedBox) {
+          const rect = previewGrid.getBoundingClientRect();
+          const cellPixelSizeX = rect.width / state.columns;
+          const cellPixelSizeY = rect.height / state.rows;
+          const mouseX = e.clientX - rect.left;
+          const mouseY = e.clientY - rect.top;
+          
+          let newX = originalBoxState.gridX;
+          let newY = originalBoxState.gridY;
+          let newWidth = originalBoxState.gridWidth;
+          let newHeight = originalBoxState.gridHeight;
+          
+          switch (resizeHandle) {
+            case 'se':
+              newWidth = Math.ceil(mouseX / cellPixelSizeX) - originalBoxState.gridX;
+              newHeight = Math.ceil(mouseY / cellPixelSizeY) - originalBoxState.gridY;
+              break;
+            case 'ne':
+              newWidth = Math.ceil(mouseX / cellPixelSizeX) - originalBoxState.gridX;
+              newHeight = originalBoxState.gridHeight;
+              newY = Math.floor(mouseY / cellPixelSizeY);
+              newHeight = originalBoxState.gridY + originalBoxState.gridHeight - newY;
+              break;
+            case 'sw':
+              newWidth = originalBoxState.gridWidth;
+              newX = Math.floor(mouseX / cellPixelSizeX);
+              newWidth = originalBoxState.gridX + originalBoxState.gridWidth - newX;
+              newHeight = Math.ceil(mouseY / cellPixelSizeY) - originalBoxState.gridY;
+              break;
+            case 'nw':
+              newX = Math.floor(mouseX / cellPixelSizeX);
+              newY = Math.floor(mouseY / cellPixelSizeY);
+              newWidth = originalBoxState.gridX + originalBoxState.gridWidth - newX;
+              newHeight = originalBoxState.gridY + originalBoxState.gridHeight - newY;
+              break;
+          }
+          
+          // Ensure minimum size and positive dimensions
+          if (newWidth >= 1 && newHeight >= 1 && newX >= 0 && newY >= 0 && 
+              newX + newWidth <= state.columns && newY + newHeight <= state.rows) {
+            
+            const testBox = {
+              ...draggedBox,
+              gridX: newX,
+              gridY: newY,
+              gridWidth: newWidth,
+              gridHeight: newHeight
+            };
+            
+            if (!hasOverlap(testBox, draggedBox.id)) {
+              draggedBox.gridX = newX;
+              draggedBox.gridY = newY;
+              draggedBox.gridWidth = newWidth;
+              draggedBox.gridHeight = newHeight;
+              renderPreview();
+              renderRegionsTable();
+            }
+          }
+        }
+      });
+
+      document.addEventListener('mouseup', (e) => {
+        if (state.isDrawing && state.dragStart) {
+          const dragSession = state.dragStart;
+          const startGridX = dragSession.startGridX;
+          const startGridY = dragSession.startGridY;
+          const endGridX = dragSession.currentGridX;
+          const endGridY = dragSession.currentGridY;
+          const hasMoved = dragSession.hasMoved;
+
+          const gridWidth = Math.abs(endGridX - startGridX) + 1;
+          const gridHeight = Math.abs(endGridY - startGridY) + 1;
+
+          // Reset drawing state BEFORE creating the box
+          state.isDrawing = false;
+          state.dragStart = null;
+          previewGrid.classList.remove('drawing');
+          resetInteractionHistory();
+
+          if (!hasMoved) {
+            renderPreview();
+            return;
+          }
+          if (gridWidth >= 1 && gridHeight >= 1) {
+            const gridX = Math.min(startGridX, endGridX);
+            const gridY = Math.min(startGridY, endGridY);
+            const box = createBoxFromGrid(gridX, gridY, gridWidth, gridHeight);
+            if (box) {
+              // Clear selection after creating the box
+              state.selectedBoxId = null;
+              hideMetadataPanel();
+              renderRegionsTable();
+            }
+          }
+
+          // Render preview after all state is reset and box is created
+          renderPreview();
+        }
+        
+        // Always reset drag/resize states on mouse up
+        if (isDragging || isResizing) {
+          isDragging = false;
+          isResizing = false;
+          draggedBox = null;
+          resizeHandle = null;
+          originalBoxState = null;
+          resetInteractionHistory();
+          renderPreview();
+          renderSnippet();
+        }
+      });
+
+      
+            function renderRegionsTable() {
+        const tbody = document.getElementById('regionsTableBody');
+        tbody.innerHTML = '';
+        
+        state.boxes.forEach((box, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><input type="text" value="${box.name}" data-box-id="${box.id}" data-field="name" /></td>
+            <td>(${box.gridX}, ${box.gridY})</td>
+            <td>${box.gridWidth}×${box.gridHeight}</td>
+            <td class="checkbox-cell">
+              <input type="checkbox" ${box.metadata.required ? 'checked' : ''} 
+                     data-box-id="${box.id}" data-field="required" />
+            </td>
+            <td>
+              <select data-box-id="${box.id}" data-field="inputType">
+                <option value="text" ${box.metadata.inputType === 'text' ? 'selected' : ''}>Text</option>
+                <option value="image" ${box.metadata.inputType === 'image' ? 'selected' : ''}>Image</option>
+                <option value="any" ${box.metadata.inputType === 'any' ? 'selected' : ''}>Any</option>
+              </select>
+            </td>
+            <td>
+              <select data-box-id="${box.id}" data-field="fieldTypes">
+                <option value="" ${!box.metadata.fieldTypes.length || box.metadata.fieldTypes[0] === '' ? 'selected' : ''}>None</option>
+                <option value="primary-title" ${box.metadata.fieldTypes[0] === 'primary-title' ? 'selected' : ''}>Primary Title</option>
+                <option value="secondary-title" ${box.metadata.fieldTypes[0] === 'secondary-title' ? 'selected' : ''}>Secondary Title</option>
+                <option value="section-title" ${box.metadata.fieldTypes[0] === 'section-title' ? 'selected' : ''}>Section Title</option>
+                <option value="supporting-content" ${box.metadata.fieldTypes[0] === 'supporting-content' ? 'selected' : ''}>Supporting Content</option>
+                <option value="footer" ${box.metadata.fieldTypes[0] === 'footer' ? 'selected' : ''}>Footer</option>
+                <option value="page-number" ${box.metadata.fieldTypes[0] === 'page-number' ? 'selected' : ''}>Page Number</option>
+                <option value="key-data" ${box.metadata.fieldTypes[0] === 'key-data' ? 'selected' : ''}>Key Data</option>
+                <option value="visual-aid" ${box.metadata.fieldTypes[0] === 'visual-aid' ? 'selected' : ''}>Visual Aid</option>
+                <option value="quote" ${box.metadata.fieldTypes[0] === 'quote' ? 'selected' : ''}>Quote</option>
+                <option value="list" ${box.metadata.fieldTypes[0] === 'list' ? 'selected' : ''}>List</option>
+                <option value="chart" ${box.metadata.fieldTypes[0] === 'chart' ? 'selected' : ''}>Chart</option>
+                <option value="image" ${box.metadata.fieldTypes[0] === 'image' ? 'selected' : ''}>Image</option>
+                <option value="video" ${box.metadata.fieldTypes[0] === 'video' ? 'selected' : ''}>Video</option>
+                <option value="logo" ${box.metadata.fieldTypes[0] === 'logo' ? 'selected' : ''}>Logo</option>
+                <option value="cta-button" ${box.metadata.fieldTypes[0] === 'cta-button' ? 'selected' : ''}>CTA Button</option>
+              </select>
+            </td>
+            <td>
+              <textarea data-box-id="${box.id}" data-field="llmHint" placeholder="LLM hint...">${box.metadata.llmHint}</textarea>
+            </td>
+            <td>
+              <button type="button" class="delete-btn" data-box-id="${box.id}">Delete</button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+
+      // Add table button handlers (moved outside renderRegionsTable)
+      document.getElementById('addRegionBtn').addEventListener('click', addNewRegion);
+      
+      document.getElementById('clearAllBtn').addEventListener('click', () => {
+        if (confirm('Are you sure you want to clear all regions?')) {
+          pushHistory();
+          state.boxes = [];
+          state.metadata = {};
+          state.selectedBoxId = null;
+          hideMetadataPanel();
+          renderRegionsTable();
+          renderCanvas();
+          renderPreview();
+          renderSnippet();
+        }
+      });
+
+      // Add form event listeners for table inputs
+      tbody.querySelectorAll('input, select, textarea').forEach(input => {
+        input.addEventListener('change', (e) => {
+          const boxId = e.target.dataset.boxId;
+          const field = e.target.dataset.field;
+          const box = state.boxes.find(b => b.id === boxId);
+          
+          if (!box) return;
+          
+          if (field === 'name') {
+            box.name = e.target.value;
+          } else if (field === 'required') {
+            box.metadata.required = e.target.checked;
+          } else if (field === 'inputType') {
+            box.metadata.inputType = e.target.value;
+          } else if (field === 'fieldTypes') {
+            const selectedValue = e.target.value;
+            box.metadata.fieldTypes = selectedValue ? [selectedValue] : [];
+          } else if (field === 'llmHint') {
+            box.metadata.llmHint = e.target.value;
+          }
+          
+          state.metadata[boxId] = box.metadata;
+          renderCanvas();
+          renderPreview();
+          renderSnippet();
+        });
+      });
+      
+      // Add delete button handlers
+      tbody.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const boxId = e.target.dataset.boxId;
+          pushHistory();
+          deleteBox(boxId);
+          renderRegionsTable();
+          renderCanvas();
+          renderPreview();
+          renderSnippet();
+        });
+      });
+      }
+
+      function addNewRegion() {
+        // Find empty space for new region
+        for (let y = 0; y < state.rows; y++) {
+          for (let x = 0; x < state.columns; x++) {
+            const testBox = {
+              gridX: x,
+              gridY: y,
+              gridWidth: 10,
+              gridHeight: 5
+            };
+            
+            let hasOverlap = false;
+            for (const box of state.boxes) {
+              if (!(testBox.gridX + testBox.gridWidth <= box.gridX || 
+                    testBox.gridX >= box.gridX + box.gridWidth ||
+                    testBox.gridY + testBox.gridHeight <= box.gridY || 
+                    testBox.gridY >= box.gridY + box.gridHeight)) {
+                hasOverlap = true;
+                break;
+              }
+            }
+            
+            if (!hasOverlap) {
+              pushHistory();
+              const rect = previewGrid.getBoundingClientRect();
+              const cellWidth = rect.width / state.columns;
+              const cellHeight = rect.height / state.rows;
+              
+              const canvasX = x * cellWidth;
+              const canvasY = y * cellHeight;
+              const canvasWidth = testBox.gridWidth * cellWidth;
+              const canvasHeight = testBox.gridHeight * cellHeight;
+              
+              const box = createBox(canvasX, canvasY, canvasWidth, canvasHeight);
+              if (box) {
+                renderRegionsTable();
+                renderCanvas();
+                renderPreview();
+                renderSnippet();
+              }
+              return;
+            }
+          }
+        }
+        
+        alert('No empty space available for new region. Please delete existing regions first.');
+      }
+      function showMetadataPanel() {
+        const panel = document.getElementById('metadataPanel');
+        if (panel) {
+          panel.classList.add('open');
+        }
+      }
+
+      function hideMetadataPanel() {
+        const panel = document.getElementById('metadataPanel');
+        if (panel) {
+          panel.classList.remove('open');
+        }
+        updateSelectionControls();
+      }
+
+      function selectBox(id) {
+        state.selectedBoxId = id;
+        const box = state.boxes.find(b => b.id === id);
+        if (box) {
+          populateMetadataForm(box);
+          updateRegionList();
+          showMetadataPanel();
+          renderPreview();
+          updateSelectionControls();
+        } else {
+          updateSelectionControls();
+        }
+      }
+
+      function populateMetadataForm(box) {
+        const regionName = document.getElementById('regionName');
+        const regionRequired = document.getElementById('regionRequired');
+        const regionInputType = document.getElementById('regionInputType');
+        const regionLLMHint = document.getElementById('regionLLMHint');
+        const fieldTypesTags = document.getElementById('fieldTypesTags');
+        
+        if (regionName) regionName.value = box.name;
+        if (regionRequired) regionRequired.checked = box.metadata.required;
+        if (regionInputType) regionInputType.value = box.metadata.inputType;
+        if (regionLLMHint) regionLLMHint.value = box.metadata.llmHint;
+        
+        // Update field types multi-select
+        if (fieldTypesTags) {
+          fieldTypesTags.innerHTML = '';
+          
+          if (box.metadata.fieldTypes.length === 0) {
+            fieldTypesTags.innerHTML = '<span style="color: var(--muted);">Click to add field types...</span>';
+          } else {
+            box.metadata.fieldTypes.forEach(fieldType => {
+              const tag = document.createElement('span');
+              tag.className = 'multi-select-tag';
+              tag.textContent = fieldType;
+              fieldTypesTags.appendChild(tag);
+            });
+          }
+        }
+        
+        // Update dropdown selection
+        const dropdown = document.getElementById('fieldTypesDropdown');
+        if (dropdown) {
+          dropdown.querySelectorAll('.multi-select-option').forEach(option => {
+            option.classList.toggle('selected', box.metadata.fieldTypes.includes(option.dataset.value));
+          });
+        }
+      }
+
+      function updateMetadataFromForm() {
+        if (!state.selectedBoxId) return;
+        
+        const box = state.boxes.find(b => b.id === state.selectedBoxId);
+        if (!box) return;
+        
+        box.name = document.getElementById('regionName').value || box.name;
+        box.metadata.required = document.getElementById('regionRequired').checked;
+        box.metadata.inputType = document.getElementById('regionInputType').value;
+        box.metadata.llmHint = document.getElementById('regionLLMHint').value;
+        
+        // Update field types from selected options
+        const selectedOptions = document.querySelectorAll('#fieldTypesDropdown .multi-select-option.selected');
+        box.metadata.fieldTypes = Array.from(selectedOptions).map(option => option.dataset.value);
+        
+        state.metadata[box.id] = box.metadata;
+        updateRegionList();
+        renderPreview();
+        renderSnippet();
+      }
+
+      function updateRegionList() {
+        const regionList = document.getElementById('regionList');
+        if (!regionList) return; // Skip if element doesn't exist
+        
+        const regionsHtml = state.boxes.map(box => `
+          <div class="region-item ${box.id === state.selectedBoxId ? 'selected' : ''}" data-id="${box.id}">
+            ${box.name}
+          </div>
+        `).join('');
+        
+        regionList.innerHTML = '<h4>Regions</h4>' + regionsHtml;
+        
+        // Add click handlers
+        regionList.querySelectorAll('.region-item').forEach(item => {
+          item.addEventListener('click', () => {
+            selectBox(item.dataset.id);
+          });
+        });
+      }
+
+      // Multi-select dropdown functionality
+      const fieldTypesMultiSelect = document.getElementById('fieldTypesMultiSelect');
+      const fieldTypesDropdown = document.getElementById('fieldTypesDropdown');
+      
+      if (fieldTypesMultiSelect && fieldTypesDropdown) {
+        fieldTypesMultiSelect.addEventListener('click', () => {
+          fieldTypesDropdown.classList.toggle('open');
+        });
+        
+        document.addEventListener('click', (e) => {
+          if (!fieldTypesMultiSelect.contains(e.target)) {
+            fieldTypesDropdown.classList.remove('open');
+          }
+        });
+      }
+      
+      previewGrid.addEventListener('mouseleave', () => {
+        if (state.isDrawing) {
+          state.isDrawing = false;
+          state.dragStart = null;
+          previewGrid.classList.remove('drawing');
+          renderPreview();
+        }
+      });
+
+      if (fieldTypesDropdown) {
+        fieldTypesDropdown.querySelectorAll('.multi-select-option').forEach(option => {
+          option.addEventListener('click', (e) => {
+            e.stopPropagation();
+            option.classList.toggle('selected');
+            updateMetadataFromForm();
+          });
+        });
+      }
+
+      // MDX Import functionality
+      function parseMDXFrontmatter(content) {
+        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+        if (!frontmatterMatch) return null;
+        
+        const frontmatterText = frontmatterMatch[1];
+        const frontmatter = {};
+        
+        // Simple YAML parser for our specific needs
+        const lines = frontmatterText.split('\n');
+        let currentKey = null;
+        let inArray = false;
+        let currentArray = [];
+        
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+          
+          if (trimmed.startsWith('- ') && currentKey) {
+            const value = trimmed.substring(2).replace(/^["']|["']$/g, '');
+            currentArray.push(value);
+            inArray = true;
+          } else if (trimmed.includes(':')) {
+            if (inArray && currentKey) {
+              frontmatter[currentKey] = currentArray;
+              currentArray = [];
+              inArray = false;
+            }
+            
+            const [key, ...valueParts] = trimmed.split(':');
+            const value = valueParts.join(':').trim();
+            
+            if (value) {
+              const cleanValue = value.replace(/^["']|["']$/g, '');
+              frontmatter[key.trim()] = cleanValue;
+            } else {
+              currentKey = key.trim();
+              inArray = true;
+              currentArray = [];
+            }
+          }
+        }
+        
+        if (inArray && currentKey) {
+          frontmatter[currentKey] = currentArray;
+        }
+        
+        return frontmatter;
+      }
+
+      function importMDXFile(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const content = e.target.result;
+            const frontmatter = parseMDXFrontmatter(content);
+            
+            if (!frontmatter) {
+              alert('Invalid MDX file format');
+              return;
+            }
+            
+            // Clear existing boxes
+            state.boxes = [];
+            state.metadata = {};
+            state.selectedBoxId = null;
+            
+            // Extract template information
+            const layout = frontmatter.layout || {};
+            const templateName = layout.template;
+            const regions = frontmatter.regions || [];
+            
+            // For now, create a simple layout based on regions
+            // In a full implementation, we'd load the actual template from grid-templates.js
+            regions.forEach((region, index) => {
+              const areaName = region.area || `area-${index}`;
+              const roleName = region.role || 'supporting-text';
+              
+              // Create a box for each region
+              const boxHeight = canvas.height / (regions.length || 1);
+              const box = createBox(0, index * boxHeight, canvas.width, boxHeight, areaName);
+              
+              // Map role to field types
+              const fieldTypes = [roleName];
+              const inputType = roleName.includes('image') || roleName.includes('visual') ? 'image' : 'text';
+              
+              box.metadata = {
+                required: region.maxWords > 0,
+                inputType: inputType,
+                fieldTypes: fieldTypes,
+                llmHint: `${roleName} region`
+              };
+              
+              state.metadata[box.id] = box.metadata;
+            });
+            
+            // Update UI
+            updateRegionList();
+            renderCanvas();
+            renderPreview();
+            renderSnippet();
+            
+            // Show success message
+            alert(`Successfully imported ${frontmatter.title || 'MDX file'} with ${regions.length} regions`);
+            
+          } catch (error) {
+            console.error('Failed to import MDX:', error);
+            alert('Failed to import MDX file. Please check the format.');
+          }
+        };
+        
+        reader.readAsText(file);
+      }
+
+      // MDX import event handler
+      document.getElementById('importMdxBtn').addEventListener('click', () => {
+        document.getElementById('mdxFileInput').click();
+      });
+      
+      document.getElementById('mdxFileInput').addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (file && file.name.endsWith('.mdx')) {
+          importMDXFile(file);
+        } else {
+          alert('Please select a valid MDX file');
+        }
+        e.target.value = ''; // Reset input
+      });
+
+      
+      function init() {
+        renderPreview();
+        renderSnippet();
+        applyCanvasDimensions();
+        applyReferenceOverlay();
+        attachControlHandlers();
+        updateRegionList();
+        renderRegionsTable();
+      }
+
+      init();
+    </script>
+  </body>
+</html>

@@ -1,64 +1,108 @@
 // Semantic Vocabulary System - Controlled vocabulary for EPAM slide content
 // Provides consistent classification and mapping of content elements across templates
 
+const ROLE_DEFINITIONS = {
+  'primary-title': { 
+    synonyms: ['main-title', 'headline', 'heading', 'title'], 
+    level: 1,
+    description: 'Main heading of the slide, most important text element',
+    characteristics: ['short', 'impactful', 'top-level'],
+    required: true,
+    inputType: 'text',
+    fieldTypes: ['primary-title']
+  },
+  'secondary-title': { 
+    synonyms: ['subtitle', 'subheading', 'tagline', 'description'], 
+    level: 2,
+    description: 'Secondary heading that provides context or elaboration',
+    characteristics: ['descriptive', 'supporting', 'contextual'],
+    required: true,
+    inputType: 'text',
+    fieldTypes: ['secondary-title']
+  },
+  'supporting-text': { 
+    synonyms: ['paragraph', 'description', 'explanation', 'content'], 
+    level: 3,
+    description: 'Main body text providing detailed information',
+    characteristics: ['detailed', 'explanatory', 'comprehensive'],
+    inputType: 'text',
+    fieldTypes: ['supporting-text']
+  },
+  'key-data': { 
+    synonyms: ['metrics', 'statistics', 'numbers', 'kpi'], 
+    level: 2,
+    description: 'Important numerical data or metrics',
+    characteristics: ['quantitative', 'measurable', 'critical'],
+    inputType: 'text',
+    fieldTypes: ['key-data']
+  },
+  'supporting-data': { 
+    synonyms: ['details', 'specifications', 'parameters', 'attributes'], 
+    level: 3,
+    description: 'Additional data that supports main content',
+    characteristics: ['supplementary', 'technical', 'specific'],
+    inputType: 'text',
+    fieldTypes: ['supporting-data']
+  },
+  'visual-aid': { 
+    synonyms: ['image', 'chart', 'diagram', 'graphic', 'illustration'], 
+    level: 2,
+    description: 'Visual elements that support or explain content',
+    characteristics: ['visual', 'explanatory', 'supplementary'],
+    inputType: 'image',
+    fieldTypes: ['visual-aid']
+  },
+  'criteria-list': { 
+    synonyms: ['checklist', 'requirements', 'conditions', 'standards'], 
+    level: 2,
+    description: 'List of criteria, requirements, or conditions',
+    characteristics: ['structured', 'evaluative', 'specific'],
+    inputType: 'text',
+    fieldTypes: ['criteria-list']
+  },
+  'context-info': { 
+    synonyms: ['metadata', 'background', 'context', 'methodology'], 
+    level: 3,
+    description: 'Background information providing context',
+    characteristics: ['contextual', 'supporting', 'informational'],
+    inputType: 'text',
+    fieldTypes: ['context-info']
+  },
+  'reference': { 
+    synonyms: ['footnote', 'source', 'citation', 'attribution'], 
+    level: 4,
+    description: 'Reference information and sources',
+    characteristics: ['citational', 'supporting', 'optional'],
+    inputType: 'text',
+    fieldTypes: ['reference']
+  }
+};
+
+const buildLLMHint = (description, characteristics = []) => {
+  if (!description && !characteristics?.length) return '';
+  const traits = characteristics?.length ? ` Key traits: ${characteristics.join(', ')}.` : '';
+  return `${description || ''}${traits}`.trim();
+};
+
+const createRoleConfig = (roleKey, config) => {
+  const defaultRequired = typeof config.required === 'boolean' ? config.required : config.level <= 2;
+  return {
+    ...config,
+    type: roleKey,
+    required: defaultRequired,
+    inputType: config.inputType || 'text',
+    fieldTypes: config.fieldTypes && config.fieldTypes.length ? config.fieldTypes : [roleKey],
+    llmHint: config.llmHint || buildLLMHint(config.description, config.characteristics)
+  };
+};
+
+const roles = Object.fromEntries(
+  Object.entries(ROLE_DEFINITIONS).map(([roleKey, config]) => [roleKey, createRoleConfig(roleKey, config)])
+);
+
 export const semanticVocabulary = {
   // Content roles (what the element DOES)
-  roles: {
-    'primary-title': { 
-      synonyms: ['main-title', 'headline', 'heading', 'title'], 
-      level: 1,
-      description: 'Main heading of the slide, most important text element',
-      characteristics: ['short', 'impactful', 'top-level']
-    },
-    'secondary-title': { 
-      synonyms: ['subtitle', 'subheading', 'tagline', 'description'], 
-      level: 2,
-      description: 'Secondary heading that provides context or elaboration',
-      characteristics: ['descriptive', 'supporting', 'contextual']
-    },
-    'supporting-text': { 
-      synonyms: ['paragraph', 'description', 'explanation', 'content'], 
-      level: 3,
-      description: 'Main body text providing detailed information',
-      characteristics: ['detailed', 'explanatory', 'comprehensive']
-    },
-    'key-data': { 
-      synonyms: ['metrics', 'statistics', 'numbers', 'kpi'], 
-      level: 2,
-      description: 'Important numerical data or metrics',
-      characteristics: ['quantitative', 'measurable', 'critical']
-    },
-    'supporting-data': { 
-      synonyms: ['details', 'specifications', 'parameters', 'attributes'], 
-      level: 3,
-      description: 'Additional data that supports main content',
-      characteristics: ['supplementary', 'technical', 'specific']
-    },
-    'visual-aid': { 
-      synonyms: ['image', 'chart', 'diagram', 'graphic', 'illustration'], 
-      level: 2,
-      description: 'Visual elements that support or explain content',
-      characteristics: ['visual', 'explanatory', 'supplementary']
-    },
-    'criteria-list': { 
-      synonyms: ['checklist', 'requirements', 'conditions', 'standards'], 
-      level: 2,
-      description: 'List of criteria, requirements, or conditions',
-      characteristics: ['structured', 'evaluative', 'specific']
-    },
-    'context-info': { 
-      synonyms: ['metadata', 'background', 'context', 'methodology'], 
-      level: 3,
-      description: 'Background information providing context',
-      characteristics: ['contextual', 'supporting', 'informational']
-    },
-    'reference': { 
-      synonyms: ['footnote', 'source', 'citation', 'attribution'], 
-      level: 4,
-      description: 'Reference information and sources',
-      characteristics: ['citational', 'supporting', 'optional']
-    }
-  },
+  roles,
   
   // Content types (what the element IS)
   types: {
@@ -124,6 +168,8 @@ export const semanticVocabulary = {
     }
   }
 };
+
+export const getRoleMetadata = (roleKey) => semanticVocabulary.roles[roleKey] || null;
 
 // Semantic Element Normalizer
 export class SemanticNormalizer {
