@@ -164,27 +164,6 @@
       </section>
     </main>
 
-    <dialog id="mdxImportDialog" class="modal">
-      <h3>Import MDX Template</h3>
-      <p>Select an existing MDX file to load its regions and metadata into the canvas.</p>
-      <div class="modal-actions">
-        <button type="button" id="cancelImportMdx" class="ghost-btn">Cancel</button>
-        <button type="button" id="confirmImportMdx" class="primary-btn">Choose File</button>
-      </div>
-    </dialog>
-
-    <dialog id="mdxExportDialog" class="modal">
-      <h3>Export MDX Template</h3>
-      <p>
-        File name: <strong id="exportFilenameDisplay">template.mdx</strong><br />
-        Regions: <strong id="exportRegionCount">0</strong>
-      </p>
-      <div class="modal-actions">
-        <button type="button" id="cancelExportMdx" class="ghost-btn">Cancel</button>
-        <button type="button" id="confirmExportMdx" class="primary-btn">Save</button>
-      </div>
-    </dialog>
-
     <script>
       (function() {
         const isDevelopment = window.location.hostname === 'localhost' || 
@@ -226,14 +205,6 @@
             saveMdx: document.getElementById('saveMdx'),
             importMdxBtn: document.getElementById('importMdxBtn'),
             mdxFileInput: document.getElementById('mdxFileInput'),
-            mdxImportDialog: document.getElementById('mdxImportDialog'),
-            confirmImportMdx: document.getElementById('confirmImportMdx'),
-            cancelImportMdx: document.getElementById('cancelImportMdx'),
-            mdxExportDialog: document.getElementById('mdxExportDialog'),
-            confirmExportMdx: document.getElementById('confirmExportMdx'),
-            cancelExportMdx: document.getElementById('cancelExportMdx'),
-            exportFilenameDisplay: document.getElementById('exportFilenameDisplay'),
-            exportRegionCount: document.getElementById('exportRegionCount'),
             deleteSelectedBtn: document.getElementById('deleteSelectedBtn'),
             exclusions: {
               top: document.getElementById('exclusionTop'),

@@ -312,4 +312,115 @@ describe('Template Studio Integration Tests', () => {
       global.navigator.clipboard = originalClipboard;
     });
   });
+
+  describe('MDX import/export DOM wiring', () => {
+    const noop = () => {};
+
+    function buildControlSet(doc) {
+      const createInput = (type = 'text', value = '') => {
+        const input = doc.createElement('input');
+        input.type = type;
+        input.value = value;
+        return input;
+      };
+
+      const createNumberInput = (value = 0) => createInput('number', value);
+
+      const controls = {
+        templateName: createInput('text', 'cssgrid-template'),
+        canvasWidth: createNumberInput(1920),
+        canvasHeight: createNumberInput(1080),
+        columnCount: createNumberInput(12),
+        rowCount: createNumberInput(12),
+        columnSize: createInput('text', '1fr'),
+        rowSize: createInput('text', 'auto'),
+        gridGap: createInput('text', '1rem'),
+        previewGrid: doc.createElement('div'),
+        presetButtons: [],
+        presetStatus: doc.createElement('p'),
+        snippetOutput: doc.createElement('textarea'),
+        resetNames: doc.createElement('button'),
+        openCssGrid: doc.createElement('button'),
+        copySnippet: doc.createElement('button'),
+        saveMdx: doc.createElement('button'),
+        importMdxBtn: doc.createElement('button'),
+        mdxFileInput: createInput('file'),
+        deleteSelectedBtn: doc.createElement('button'),
+        exclusions: {
+          top: createNumberInput(0),
+          bottom: createNumberInput(0),
+          left: createNumberInput(0),
+          right: createNumberInput(0)
+        }
+      };
+
+      controls.previewGrid.style.width = '1920px';
+      controls.previewGrid.style.height = '1080px';
+      controls.mdxFileInput.style.display = 'none';
+      controls.snippetOutput.value = '';
+
+      return controls;
+    }
+
+    it('should click the hidden file input when Import MDX is pressed', () => {
+      const controls = buildControlSet(dom.window.document);
+      let fileInputClicked = 0;
+      controls.mdxFileInput.click = () => {
+        fileInputClicked += 1;
+      };
+
+      TemplateStudio.attachControlHandlers(controls, noop, noop, noop);
+      controls.importMdxBtn.click();
+
+      assert.strictEqual(fileInputClicked, 1);
+    });
+
+    it('should trigger an MDX download when Save is pressed with regions', () => {
+      const controls = buildControlSet(dom.window.document);
+      TemplateStudio.state.boxes = [{
+        id: 'region-1',
+        name: 'region-1',
+        gridX: 0,
+        gridY: 0,
+        gridWidth: 1,
+        gridHeight: 1,
+        metadata: {}
+      }];
+      TemplateStudio.state.metadata = {
+        'region-1': {
+          required: true,
+          inputType: 'text',
+          fieldTypes: ['title'],
+          llmHint: ''
+        }
+      };
+
+      const originalBlob = global.Blob;
+      class MockBlob {
+        constructor(parts, options) {
+          this.parts = parts;
+          this.options = options;
+        }
+      }
+      global.Blob = MockBlob;
+
+      const originalURL = global.URL;
+      let downloadCalls = 0;
+      global.URL = {
+        createObjectURL: () => {
+          downloadCalls += 1;
+          return 'blob://test';
+        },
+        revokeObjectURL: () => {}
+      };
+
+      TemplateStudio.attachControlHandlers(controls, noop, noop, noop);
+      controls.saveMdx.click();
+
+      assert.strictEqual(downloadCalls, 1);
+
+      global.URL = originalURL;
+      global.Blob = originalBlob;
+    });
+  });
 });

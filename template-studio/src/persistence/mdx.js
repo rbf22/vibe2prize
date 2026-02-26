@@ -139,16 +139,36 @@ export function buildFrontmatterFromState(state) {
 }
 
 function serializeLayout(layout) {
-  return [
+  if (!layout || typeof layout !== 'object') {
+    return 'layout: {}';
+  }
+
+  const lines = [
     'layout:',
-    `  type: ${quote(layout.type)}`,
-    `  template: ${quote(layout.template)}`,
-    '  components:',
-    ...layout.components.map((component) => `    - ${quote(component)}`),
-    `  rows: ${layout.rows}`,
-    `  columns: ${layout.columns}`,
-    `  gap: ${quote(layout.gap)}`,
-  ].join('\n');
+    `  type: ${quote(layout.type || DEFAULT_LAYOUT_TYPE)}`,
+    `  template: ${quote(layout.template || '')}`,
+  ];
+
+  if (!Array.isArray(layout.components) || !layout.components.length) {
+    lines.push('  components: []');
+  } else {
+    lines.push('  components:');
+    layout.components.forEach((component) => {
+      lines.push('    - type: ' + quote(component.type || ''));
+      lines.push('      id: ' + quote(component.id || ''));
+      lines.push('      role: ' + quote(component.role || ''));
+      lines.push('      area: ' + quote(component.area || ''));
+      if (typeof component.maxWords === 'number') {
+        lines.push(`      maxWords: ${component.maxWords}`);
+      }
+    });
+  }
+
+  lines.push(`  rows: ${layout.rows ?? 0}`);
+  lines.push(`  columns: ${layout.columns ?? 0}`);
+  lines.push(`  gap: ${quote(layout.gap || '')}`);
+
+  return lines.join('\n');
 }
 
 function serializeRegions(regions) {

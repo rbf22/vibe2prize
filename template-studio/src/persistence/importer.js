@@ -118,6 +118,63 @@ function parseFrontmatterBlock(block) {
   return root;
 }
 
+function createComponentFromRegion(region, fallbackId) {
+  if (!region || typeof region !== 'object') return null;
+  const id = typeof region.id === 'string' && region.id.trim() ? region.id : fallbackId;
+  const area = typeof region.area === 'string' && region.area.trim() ? region.area : id;
+  if (!id || !area) return null;
+  const component = {
+    type: 'GridArea',
+    id,
+    role: typeof region.role === 'string' && region.role.trim() ? region.role : 'supporting-text',
+    area,
+  };
+  if (typeof region.maxWords === 'number') {
+    component.maxWords = region.maxWords;
+  }
+  return component;
+}
+
+function buildComponentsFromRegions(regions = []) {
+  const components = [];
+  regions.forEach((region, index) => {
+    const fallbackId = `region-${index + 1}`;
+    const component = createComponentFromRegion(region, fallbackId);
+    if (component) {
+      components.push(component);
+    }
+  });
+  return components;
+}
+
+function normalizeLayoutComponents(frontmatter) {
+  if (!frontmatter || typeof frontmatter !== 'object') return;
+  if (!frontmatter.layout || typeof frontmatter.layout !== 'object') {
+    frontmatter.layout = {};
+  }
+
+  const layout = frontmatter.layout;
+  const regions = Array.isArray(frontmatter.regions) ? frontmatter.regions : [];
+
+  if (!Array.isArray(layout.components) || layout.components.length === 0) {
+    layout.components = buildComponentsFromRegions(regions);
+    return;
+  }
+
+  const hasNonObjectEntry = layout.components.some((component) => component === null || typeof component !== 'object');
+  if (hasNonObjectEntry) {
+    layout.components = buildComponentsFromRegions(regions);
+  }
+}
+
+function normalizeFrontmatter(frontmatter) {
+  if (!frontmatter || typeof frontmatter !== 'object') {
+    return frontmatter;
+  }
+  normalizeLayoutComponents(frontmatter);
+  return frontmatter;
+}
+
 export function parseMDXFrontmatter(content) {
   if (!content || typeof content !== 'string') {
     return { success: false, errors: ['Content must be a non-empty string'], frontmatter: null, body: null };
@@ -147,33 +204,67 @@ export function parseMDXFrontmatter(content) {
   return { success: true, errors: [], frontmatter, body };
 }
 
+function getInputById(id) {
+  if (typeof document === 'undefined') return null;
+  return document.getElementById(id);
+}
+
 function applyFrontmatterToState(frontmatter) {
   pushHistory();
-  const { layout, regions } = frontmatter;
+  const { layout = {}, regions = [], templateSettings = {}, exclusions = {} } = frontmatter || {};
+
+  const updateInputValue = (id, value) => {
+    const input = getInputById(id);
+    if (input) input.value = value;
+  };
+
+  const sanitizeNumber = (value, fallback = 0) => {
+    const parsed = typeof value === 'number' ? value : Number(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
 
   if (frontmatter?.title || layout?.template) {
     state.templateName = frontmatter?.title || layout?.template;
-    const input = document.getElementById('templateName');
-    if (input) input.value = state.templateName;
+    updateInputValue('templateName', state.templateName);
   }
 
   if (typeof layout?.rows === 'number') {
     state.rows = layout.rows;
-    const rowInput = document.getElementById('rowCount');
-    if (rowInput) rowInput.value = state.rows;
+    updateInputValue('rowCount', state.rows);
   }
 
   if (typeof layout?.columns === 'number') {
     state.columns = layout.columns;
-    const columnInput = document.getElementById('columnCount');
-    if (columnInput) columnInput.value = state.columns;
+    updateInputValue('columnCount', state.columns);
   }
 
   if (layout?.gap) {
     state.gap = layout.gap;
-    const gapInput = document.getElementById('gridGap');
-    if (gapInput) gapInput.value = state.gap;
+    updateInputValue('gridGap', state.gap);
   }
+
+  if (templateSettings?.canvasWidth !== undefined) {
+    state.canvasWidth = sanitizeNumber(templateSettings.canvasWidth, state.canvasWidth);
+    updateInputValue('canvasWidth', state.canvasWidth);
+  }
+
+  if (templateSettings?.canvasHeight !== undefined) {
+    state.canvasHeight = sanitizeNumber(templateSettings.canvasHeight, state.canvasHeight);
+    updateInputValue('canvasHeight', state.canvasHeight);
+  }
+
+  if (typeof templateSettings?.columnSize === 'string') {
+    state.columnSize = templateSettings.columnSize;
+    updateInputValue('columnSize', state.columnSize);
+  }
+
+  if (typeof templateSettings?.rowSize === 'string') {
+    state.rowSize = templateSettings.rowSize;
+    updateInputValue('rowSize', state.rowSize);
+  }
+
+  const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+  const sanitizeExclusion = (value, limit) => clamp(Math.max(0, sanitizeNumber(value, 0)), 0, Math.max(limit, 0));
 
   state.boxes = [];
   state.metadata = {};
@@ -189,17 +280,51 @@ function applyFrontmatterToState(frontmatter) {
       gridY: grid.y ?? 0,
       gridWidth: grid.width ?? 1,
       gridHeight: grid.height ?? 1,
-      metadata: {
-        required: Boolean(region.required),
-        inputType: region.inputType || 'any',
-        fieldTypes: region.role ? [region.role] : [],
-        llmHint: region.llmHint || '',
-        maxWords: typeof region.maxWords === 'number' ? region.maxWords : undefined,
-      },
+      metadata: (() => {
+        const fieldTypes = Array.isArray(region.fieldTypes) && region.fieldTypes.length
+          ? [...region.fieldTypes]
+          : (region.role ? [region.role] : []);
+        const metadata = {
+          required: Boolean(region.required),
+          inputType: region.inputType || 'any',
+          fieldTypes,
+          llmHint: region.llmHint || '',
+        };
+        if (typeof region.maxWords === 'number') {
+          metadata.maxWords = region.maxWords;
+        }
+        if (region.type) {
+          metadata.type = region.type;
+        }
+        return metadata;
+      })(),
     };
     state.boxes.push(box);
     state.metadata[id] = box.metadata;
   });
+
+  if (exclusions && typeof exclusions === 'object') {
+    let left = sanitizeExclusion(exclusions.left, state.columns);
+    let right = sanitizeExclusion(exclusions.right, state.columns);
+    const maxHorizontal = Math.max(0, state.columns - 1);
+    if (left + right > maxHorizontal) {
+      right = Math.max(0, maxHorizontal - left);
+    }
+
+    let top = sanitizeExclusion(exclusions.top, state.rows);
+    let bottom = sanitizeExclusion(exclusions.bottom, state.rows);
+    const maxVertical = Math.max(0, state.rows - 1);
+    if (top + bottom > maxVertical) {
+      bottom = Math.max(0, maxVertical - top);
+    }
+
+    state.exclusions = { top, bottom, left, right };
+
+    updateInputValue('exclusionTop', state.exclusions.top);
+    updateInputValue('exclusionBottom', state.exclusions.bottom);
+    updateInputValue('exclusionLeft', state.exclusions.left);
+    updateInputValue('exclusionRight', state.exclusions.right);
+  }
 }
 
 export async function importMDXContent(content) {
@@ -210,6 +335,8 @@ export async function importMDXContent(content) {
   }
 
   const { frontmatter, body } = parseResult;
+
+  normalizeFrontmatter(frontmatter);
 
   // Validate frontmatter using shared schema
   const validation = validateFrontmatter(frontmatter);
@@ -241,10 +368,10 @@ export async function importMDXContent(content) {
 
 export function importMDXFile(file) {
   const reader = new FileReader();
-  reader.onload = (e) => {
+  reader.onload = async (e) => {
     try {
       const content = e.target.result;
-      const result = importMDXContent(content);
+      const result = await importMDXContent(content);
       
       if (result.success) {
         alert(`Successfully imported ${result.frontmatter.title || 'MDX file'} with ${(result.frontmatter.regions || []).length} regions`);

@@ -4,12 +4,14 @@ import fs from 'fs/promises';
 import path from 'path';
 import { validateFrontmatter } from '../../core/mdx/schema.js';
 import { importMDXContent } from '../src/persistence/importer.js';
+import { state, resetState } from '../src/state.js';
 
 describe('MDX Importer', () => {
   const fixturesDir = path.join(import.meta.dirname, 'fixtures');
 
   beforeEach(async () => {
     await fs.mkdir(fixturesDir, { recursive: true });
+    resetState();
   });
 
   afterEach(async () => {
@@ -169,5 +171,56 @@ Content body.
     assert(result.success);
     assert.strictEqual(result.frontmatter.regions.length, 2);
     assert.strictEqual(result.frontmatter.layout.components.length, 2);
+  });
+
+  it('should apply template settings and exclusions from imported frontmatter to state', async () => {
+    const mdxContent = `---
+title: Responsive Template
+layout:
+  template: responsive-template
+  rows: 24
+  columns: 36
+  gap: 2rem
+templateSettings:
+  canvasWidth: 1440
+  canvasHeight: 900
+  columnSize: 1fr
+  rowSize: auto
+  gap: 1rem
+exclusions:
+  top: 2
+  bottom: 3
+  left: 1
+  right: 4
+regions:
+  - id: hero
+    area: hero
+    role: hero
+    required: true
+    grid:
+      x: 0
+      y: 2
+      width: 36
+      height: 8
+---
+
+# Body
+`;
+
+    const result = await importMDXContent(mdxContent);
+    assert(result.success);
+    assert.strictEqual(state.templateName, 'Responsive Template');
+    assert.strictEqual(state.rows, 24);
+    assert.strictEqual(state.columns, 36);
+    assert.strictEqual(state.gap, '2rem');
+    assert.strictEqual(state.canvasWidth, 1440);
+    assert.strictEqual(state.canvasHeight, 900);
+    assert.strictEqual(state.columnSize, '1fr');
+    assert.strictEqual(state.rowSize, 'auto');
+    assert.deepStrictEqual(state.exclusions, { top: 2, bottom: 3, left: 1, right: 4 });
+    assert.strictEqual(state.boxes.length, 1);
+    const [hero] = state.boxes;
+    assert.strictEqual(hero.gridY, 2);
+    assert.strictEqual(hero.gridHeight, 8);
   });
 });

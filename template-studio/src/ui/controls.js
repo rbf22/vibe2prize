@@ -79,20 +79,25 @@ export function getCellDimensions(previewGrid) {
 }
 
 export function attachControlHandlers(controls, renderPreview, renderSnippet, renderRegionsTable) {
-  const showDialog = (dialog) => {
-    if (!dialog) return false;
-    if (typeof dialog.showModal === 'function') {
-      if (!dialog.open) dialog.showModal();
-      return true;
+  let resizeFrame = null;
+  const handleWindowResize = () => {
+    if (typeof window === 'undefined') return;
+    if (resizeFrame !== null) {
+      window.cancelAnimationFrame(resizeFrame);
     }
-    return false;
+    resizeFrame = window.requestAnimationFrame(() => {
+      resizeFrame = null;
+      renderPreview();
+    });
   };
 
-  const closeDialog = (dialog) => {
-    if (dialog && typeof dialog.close === 'function' && dialog.open) {
-      dialog.close();
+  if (typeof window !== 'undefined') {
+    if (window.__templateStudioResizeHandler) {
+      window.removeEventListener('resize', window.__templateStudioResizeHandler);
     }
-  };
+    window.__templateStudioResizeHandler = handleWindowResize;
+    window.addEventListener('resize', handleWindowResize);
+  }
 
   controls.templateName.addEventListener('input', (e) => {
     state.templateName = slugify(e.target.value, 'cssgrid-template');
@@ -168,18 +173,7 @@ export function attachControlHandlers(controls, renderPreview, renderSnippet, re
 
   if (controls.importMdxBtn && controls.mdxFileInput) {
     controls.importMdxBtn.addEventListener('click', () => {
-      if (!showDialog(controls.mdxImportDialog)) {
-        controls.mdxFileInput.click();
-      }
-    });
-
-    controls.confirmImportMdx?.addEventListener('click', () => {
-      closeDialog(controls.mdxImportDialog);
       controls.mdxFileInput.click();
-    });
-
-    controls.cancelImportMdx?.addEventListener('click', () => {
-      closeDialog(controls.mdxImportDialog);
     });
 
     controls.mdxFileInput.addEventListener('change', (e) => {
@@ -191,7 +185,6 @@ export function attachControlHandlers(controls, renderPreview, renderSnippet, re
       } catch (error) {
         alert(`Failed to import MDX file: ${error.message}`);
       } finally {
-        closeDialog(controls.mdxImportDialog);
         e.target.value = '';
       }
     });
@@ -204,32 +197,8 @@ export function attachControlHandlers(controls, renderPreview, renderSnippet, re
         return;
       }
 
-      const filename = `${slugify(state.templateName, 'cssgrid-template')}.mdx`;
-      if (
-        controls.mdxExportDialog &&
-        showDialog(controls.mdxExportDialog)
-      ) {
-        if (controls.exportFilenameDisplay) {
-          controls.exportFilenameDisplay.textContent = filename;
-        }
-        if (controls.exportRegionCount) {
-          controls.exportRegionCount.textContent = state.boxes.length;
-        }
-        controls.confirmExportMdx?.addEventListener('click', handleConfirmExport, { once: true });
-        controls.cancelExportMdx?.addEventListener('click', handleCancelExport, { once: true });
-      } else {
-        triggerDownload();
-      }
+      triggerDownload();
     });
-  }
-
-  function handleConfirmExport() {
-    closeDialog(controls.mdxExportDialog);
-    triggerDownload();
-  }
-
-  function handleCancelExport() {
-    closeDialog(controls.mdxExportDialog);
   }
 
   function triggerDownload() {
