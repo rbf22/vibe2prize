@@ -272,9 +272,37 @@ function buildMdxBody(templateName, regions) {
   return lines.join('\n');
 }
 
-export function downloadMdxFile(state) {
+export async function downloadMdxFile(state) {
   const { source, filename } = buildMdxSource(state);
   const blob = new Blob([source], { type: 'text/mdx;charset=utf-8' });
+
+  if (typeof window !== 'undefined' && typeof window.showSaveFilePicker === 'function') {
+    try {
+      const handle = await window.showSaveFilePicker({
+        suggestedName: filename,
+        types: [
+          {
+            description: 'MDX Template',
+            accept: {
+              'text/mdx': ['.mdx'],
+              'text/plain': ['.mdx']
+            }
+          }
+        ]
+      });
+      const writable = await handle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+      return;
+    } catch (error) {
+      if (error?.name === 'AbortError') {
+        console.info('MDX export cancelled by user');
+        return;
+      }
+      console.warn('Failed to use save file picker, falling back to automatic download.', error);
+    }
+  }
+
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;

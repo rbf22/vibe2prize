@@ -20,6 +20,14 @@ const ROLE_DEFINITIONS = {
     inputType: 'text',
     fieldTypes: ['secondary-title']
   },
+  'section-title': {
+    synonyms: ['section heading', 'module title', 'category title', 'subsection heading'],
+    level: 2,
+    description: 'Heading that introduces a new section or content block within the slide',
+    characteristics: ['transitional', 'organizational', 'informative'],
+    inputType: 'text',
+    fieldTypes: ['section-title']
+  },
   'supporting-text': { 
     synonyms: ['paragraph', 'description', 'explanation', 'content'], 
     level: 3,
@@ -52,6 +60,14 @@ const ROLE_DEFINITIONS = {
     inputType: 'image',
     fieldTypes: ['visual-aid']
   },
+  'logo': {
+    synonyms: ['brand mark', 'brand logo', 'company logo', 'symbol'],
+    level: 2,
+    description: 'Represents a company or product identity element displayed on the slide',
+    characteristics: ['brand', 'visual', 'compact'],
+    inputType: 'image',
+    fieldTypes: ['logo']
+  },
   'criteria-list': { 
     synonyms: ['checklist', 'requirements', 'conditions', 'standards'], 
     level: 2,
@@ -75,6 +91,24 @@ const ROLE_DEFINITIONS = {
     characteristics: ['citational', 'supporting', 'optional'],
     inputType: 'text',
     fieldTypes: ['reference']
+  },
+  'footer': {
+    synonyms: ['footer', 'closing section', 'contact strip', 'footnote area'],
+    level: 4,
+    description: 'Bottom strip of the slide containing navigational or legal info',
+    characteristics: ['persistent', 'structural', 'low-contrast'],
+    required: false,
+    inputType: 'text',
+    fieldTypes: ['footer']
+  },
+  'page-number': {
+    synonyms: ['pagination', 'slide number', 'page count'],
+    level: 4,
+    description: 'Numeric indicator showing the slide position in the deck',
+    characteristics: ['utility', 'compact', 'consistent'],
+    required: false,
+    inputType: 'text',
+    fieldTypes: ['page-number']
   }
 };
 

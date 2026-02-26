@@ -201,9 +201,9 @@ export function attachControlHandlers(controls, renderPreview, renderSnippet, re
     });
   }
 
-  function triggerDownload() {
+  async function triggerDownload() {
     try {
-      downloadMdxFile(state);
+      await downloadMdxFile(state);
     } catch (error) {
       console.error('Failed to export MDX', error);
       alert('Failed to export MDX. Please check your template metadata.');
