@@ -132,6 +132,7 @@ export function buildFrontmatterFromState(state) {
     layout,
     exclusions,
     regions,
+    brand: state.brand ? { id: state.brand.id, variant: state.brand.variant } : undefined
   };
 
   validateFrontmatter(frontmatter);
@@ -227,12 +228,21 @@ function serializeExclusions(exclusions) {
   return lines.join('\n');
 }
 
+function serializeBrand(brand) {
+  if (!brand || typeof brand !== 'object') return '';
+  const lines = ['brand:'];
+  lines.push(`  id: ${quote(brand.id || '')}`);
+  lines.push(`  variant: ${quote(brand.variant || '')}`);
+  return lines.join('\n');
+}
+
 export function buildMdxSource(state) {
   const frontmatter = buildFrontmatterFromState(state);
   const layoutYaml = serializeLayout(frontmatter.layout);
   const regionsYaml = serializeRegions(frontmatter.regions);
   const templateSettingsYaml = serializeTemplateSettings(frontmatter.templateSettings);
   const exclusionsYaml = serializeExclusions(frontmatter.exclusions);
+  const brandYaml = serializeBrand(frontmatter.brand);
   const frontmatterYaml = [
     '---',
     `title: ${quote(frontmatter.title)}`,
@@ -241,6 +251,7 @@ export function buildMdxSource(state) {
     templateSettingsYaml,
     layoutYaml,
     exclusionsYaml,
+    brandYaml,
     regionsYaml,
     '---',
   ].join('\n');

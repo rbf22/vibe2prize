@@ -176,11 +176,16 @@ Content body.
   it('should apply template settings and exclusions from imported frontmatter to state', async () => {
     const mdxContent = `---
 title: Responsive Template
+maxWords: 200
+phase: design
 layout:
+  type: grid
   template: responsive-template
-  rows: 24
-  columns: 36
-  gap: 2rem
+  components:
+    - type: GridArea
+      id: hero
+      role: hero
+      area: hero
 templateSettings:
   canvasWidth: 1440
   canvasHeight: 900
@@ -222,5 +227,35 @@ regions:
     const [hero] = state.boxes;
     assert.strictEqual(hero.gridY, 2);
     assert.strictEqual(hero.gridHeight, 8);
+  });
+
+  it('should apply brand metadata from frontmatter to state', async () => {
+    const mdxContent = `---
+title: Brand Template
+maxWords: 120
+phase: concept
+layout:
+  type: grid
+  template: brand-template
+  components:
+    - type: GridArea
+      id: header
+      role: hero
+      area: header
+regions:
+  - id: header
+    area: header
+    role: hero
+brand:
+  id: epam
+  variant: dark
+---
+
+# Brand Header
+`;
+
+    const result = await importMDXContent(mdxContent);
+    assert(result.success);
+    assert.deepStrictEqual(state.brand, { id: 'epam', variant: 'dark' });
   });
 });

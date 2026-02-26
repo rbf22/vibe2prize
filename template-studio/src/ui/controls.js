@@ -2,6 +2,7 @@ import { state } from '../state.js';
 import { downloadMdxFile } from '../persistence/mdx.js';
 import { importMDXFile } from '../persistence/importer.js';
 import { applyRoleMetadataToBox, getRoleForPreset } from './semantic-presets.js';
+import { applyBrandTheme, listBrandOptions, listBrandThemeOptions, getBrandSnapshot, emitBrandStateChanged } from '../branding/brands.js';
 
 export function slugify(value, fallback) {
   const slug = value
@@ -216,6 +217,8 @@ export function attachControlHandlers(controls, renderPreview, renderSnippet, re
     });
   }
 
+  initializeBrandControls();
+
   // Exclusion controls
   if (controls.exclusions) {
     Object.keys(controls.exclusions).forEach(key => {
@@ -273,6 +276,122 @@ export function attachControlHandlers(controls, renderPreview, renderSnippet, re
         );
       });
     });
+  }
+
+  function initializeBrandControls() {
+    if (!controls.brandSelect || !controls.brandThemeSelect) return;
+
+    populateBrandOptions();
+    populateThemeOptions(state.brand?.id);
+    updateBrandPanel();
+
+    controls.brandSelect.addEventListener('change', (event) => {
+      const selectedBrand = event.target.value;
+      const themeOptions = listBrandThemeOptions(selectedBrand);
+      const defaultVariant = themeOptions[0]?.id || 'dark';
+      setBrandState(selectedBrand, defaultVariant);
+      populateThemeOptions(selectedBrand);
+      controls.brandThemeSelect.value = state.brand?.variant || defaultVariant;
+    });
+
+    controls.brandThemeSelect.addEventListener('change', (event) => {
+      const variant = event.target.value;
+      setBrandState(state.brand?.id || controls.brandSelect.value, variant);
+    });
+
+    document.addEventListener('brandStateChanged', () => {
+      populateBrandOptions();
+      populateThemeOptions(state.brand?.id);
+      controls.brandSelect.value = state.brand?.id || controls.brandSelect.value;
+      controls.brandThemeSelect.value = state.brand?.variant || controls.brandThemeSelect.value;
+      updateBrandPanel();
+    });
+  }
+
+  function populateBrandOptions() {
+    if (!controls.brandSelect) return;
+    const options = listBrandOptions();
+    controls.brandSelect.innerHTML = options
+      .map(({ id, label }) => `<option value="${id}">${label}</option>`)
+      .join('');
+    if (state.brand?.id) {
+      controls.brandSelect.value = state.brand.id;
+    }
+  }
+
+  function populateThemeOptions(brandId) {
+    if (!controls.brandThemeSelect) return;
+    const themes = listBrandThemeOptions(brandId);
+    controls.brandThemeSelect.innerHTML = themes
+      .map(({ id, label }) => `<option value="${id}">${label}</option>`)
+      .join('');
+    const desiredVariant = state.brand?.variant;
+    controls.brandThemeSelect.value = themes.some(({ id }) => id === desiredVariant)
+      ? desiredVariant
+      : themes[0]?.id;
+  }
+
+  function setBrandState(brandId, variantId) {
+    if (!brandId) return;
+    const applied = applyBrandTheme(brandId, variantId);
+    state.brand = {
+      id: applied?.brandId || brandId,
+      variant: applied?.variant || variantId
+    };
+    emitBrandStateChanged(state.brand);
+    updateBrandPanel();
+  }
+
+  function updateBrandPanel() {
+    const snapshot = getBrandSnapshot(state.brand?.id, state.brand?.variant);
+    if (!snapshot) return;
+
+    if (controls.brandLabel) {
+      controls.brandLabel.textContent = snapshot.label || snapshot.id;
+    }
+
+    if (controls.brandVariantLabel) {
+      const variantLabel = snapshot.theme ? `${snapshot.theme.charAt(0).toUpperCase()}${snapshot.theme.slice(1)}` : 'Default';
+      controls.brandVariantLabel.textContent = `${variantLabel} Theme`;
+    }
+
+    if (controls.brandLogo) {
+      const variantKey = snapshot.theme === 'light' ? 'light' : 'dark';
+      const fallbackKey = variantKey === 'light' ? 'dark' : 'light';
+      const logoSrc = snapshot.assets?.logo?.[variantKey] || snapshot.assets?.logo?.[fallbackKey] || '';
+      if (logoSrc) {
+        controls.brandLogo.src = logoSrc;
+        controls.brandLogo.hidden = false;
+      } else {
+        controls.brandLogo.hidden = true;
+      }
+    }
+
+    if (controls.brandTokens) {
+      const palette = snapshot.tokens?.palette;
+      if (palette) {
+        controls.brandTokens.innerHTML = Object.entries(palette)
+          .map(([tokenName, value]) => (
+            `<div class="brand-token">
+              <span class="brand-token-swatch" style="background:${value}"></span>
+              <div class="brand-token-meta">
+                <span class="brand-token-name">${tokenName}</span>
+                <span class="brand-token-value">${value}</span>
+              </div>
+            </div>`
+          ))
+          .join('');
+      } else {
+        controls.brandTokens.innerHTML = '<p class="brand-token-empty">No palette metadata</p>';
+      }
+    }
+
+    if (controls.brandEditorialList) {
+      const themes = snapshot.editorialThemes || [];
+      controls.brandEditorialList.innerHTML = themes
+        .map((theme) => `<li>${theme}</li>`)
+        .join('');
+    }
   }
 }
 

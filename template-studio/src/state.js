@@ -1,3 +1,5 @@
+import { applyBrandTheme, emitBrandStateChanged } from './branding/brands.js';
+
 const DEFAULT_STATE = {
   templateName: 'cssgrid-template',
   canvasWidth: 1920,
@@ -29,6 +31,10 @@ const DEFAULT_STATE = {
     bottom: 0,
     left: 0,
     right: 0
+  },
+  brand: {
+    id: 'epam',
+    variant: 'dark'
   }
 };
 
@@ -62,7 +68,8 @@ function snapshotState() {
     metadata: Object.fromEntries(
       Object.entries(state.metadata).map(([id, metadata]) => [id, { ...metadata }])
     ),
-    selectedBoxId: state.selectedBoxId || null
+    selectedBoxId: state.selectedBoxId || null,
+    brand: state.brand ? { ...state.brand } : null
   };
 }
 
@@ -93,6 +100,14 @@ export function restoreSnapshot(snapshot) {
     state.metadata[box.id] = box.metadata;
   });
   state.selectedBoxId = snapshot.selectedBoxId || null;
+  if (snapshot.brand) {
+    const applied = applyBrandTheme(snapshot.brand.id, snapshot.brand.variant);
+    state.brand = {
+      id: applied?.brandId || snapshot.brand.id,
+      variant: applied?.variant || snapshot.brand.variant
+    };
+    emitBrandStateChanged(state.brand);
+  }
 }
 
 export function handleUndo() {

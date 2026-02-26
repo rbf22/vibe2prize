@@ -65,6 +65,34 @@
           <input id="gridGap" type="text" value="1.5rem" />
         </label>
 
+        <div class="brand-panel">
+          <div class="brand-identity">
+            <img id="brandLogo" class="brand-logo" alt="Brand logo" loading="lazy" />
+            <div class="brand-identity-meta">
+              <span class="eyebrow">Organization</span>
+              <strong id="brandLabel">EPAM Systems</strong>
+              <span id="brandVariantLabel" class="brand-variant">Dark Theme</span>
+            </div>
+          </div>
+
+          <label>
+            Brand
+            <select id="brandSelect"></select>
+          </label>
+
+          <label>
+            Theme
+            <select id="brandThemeSelect"></select>
+          </label>
+
+          <div class="brand-token-list" id="brandTokens"></div>
+
+          <div class="brand-editorial">
+            <span class="eyebrow">Editorial Themes</span>
+            <ul id="brandEditorialList"></ul>
+          </div>
+        </div>
+
         <div class="import-controls">
           <button type="button" class="import-btn" id="importMdxBtn">Import MDX</button>
           <input type="file" id="mdxFileInput" accept=".mdx" style="display: none;" />
@@ -206,6 +234,13 @@
             importMdxBtn: document.getElementById('importMdxBtn'),
             mdxFileInput: document.getElementById('mdxFileInput'),
             deleteSelectedBtn: document.getElementById('deleteSelectedBtn'),
+            brandSelect: document.getElementById('brandSelect'),
+            brandThemeSelect: document.getElementById('brandThemeSelect'),
+            brandLogo: document.getElementById('brandLogo'),
+            brandLabel: document.getElementById('brandLabel'),
+            brandVariantLabel: document.getElementById('brandVariantLabel'),
+            brandTokens: document.getElementById('brandTokens'),
+            brandEditorialList: document.getElementById('brandEditorialList'),
             exclusions: {
               top: document.getElementById('exclusionTop'),
               bottom: document.getElementById('exclusionBottom'),

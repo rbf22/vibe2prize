@@ -29,6 +29,7 @@ import {
 import { renderRegionsTable, addNewRegion, clearAllRegions } from './ui/regions-table.js';
 import { importMDXFile, parseMDXFrontmatter } from './persistence/importer.js';
 import { renderSnippet } from './utils/snippet.js';
+import { applyBrandTheme, listBrandOptions, listBrandThemeOptions, getBrandSnapshot } from './branding/brands.js';
 
 // Re-export for HTML script usage
 export { 
@@ -66,13 +67,18 @@ export {
   importMDXFile,
   parseMDXFrontmatter,
   renderSnippet,
-  DRAW_DRAG_THRESHOLD
+  DRAW_DRAG_THRESHOLD,
+  applyBrandTheme,
+  listBrandOptions,
+  listBrandThemeOptions,
+  getBrandSnapshot
 };
 
 // Entry point for Template Studio when loaded as an ESM
 export function init() {
   // Capture initial state so the first undo has a baseline
   pushHistory();
+  applyBrandTheme(state.brand?.id, state.brand?.variant);
   
   // Set up global references
   window.TemplateStudio = {
@@ -106,7 +112,11 @@ export function init() {
     handleRedo,
     captureHistoryForInteraction,
     resetInteractionHistory,
-    downloadMdxFile
+    downloadMdxFile,
+    applyBrandTheme,
+    listBrandOptions,
+    listBrandThemeOptions,
+    getBrandSnapshot
   };
 
   window.TemplateStudio.__initialized = true;

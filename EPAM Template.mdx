@@ -1,0 +1,160 @@
+---
+title: "Cssgrid Template"
+maxWords: 280
+phase: "draft"
+templateSettings:
+  canvasWidth: 1920
+  canvasHeight: 1080
+  columns: 80
+  rows: 45
+  columnSize: "1fr"
+  rowSize: "1fr"
+  gap: "0.5rem"
+layout:
+  type: "grid-designer"
+  template: "Cssgrid Template"
+  components:
+    - type: "GridArea"
+      id: "box-1772058884696-pi8duifqp"
+      role: "section-title"
+      area: "section-title"
+    - type: "GridArea"
+      id: "box-1772071011383-yo94o8r0s"
+      role: "primary-title"
+      area: "primary-title"
+    - type: "GridArea"
+      id: "box-1772071044516-yyezx4cfz"
+      role: "secondary-title"
+      area: "secondary-title"
+    - type: "GridArea"
+      id: "box-1772071056583-97wzq0wkd"
+      role: "logo"
+      area: "logo"
+    - type: "GridArea"
+      id: "box-1772071064983-v9d1n2zdx"
+      role: "page-number"
+      area: "page-number"
+    - type: "GridArea"
+      id: "box-1772071078466-swm6wtm18"
+      role: "footer"
+      area: "footer"
+  rows: 45
+  columns: 80
+  gap: "0.5rem"
+exclusions:
+  top: 5
+  bottom: 3
+  left: 1
+  right: 1
+brand:
+  id: "epam"
+  variant: "dark"
+regions:
+  - id: "box-1772058884696-pi8duifqp"
+    area: "section-title"
+    role: "section-title"
+    required: false
+    inputType: "text"
+    type: "section-title"
+    fieldTypes:
+      - "section-title"
+    llmHint: "Heading that introduces a new section or content block within the slide Key traits: transitional, organizational, informative."
+    grid:
+      x: 1
+      y: 1
+      width: 39
+      height: 1
+  - id: "box-1772071011383-yo94o8r0s"
+    area: "primary-title"
+    role: "primary-title"
+    required: true
+    inputType: "text"
+    type: "primary-title"
+    fieldTypes:
+      - "primary-title"
+    llmHint: "Main heading of the slide, most important text element Key traits: short, impactful, top-level."
+    grid:
+      x: 1
+      y: 2
+      width: 52
+      height: 2
+  - id: "box-1772071044516-yyezx4cfz"
+    area: "secondary-title"
+    role: "secondary-title"
+    required: false
+    inputType: "text"
+    type: "secondary-title"
+    fieldTypes:
+      - "secondary-title"
+    llmHint: "Secondary heading that provides context or elaboration Key traits: descriptive, supporting, contextual."
+    grid:
+      x: 1
+      y: 4
+      width: 52
+      height: 1
+  - id: "box-1772071056583-97wzq0wkd"
+    area: "logo"
+    role: "logo"
+    required: true
+    inputType: "image"
+    type: "logo"
+    fieldTypes:
+      - "logo"
+    llmHint: "Represents a company or product identity element displayed on the slide Key traits: brand, visual, compact."
+    grid:
+      x: 1
+      y: 42
+      width: 8
+      height: 2
+  - id: "box-1772071064983-v9d1n2zdx"
+    area: "page-number"
+    role: "page-number"
+    required: true
+    inputType: "text"
+    type: "page-number"
+    fieldTypes:
+      - "page-number"
+    llmHint: "Numeric indicator showing the slide position in the deck Key traits: utility, compact, consistent."
+    grid:
+      x: 71
+      y: 42
+      width: 8
+      height: 2
+  - id: "box-1772071078466-swm6wtm18"
+    area: "footer"
+    role: "footer"
+    required: true
+    inputType: "text"
+    type: "footer"
+    fieldTypes:
+      - "footer"
+    llmHint: "Bottom strip of the slide containing navigational or legal info Key traits: persistent, structural, low-contrast."
+    grid:
+      x: 27
+      y: 43
+      width: 26
+      height: 1
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../core/layout/components.js";
+
+<GridDesigner template="Cssgrid Template">
+  <GridArea area="section-title" contentType="section-title" importance="supporting">
+    <ContentRenderer type="section-title" content={""} />
+  </GridArea>
+  <GridArea area="primary-title" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content={""} />
+  </GridArea>
+  <GridArea area="secondary-title" contentType="secondary-title" importance="supporting">
+    <ContentRenderer type="secondary-title" content={""} />
+  </GridArea>
+  <GridArea area="logo" contentType="logo" importance="critical">
+    <ContentRenderer type="logo" content={""} />
+  </GridArea>
+  <GridArea area="page-number" contentType="page-number" importance="critical">
+    <ContentRenderer type="page-number" content={""} />
+  </GridArea>
+  <GridArea area="footer" contentType="footer" importance="critical">
+    <ContentRenderer type="footer" content={""} />
+  </GridArea>
+</GridDesigner>

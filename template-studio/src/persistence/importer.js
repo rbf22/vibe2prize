@@ -1,4 +1,5 @@
 import { state, pushHistory } from '../state.js';
+import { applyBrandTheme, emitBrandStateChanged } from '../branding/brands.js';
 import { validateFrontmatter } from '../../../core/mdx/schema.js';
 
 const FRONTMATTER_REGEX = /^---\s*\n([\s\S]*?)\n---/;
@@ -209,9 +210,9 @@ function getInputById(id) {
   return document.getElementById(id);
 }
 
-function applyFrontmatterToState(frontmatter) {
+export function applyFrontmatterToState(frontmatter) {
   pushHistory();
-  const { layout = {}, regions = [], templateSettings = {}, exclusions = {} } = frontmatter || {};
+  const { layout = {}, regions = [], templateSettings = {}, exclusions = {}, brand: brandInput } = frontmatter || {};
 
   const updateInputValue = (id, value) => {
     const input = getInputById(id);
@@ -261,6 +262,15 @@ function applyFrontmatterToState(frontmatter) {
   if (typeof templateSettings?.rowSize === 'string') {
     state.rowSize = templateSettings.rowSize;
     updateInputValue('rowSize', state.rowSize);
+  }
+
+  if (brandInput && typeof brandInput === 'object') {
+    const applied = applyBrandTheme(brandInput.id, brandInput.variant);
+    state.brand = {
+      id: applied?.brandId || brandInput.id || state.brand?.id,
+      variant: applied?.variant || brandInput.variant || state.brand?.variant
+    };
+    emitBrandStateChanged(state.brand);
   }
 
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));

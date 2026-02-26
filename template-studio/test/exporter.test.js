@@ -174,6 +174,40 @@ describe('MDX Exporter', () => {
     assert.strictEqual(region.llmHint, 'Data visualization area');
   });
 
+  it('should include brand metadata when present', () => {
+    const state = {
+      templateName: 'brand-test',
+      canvasWidth: 1920,
+      canvasHeight: 1080,
+      columns: 4,
+      rows: 4,
+      columnSize: '1fr',
+      rowSize: '1fr',
+      gap: '1rem',
+      brand: { id: 'epam', variant: 'light' },
+      boxes: [
+        {
+          id: 'box-1',
+          name: 'brand-region',
+          gridX: 0,
+          gridY: 0,
+          gridWidth: 2,
+          gridHeight: 2,
+          metadata: {
+            required: true,
+            inputType: 'text',
+            fieldTypes: ['supporting-text'],
+            llmHint: 'Brand aware content'
+          }
+        }
+      ]
+    };
+
+    const result = buildMdxSource(state);
+    assert.deepStrictEqual(result.frontmatter.brand, { id: 'epam', variant: 'light' });
+    assert(result.source.includes('brand:\n  id: "epam"\n  variant: "light"'));
+  });
+
   it('should validate generated frontmatter against shared schema', () => {
     const state = {
       templateName: 'validation-test',
