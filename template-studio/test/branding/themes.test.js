@@ -1,17 +1,18 @@
-import { describe, it, beforeEach, afterEach } from 'node:test';
+import { describe, it, beforeEach, before, afterEach } from 'node:test';
 import assert from 'node:assert';
 import path from 'node:path';
 import fs from 'fs/promises';
-import { installGlobalDom } from '../helpers/dom-env.js';
+import { installGlobalDom, cleanupDomEnvironment } from '../helpers/dom-env.js';
 import { applyBrandTheme } from '../../src/branding/brands.js';
 
+// Use a simple guard to prevent duplicate registration
 const BRAND_TESTS_GUARD = Symbol.for('templateStudio.brandTypographyTestsRegistered');
-if (globalThis[BRAND_TESTS_GUARD]) {
-  // Another loader already registered these tests; skip duplicate registration
-  return;
+if (!globalThis[BRAND_TESTS_GUARD]) {
+  globalThis[BRAND_TESTS_GUARD] = true;
+  registerBrandTypographyTests();
 }
-globalThis[BRAND_TESTS_GUARD] = true;
 
+function registerBrandTypographyTests() {
 async function readFixture(url = '') {
   const cleaned = url.startsWith('/') ? url.slice(1) : url;
   const absolute = path.join(process.cwd(), cleaned);
@@ -22,31 +23,15 @@ function installFetchStub(previousFetch) {
   global.fetch = async (url) => {
     const normalized = typeof url === 'string' ? url : url?.toString?.() || '';
     try {
-      const body = await readFixture(normalized);
-      return {
-        ok: true,
-        status: 200,
-        statusText: 'OK',
-        json: async () => JSON.parse(body),
-        text: async () => body
-      };
-    } catch (error) {
-      return {
-        ok: false,
-        status: 404,
-        statusText: 'Not Found',
-        json: async () => { throw error; },
-        text: async () => { throw error; }
-      };
+      const json = await readFixture(normalized);
+      return { ok: true, json: () => JSON.parse(json) };
+    } catch {
+      if (previousFetch) return previousFetch(url);
+      throw new Error(`Stubbed fetch failed for ${normalized}`);
     }
   };
-
   return () => {
-    if (previousFetch) {
-      global.fetch = previousFetch;
-    } else {
-      delete global.fetch;
-    }
+    global.fetch = previousFetch;
   };
 }
 
@@ -61,8 +46,15 @@ describe('Brand typography tokens', () => {
     rootEl.style.cssText = '';
   }
 
+  before(() => {
+    // Create a single DOM for the entire test file
+    const domResult = installGlobalDom('<html><body><div id="root"></div></body></html>');
+    documentRef = domResult.document;
+  });
+
   beforeEach(() => {
-    ({ document: documentRef } = installGlobalDom('<html><body><div id="root"></div></body></html>'));
+    // Reset DOM content before each test
+    documentRef.body.innerHTML = '<div id="root"></div>';
     resetRootAttributes(documentRef.documentElement);
     restoreFetch = installFetchStub(global.fetch);
   });
@@ -106,3 +98,4 @@ describe('Brand typography tokens', () => {
     assert.strictEqual(root.style.getPropertyValue('--role-logo-font-size').trim(), '6px');
   });
 });
+}

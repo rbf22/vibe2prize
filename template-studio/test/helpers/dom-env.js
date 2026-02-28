@@ -1,6 +1,5 @@
 import { JSDOM, VirtualConsole } from 'jsdom';
 
-const GLOBAL_KEY = Symbol.for('templateStudioDomEnvironment');
 const globalScope = globalThis;
 
 function setGlobalReference(key, value) {
@@ -61,67 +60,115 @@ function setGlobalValue(key, value) {
   }
 }
 
-function ensureDomEnvironment() {
-  if (globalScope[GLOBAL_KEY]) {
-    return globalScope[GLOBAL_KEY];
-  }
+let currentDom = null;
+let currentVirtualConsole = null;
+let sharedDom = null;
 
-  let dom;
-  let virtualConsole = null;
-
-  const hasExistingWindow = typeof globalScope.window !== 'undefined' && globalScope.window.document;
-  if (hasExistingWindow) {
-    dom = { window: globalScope.window };
-  } else {
-    virtualConsole = new VirtualConsole();
-    dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+// Initialize a shared DOM for backward compatibility
+function ensureSharedDom() {
+  if (!sharedDom) {
+    const virtualConsole = new VirtualConsole();
+    sharedDom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
       url: 'http://localhost',
       pretendToBeVisual: true,
       resources: 'usable',
       virtualConsole
     });
   }
+  return sharedDom;
+}
 
-  globalScope.alert = globalScope.alert || (() => {});
-  globalScope.confirm = globalScope.confirm || (() => true);
-  globalScope.prompt = globalScope.prompt || (() => '');
+// Initialize shared DOM and globals immediately
+ensureSharedDom();
 
-  globalScope[GLOBAL_KEY] = { dom, virtualConsole };
-  return globalScope[GLOBAL_KEY];
+function installGlobals(domInstance) {
+  const { window } = domInstance;
+  const { document, navigator } = window;
+  
+  // Set up alert/confirm/prompt
+  window.alert = window.alert || (() => {});
+  window.confirm = window.confirm || (() => true);
+  window.prompt = window.prompt || (() => '');
+
+  // Install globals
+  setGlobalReference('window', window);
+  setGlobalReference('document', document);
+  setGlobalReference('navigator', navigator);
+  setGlobalValue('HTMLElement', window.HTMLElement);
+  setGlobalValue('Element', window.Element);
+  setGlobalValue('Node', window.Node);
+  setGlobalValue('getComputedStyle', window.getComputedStyle.bind(window));
+  setGlobalValue('CustomEvent', window.CustomEvent);
+  setGlobalValue('Event', window.Event);
+  setGlobalValue('alert', window.alert);
+  setGlobalValue('confirm', window.confirm);
+  setGlobalValue('prompt', window.prompt);
+}
+
+// Install shared DOM globals initially
+installGlobals(sharedDom);
+
+export function createFreshDom(html = '<!DOCTYPE html><html><body></body></html>') {
+  // Clean up any existing isolated DOM
+  if (currentDom) {
+    currentDom.window.close();
+    currentDom = null;
+  }
+  if (currentVirtualConsole) {
+    currentVirtualConsole = null;
+  }
+
+  // Create new DOM instance
+  currentVirtualConsole = new VirtualConsole();
+  currentDom = new JSDOM(html, {
+    url: 'http://localhost',
+    pretendToBeVisual: true,
+    resources: 'usable',
+    virtualConsole: currentVirtualConsole
+  });
+
+  // Install globals from the new DOM
+  installGlobals(currentDom);
+
+  const { window } = currentDom;
+  const { document, navigator } = window;
+
+  return { window, document, defaultView: window };
 }
 
 export function installGlobalDom(html) {
-  const { dom } = ensureDomEnvironment();
-  const { document, navigator } = dom.window;
-  if (typeof html === 'string') {
-    document.documentElement.innerHTML = html;
-  }
-  dom.window.alert = dom.window.alert || (() => {});
-  dom.window.confirm = dom.window.confirm || (() => true);
-  dom.window.prompt = dom.window.prompt || (() => '');
-  setGlobalReference('window', dom.window);
-  setGlobalReference('document', document);
-  setGlobalReference('navigator', navigator);
-  setGlobalValue('HTMLElement', dom.window.HTMLElement);
-  setGlobalValue('Element', dom.window.Element);
-  setGlobalValue('Node', dom.window.Node);
-  setGlobalValue('getComputedStyle', dom.window.getComputedStyle.bind(dom.window));
-  setGlobalValue('CustomEvent', dom.window.CustomEvent);
-  setGlobalValue('Event', dom.window.Event);
-  setGlobalValue('alert', dom.window.alert);
-  setGlobalValue('confirm', dom.window.confirm);
-  setGlobalValue('prompt', dom.window.prompt);
-  return { window: dom.window, document, defaultView: dom.window };
+  // Always create a fresh DOM
+  return createFreshDom(html);
 }
 
 export function resetGlobalDom(html = '<!DOCTYPE html><html><body></body></html>') {
-  const { dom } = ensureDomEnvironment();
-  if (dom?.window?.document) {
-    dom.window.document.documentElement.innerHTML = html;
+  if (!currentDom) {
+    return createFreshDom(html);
   }
-  return { window: dom.window, document: dom.window.document, defaultView: dom.window };
+  
+  // Reset the existing DOM's content
+  currentDom.window.document.documentElement.innerHTML = html;
+  setGlobalReference('document', currentDom.window.document);
+  
+  return { window: currentDom.window, document: currentDom.window.document, defaultView: currentDom.window };
 }
 
-const { dom, virtualConsole } = ensureDomEnvironment();
+export function cleanupDomEnvironment() {
+  // Full cleanup - close and nullify the isolated DOM
+  if (currentDom) {
+    try {
+      currentDom.window.close();
+    } catch (e) {
+      // Ignore cleanup errors
+    }
+    currentDom = null;
+  }
+  currentVirtualConsole = null;
+  
+  // Restore shared DOM globals
+  installGlobals(sharedDom);
+}
 
-export { dom, virtualConsole };
+// Legacy exports for backward compatibility
+export const dom = sharedDom;
+export const virtualConsole = sharedDom.window.console;
