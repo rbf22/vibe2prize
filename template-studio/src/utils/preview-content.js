@@ -1,3 +1,5 @@
+import { getTableStyleConfig, styleObjectToCss } from './shared-styles.js';
+
 const ROLE_TITLES = {
   'primary-title': 'Primary Title',
   'secondary-title': 'Secondary Insight',
@@ -119,41 +121,56 @@ export function createImagePlaceholder(role) {
   return figure;
 }
 
-export function buildTablePreview(metadata = {}) {
-  const previewTable = metadata.previewTable;
-  const columns = Array.isArray(previewTable?.columns) && previewTable.columns.length
-    ? previewTable.columns
-    : DEFAULT_TABLE_COLUMNS;
-  const rows = Array.isArray(previewTable?.rows) && previewTable.rows.length
-    ? previewTable.rows
-    : DEFAULT_TABLE_ROWS;
+export function buildTablePreview({ metadata = {}, scale = 1, brandSnapshot } = {}) {
+  const { columns, rows } = getPreviewTableData(metadata);
+  const styleConfig = getTableStyleConfig({ scale, brandSnapshot });
 
   const table = document.createElement('table');
   table.className = 'slide-preview-table';
+  table.style.cssText = styleObjectToCss(styleConfig.table);
 
   const thead = document.createElement('thead');
   const headerRow = document.createElement('tr');
   columns.forEach((column) => {
     const th = document.createElement('th');
     th.textContent = column;
+    th.style.cssText = styleObjectToCss(styleConfig.headCell);
     headerRow.appendChild(th);
   });
   thead.appendChild(headerRow);
   table.appendChild(thead);
 
   const tbody = document.createElement('tbody');
-  rows.forEach((row) => {
+  rows.forEach((row, rowIndex) => {
     const tr = document.createElement('tr');
     row.forEach((cell) => {
       const td = document.createElement('td');
       td.textContent = cell;
+      td.style.cssText = styleObjectToCss(styleConfig.bodyCell);
       tr.appendChild(td);
     });
+    // Remove bottom border on final row to mimic CSS rule
+    if (rowIndex === rows.length - 1) {
+      tr.querySelectorAll('td').forEach((td) => {
+        td.style.borderBottom = 'none';
+      });
+    }
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
 
   return table;
+}
+
+export function getPreviewTableData(metadata = {}) {
+  const previewTable = metadata?.previewTable;
+  const columns = Array.isArray(previewTable?.columns) && previewTable.columns.length
+    ? previewTable.columns
+    : DEFAULT_TABLE_COLUMNS;
+  const rows = Array.isArray(previewTable?.rows) && previewTable.rows.length
+    ? previewTable.rows
+    : DEFAULT_TABLE_ROWS;
+  return { columns, rows };
 }
 
 export { ROLE_TITLES, ROLE_COPY, IMAGE_ROLES };

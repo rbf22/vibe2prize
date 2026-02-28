@@ -2,6 +2,7 @@ import { state, pushHistory, captureHistoryForInteraction, resetInteractionHisto
 import { downloadMdxFile } from './persistence/mdx.js';
 import { renderPreview } from './canvas/renderer.js';
 import { renderSlidePreview } from './canvas/rendered-view.js';
+import { renderProductionSlide, cleanupProductionRender } from './canvas/production-renderer.js';
 import { renderGuides } from './canvas/guides.js';
 import { 
   isEditableTarget, 
@@ -99,6 +100,8 @@ export {
   downloadMdxFile,
   renderPreview,
   renderSlidePreview,
+  renderProductionSlide,
+  cleanupProductionRender,
   renderGuides,
   isEditableTarget,
   hasOverlap,
@@ -146,6 +149,8 @@ export function init() {
     state,
     renderPreview,
     renderSlidePreview,
+    renderProductionSlide,
+    cleanupProductionRender,
     renderGuides,
     renderRegionsTable,
     renderSnippet,

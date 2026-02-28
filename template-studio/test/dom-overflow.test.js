@@ -1,5 +1,11 @@
 import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert';
+import { isImageRole } from '../src/utils/preview-content.js';
+
+// Set up utils for the shared module
+if (typeof global.window !== 'undefined') {
+  global.window.__templateStudioUtils = { isImageRole };
+}
 
 import {
   shouldMeasureDomOverflow,
@@ -22,7 +28,7 @@ describe('DOM overflow helpers', () => {
       assert.strictEqual(shouldMeasureDomOverflow('supporting-text', 'text'), true);
       assert.strictEqual(shouldMeasureDomOverflow('logo', 'text'), false);
       assert.strictEqual(shouldMeasureDomOverflow('anything', 'image'), false);
-      assert.strictEqual(shouldMeasureDomOverflow('page-number', 'text'), false);
+      assert.strictEqual(shouldMeasureDomOverflow('page-number', 'text'), true); // Now measured in browser
     });
   });
 

@@ -11,6 +11,9 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles/main.css" />
+    <!-- React and ReactDOM for production render -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   </head>
   <body>
     <header>
@@ -192,6 +195,7 @@
           <div class="preview-toggle" role="group" aria-label="Preview view toggle">
             <button type="button" class="preview-toggle-btn active" data-preview-view="canvas">Grid Canvas</button>
             <button type="button" class="preview-toggle-btn" data-preview-view="slide">Rendered Slide</button>
+            <button type="button" class="preview-toggle-btn" data-preview-view="production">Production Render</button>
           </div>
           <div class="preview-toggle-actions">
             <button type="button" class="import-btn" id="importMdxBtn">Import MDX</button>
@@ -205,6 +209,9 @@
           </div>
           <div class="slide-preview-panel" id="slidePreviewPanel">
             <div id="slidePreview" class="slide-preview-surface"></div>
+          </div>
+          <div class="production-preview-panel" id="productionPreviewPanel">
+            <div id="productionPreview" class="production-preview-surface"></div>
           </div>
         </div>
         <div class="grid-info">Click and drag to draw regions. Click regions to edit metadata.</div>
@@ -287,6 +294,7 @@
           const guideLayer = document.getElementById('guideLayer');
           const canvasContainer = document.getElementById('canvasContainer');
           const slidePreview = document.getElementById('slidePreview');
+          const productionPreview = document.getElementById('productionPreview');
           const workbench = document.getElementById('previewWorkbench');
           const previewToggleButtons = Array.from(document.querySelectorAll('.preview-toggle-btn'));
           const diagnosticsBody = document.getElementById('diagnosticsBody');
@@ -300,6 +308,7 @@
           const renderAll = () => {
             renderCanvas();
             TemplateStudio.renderSlidePreview(slidePreview);
+            TemplateStudio.renderProductionSlide(productionPreview);
           };
           const controls = {
             templateName: document.getElementById('templateName'),
@@ -314,6 +323,7 @@
             previewGrid: document.getElementById('previewGrid'),
             canvasContainer: document.getElementById('canvasContainer'),
             slidePreviewSurface: document.getElementById('slidePreview'),
+            productionPreviewSurface: document.getElementById('productionPreview'),
             presetButtons: Array.from(document.querySelectorAll('.preset-btn')),
             presetStatus: document.getElementById('presetStatus'),
             snippetOutput: document.getElementById('snippetOutput'),
@@ -422,8 +432,21 @@
               workbench.dataset.view = view;
               if (view === 'canvas') {
                 renderCanvas();
-              } else {
+              } else if (view === 'slide') {
                 TemplateStudio.renderSlidePreview(slidePreview);
+              } else if (view === 'production') {
+                // Add a delay to ensure the panel is visible and has dimensions
+                setTimeout(() => {
+                  TemplateStudio.renderProductionSlide(productionPreview);
+                  // Force another render after a delay in case the first one failed
+                  setTimeout(() => {
+                    const container = productionPreview;
+                    if (container.children.length === 0 || container.children[0].offsetWidth === 0) {
+                      console.log('Production render: First attempt failed, retrying...');
+                      TemplateStudio.renderProductionSlide(productionPreview);
+                    }
+                  }, 200);
+                }, 100);
               }
             });
           });
@@ -445,6 +468,7 @@
 
             TemplateStudio.updateSelectionControls(controls);
             TemplateStudio.renderSlidePreview(slidePreview);
+            TemplateStudio.renderProductionSlide(productionPreview);
           });
 
           document.addEventListener('keydown', (e) => {
@@ -457,6 +481,7 @@
               TemplateStudio.renderSnippet();
               TemplateStudio.updateSelectionControls(controls);
               TemplateStudio.renderSlidePreview(slidePreview);
+              TemplateStudio.renderProductionSlide(productionPreview);
             }
           });
 
@@ -494,6 +519,7 @@
             TemplateStudio.updateSelectionControls(controls);
             renderCanvas();
             TemplateStudio.renderSlidePreview(slidePreview);
+            TemplateStudio.renderProductionSlide(productionPreview);
             TemplateStudio.renderSnippet();
           });
 
@@ -529,6 +555,30 @@
           TemplateStudio.applyCanvasDimensions(controls);
           TemplateStudio.applyReferenceOverlay(controls);
           TemplateStudio.renderSlidePreview(slidePreview);
+          TemplateStudio.renderProductionSlide(productionPreview);
+        
+          // Load layout test helpers in development
+          if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            const testScript = document.createElement('script');
+            testScript.type = 'module';
+            testScript.src = './test/simple-layout-test.js';
+            document.head.appendChild(testScript);
+            
+            const resizeTestScript = document.createElement('script');
+            resizeTestScript.type = 'module';
+            resizeTestScript.src = './test/resize-behavior.test.js';
+            document.head.appendChild(resizeTestScript);
+            
+            const resizeDebugScript = document.createElement('script');
+            resizeDebugScript.type = 'module';
+            resizeDebugScript.src = './test/resize-debug.js';
+            document.head.appendChild(resizeDebugScript);
+            
+            const comprehensiveTestScript = document.createElement('script');
+            comprehensiveTestScript.type = 'module';
+            comprehensiveTestScript.src = './test/comprehensive-resize-test.js';
+            document.head.appendChild(comprehensiveTestScript);
+          }
         }
 
         const moduleScript = document.createElement('script');

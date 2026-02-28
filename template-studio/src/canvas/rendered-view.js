@@ -9,6 +9,7 @@ import {
   formatAreaLabel,
   createImagePlaceholder
 } from '../utils/preview-content.js';
+import { getRoleTypographyStyle, styleObjectToCss } from '../utils/shared-styles.js';
 import { getBrandSnapshot } from '../branding/brands.js';
 import { collectDiagnostics } from '../../../core/layout/diagnostics.js';
 import {
@@ -16,6 +17,7 @@ import {
   normalizeRendererFlags
 } from '../../../core/layout/renderer-utils.js';
 import { collectDomOverflowIssues } from './dom-overflow.js';
+const IMAGE_REGION_PADDING = '0.4rem';
 function emptyState(container) {
   container.innerHTML = '';
   const empty = document.createElement('div');
@@ -103,16 +105,20 @@ function createBrandImage({ snapshot, role }) {
   img.alt = `${snapshot.label || snapshot.id || 'Brand'} logo`;
   img.decoding = 'async';
   img.loading = 'lazy';
+  img.style.maxWidth = '100%';
+  img.style.maxHeight = '100%';
+  img.style.objectFit = 'contain';
+  img.style.display = 'block';
   return img;
 }
 
-function resolveFooterCopy({ box, role, previewText, snapshot }) {
+function resolveFooterCopy({ box, role, previewText, brandSnapshot }) {
   if (role !== 'footer') return previewText;
   const hasCustomCopy = Boolean(box?.metadata?.previewText || box?.metadata?.sampleContent);
   if (hasCustomCopy) {
     return previewText;
   }
-  return snapshot?.copy?.footer || previewText;
+  return brandSnapshot?.copy?.footer || previewText;
 }
 
 function resolvePageNumberCopy({ role, pagination }) {
@@ -120,9 +126,57 @@ function resolvePageNumberCopy({ role, pagination }) {
   return formatPageNumberLabel(pagination);
 }
 
+export function renderSlidePreview(container, resizeEntry) {
+  if (!container) {
+    return;
+  }
+  
+  // Skip if this is a resize call but we don't have valid dimensions
+  if (resizeEntry && (resizeEntry.contentRect.width <= 0 || resizeEntry.contentRect.height <= 0)) {
+    return;
+  }
+  
+  // Remove any existing resize observer (but not on resize calls to avoid infinite loop)
+  if (!resizeEntry) {
+    if (container._resizeObserver) {
+      container._resizeObserver.disconnect();
+    }
+    
+    // Debounce function to prevent excessive re-renders
+    let resizeTimeout;
+    const debouncedRender = (entry) => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        renderSlidePreview(container, entry);
+      }, 100);
+    };
+    
+    // Create resize observer to handle container resizing
+    const resizeObserver = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          // Debounce re-render on resize
+          debouncedRender(entry);
+        }
+      }
+    });
+    
+    container._resizeObserver = resizeObserver;
+    resizeObserver.observe(container);
+    
+    // Also add window resize listener as backup
+    if (!container._windowResizeHandler) {
+      container._windowResizeHandler = () => {
+        // Force a re-render on window resize
+        setTimeout(() => {
+          renderSlidePreview(container);
+        }, 50);
+      };
+      window.addEventListener('resize', container._windowResizeHandler, { passive: true });
+    }
+  }
 
-export function renderSlidePreview(container) {
-  if (!container) return;
   const boxes = state.boxes || [];
   if (!boxes.length) {
     emptyState(container);
@@ -133,9 +187,17 @@ export function renderSlidePreview(container) {
   const board = document.createElement('div');
   board.className = 'slide-preview-grid';
 
-  const containerRect = container.getBoundingClientRect();
-  const containerWidth = container.clientWidth || containerRect.width;
-  const containerHeight = container.clientHeight || containerRect.height;
+  // Get container dimensions - use resize entry if available
+  let containerWidth, containerHeight;
+  if (resizeEntry) {
+    containerWidth = resizeEntry.contentRect.width;
+    containerHeight = resizeEntry.contentRect.height;
+  } else {
+    const containerRect = container.getBoundingClientRect();
+    containerWidth = container.clientWidth || containerRect.width;
+    containerHeight = container.clientHeight || containerRect.height;
+  }
+  
   if (containerWidth <= 0 || containerHeight <= 0) {
     container.appendChild(board);
     return;
@@ -158,6 +220,8 @@ export function renderSlidePreview(container) {
   board.style.gridTemplateColumns = `repeat(${state.columns}, ${cellWidth}px)`;
   board.style.gridTemplateRows = `repeat(${state.rows}, ${cellHeight}px)`;
   board.style.gap = '0';
+  // Set scale factor for CSS to use
+  board.style.setProperty('--preview-scale', scale);
   board.dataset.previewChrome = flags.previewChrome ? 'true' : 'false';
   board.dataset.regionOutlines = flags.showRegionOutlines ? 'true' : 'false';
   container.appendChild(board);
@@ -187,8 +251,11 @@ export function renderSlidePreview(container) {
     const descriptor = diagnosticsBuffer ? buildDiagnosticsDescriptor(box, role) : null;
 
     if (role === 'data-table') {
-      region.appendChild(buildTablePreview(box.metadata));
+      region.appendChild(buildTablePreview({ metadata: box.metadata, scale, brandSnapshot }));
     } else if (inputType === 'image' || isImageRole(role)) {
+      region.style.padding = IMAGE_REGION_PADDING;
+      region.style.justifyContent = 'center';
+      region.style.alignItems = 'stretch';
       const brandImage = createBrandImage({ snapshot: brandSnapshot, role });
       if (brandImage) {
         region.appendChild(brandImage);
@@ -199,10 +266,12 @@ export function renderSlidePreview(container) {
       const body = document.createElement('p');
       body.className = 'slide-preview-region-copy';
       const basePreviewText = resolvePreviewText(box, role);
-      const footerAwareCopy = resolveFooterCopy({ role, previewText: basePreviewText, brandSnapshot });
+      const footerAwareCopy = resolveFooterCopy({ box, role, previewText: basePreviewText, brandSnapshot });
       const systemCopy = resolvePageNumberCopy({ role, pagination });
       const resolvedCopy = systemCopy || footerAwareCopy || basePreviewText || '';
       body.textContent = resolvedCopy;
+      const typographyStyles = getRoleTypographyStyle({ role, scale, brandSnapshot });
+      body.style.cssText = styleObjectToCss(typographyStyles);
       region.appendChild(body);
 
       if (diagnosticsBuffer && descriptor) {

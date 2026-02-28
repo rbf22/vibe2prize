@@ -1,0 +1,281 @@
+import test from 'node:test';
+import assert from 'node:assert';
+import { JSDOM } from 'jsdom';
+
+const dom = new JSDOM(`<!DOCTYPE html><body></body>`, { pretendToBeVisual: true });
+global.window = dom.window;
+global.document = dom.window.document;
+
+function setupDOM() {
+  document.body.innerHTML = `
+    <div class="preview-workbench" id="previewWorkbench" data-view="canvas">
+      <div class="production-preview-panel" id="productionPreviewPanel">
+        <div id="productionPreview" class="production-preview-surface"></div>
+      </div>
+    </div>
+  `;
+
+  const container = document.querySelector('#productionPreview');
+  const parentPanel = document.querySelector('.production-preview-panel');
+  const workbench = document.querySelector('#previewWorkbench');
+
+  window.TemplateStudio = {
+    state: {
+      boxes: [
+        { id: 'box1', role: 'title', gridX: 0, gridY: 0, gridWidth: 2, gridHeight: 2, metadata: { role: 'title' } },
+        { id: 'box2', role: 'subtitle', gridX: 2, gridY: 0, gridWidth: 3, gridHeight: 2, metadata: { role: 'subtitle' } }
+      ],
+      canvasWidth: 1920,
+      canvasHeight: 1080,
+      columns: 80,
+      rows: 45,
+      brand: { id: 'dark', variant: 'default' }
+    }
+  };
+
+  return { container, parentPanel, workbench };
+}
+
+async function loadRenderer() {
+  const module = await import('../src/canvas/production-renderer.js');
+  return module.renderProductionSlide;
+}
+
+function cleanup() {
+  if (document.body) {
+    document.body.innerHTML = '';
+  }
+  delete window.TemplateStudio;
+}
+
+test.describe('Production Renderer View Switching', () => {
+  test.afterEach(cleanup);
+  
+  test.describe('Initial Render', () => {
+    test('renders when panel is visible', async () => {
+      const { container, parentPanel, workbench } = setupDOM();
+      workbench.dataset.view = 'production';
+      parentPanel.style.display = 'flex';
+      Object.defineProperty(parentPanel, 'clientWidth', { value: 800, configurable: true });
+      Object.defineProperty(parentPanel, 'clientHeight', { value: 600, configurable: true });
+
+      const renderProductionSlide = await loadRenderer();
+      await renderProductionSlide(container);
+
+      assert.ok(container.children.length > 0);
+      assert.ok(!container.innerHTML.includes('Invalid container dimensions'));
+      assert.ok(!container.innerHTML.includes('No regions to render'));
+    });
+  
+    test('skips render when panel hidden', async () => {
+      const { container, parentPanel, workbench } = setupDOM();
+      workbench.dataset.view = 'canvas';
+      parentPanel.style.display = 'none';
+
+      const renderProductionSlide = await loadRenderer();
+      const logs = [];
+      const originalLog = console.log;
+      console.log = (...args) => {
+        logs.push(args.join(' '));
+        originalLog(...args);
+      };
+
+      await renderProductionSlide(container);
+
+      console.log = originalLog;
+      assert.ok(logs.some(line => line.includes('Panel is not visible, skipping render')));
+      assert.strictEqual(container.children.length, 0);
+    });
+  });
+
+  test.describe('View Switching', () => {
+    test('handles canvas -> production switch', async () => {
+      const { container, parentPanel, workbench } = setupDOM();
+      workbench.dataset.view = 'canvas';
+      parentPanel.style.display = 'none';
+
+      const renderProductionSlide = await loadRenderer();
+
+      await renderProductionSlide(container);
+      assert.strictEqual(container.children.length, 0);
+
+      workbench.dataset.view = 'production';
+      parentPanel.style.display = 'flex';
+      Object.defineProperty(parentPanel, 'clientWidth', { value: 800, configurable: true });
+      Object.defineProperty(parentPanel, 'clientHeight', { value: 600, configurable: true });
+
+      await renderProductionSlide(container);
+      assert.ok(container.children.length > 0);
+    });
+  
+    test('handles slide -> production switch', async () => {
+      const { container, parentPanel, workbench } = setupDOM();
+      workbench.dataset.view = 'slide';
+      parentPanel.style.display = 'none';
+
+      const renderProductionSlide = await loadRenderer();
+
+      await renderProductionSlide(container);
+      assert.strictEqual(container.children.length, 0);
+
+      workbench.dataset.view = 'production';
+      parentPanel.style.display = 'flex';
+      Object.defineProperty(parentPanel, 'clientWidth', { value: 800, configurable: true });
+      Object.defineProperty(parentPanel, 'clientHeight', { value: 600, configurable: true });
+
+      await renderProductionSlide(container);
+      assert.ok(container.children.length > 0);
+    });
+  
+    test('handles multiple rapid switches', async () => {
+      const { container, parentPanel, workbench } = setupDOM();
+      const renderProductionSlide = await loadRenderer();
+      const views = ['canvas', 'production', 'canvas', 'production'];
+
+      for (const view of views) {
+        workbench.dataset.view = view;
+        parentPanel.style.display = view === 'production' ? 'flex' : 'none';
+
+        if (view === 'production') {
+          Object.defineProperty(parentPanel, 'clientWidth', { value: 800, configurable: true });
+          Object.defineProperty(parentPanel, 'clientHeight', { value: 600, configurable: true });
+        }
+
+        await renderProductionSlide(container);
+        if (view === 'production') {
+          assert.ok(container.children.length > 0);
+        } else {
+          assert.strictEqual(container.children.length, 0);
+        }
+      }
+    });
+  });
+  
+  test.describe('renderAll() Scenarios', () => {
+    test('skips production render when hidden during renderAll()', async () => {
+      const { container, parentPanel, workbench } = setupDOM();
+      const renderProductionSlide = await loadRenderer();
+      const logs = [];
+      const originalLog = console.log;
+      console.log = (...args) => {
+        logs.push(args.join(' '));
+        originalLog(...args);
+      };
+
+    test('should skip production render when hidden during renderAll()', async () => {
+      const { renderProductionSlide } = await import('../src/canvas/production-renderer.js');
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      
+      // Simulate renderAll() being called while canvas view is active
+      workbench.dataset.view = 'canvas';
+      parentPanel.style.display = 'none';
+      
+      await renderProductionSlide(container);
+      
+      expect(consoleSpy).toHaveBeenCalledWith('Production render: Panel is not visible, skipping render');
+      expect(container.innerHTML).not.toContain('Invalid container dimensions');
+      
+      consoleSpy.mockRestore();
+    });
+    
+    test('should render successfully when renderAll() called with production view active', async () => {
+      const { renderProductionSlide } = await import('../src/canvas/production-renderer.js');
+      
+      // Simulate renderAll() with production view active
+      workbench.dataset.view = 'production';
+      parentPanel.style.display = 'flex';
+      Object.defineProperty(parentPanel, 'clientWidth', { value: 800 });
+      Object.defineProperty(parentPanel, 'clientHeight', { value: 600 });
+      
+      await renderProductionSlide(container);
+      
+      expect(container.children.length).toBeGreaterThan(0);
+      expect(container.innerHTML).not.toContain('Invalid container dimensions');
+    });
+  });
+  
+  describe('ResizeObserver Integration', () => {
+    test('should set up ResizeObserver when panel is visible', async () => {
+      workbench.dataset.view = 'production';
+      parentPanel.style.display = 'flex';
+      Object.defineProperty(parentPanel, 'clientWidth', { value: 800 });
+      Object.defineProperty(parentPanel, 'clientHeight', { value: 600 });
+      
+      const { renderProductionSlide } = await import('../src/canvas/production-renderer.js');
+      
+      await renderProductionSlide(container);
+      
+      expect(container._resizeObserver).toBeDefined();
+      expect(container._visibilityObserver).toBeDefined();
+    });
+    
+    test('should not set up observers when panel is hidden', async () => {
+      workbench.dataset.view = 'canvas';
+      parentPanel.style.display = 'none';
+      
+      const { renderProductionSlide } = await import('../src/canvas/production-renderer.js');
+      
+      await renderProductionSlide(container);
+      
+      expect(container._resizeObserver).toBeUndefined();
+      expect(container._visibilityObserver).toBeUndefined();
+    });
+  });
+  
+  describe('Edge Cases', () => {
+    test('should handle zero dimensions gracefully', async () => {
+      workbench.dataset.view = 'production';
+      parentPanel.style.display = 'flex';
+      Object.defineProperty(parentPanel, 'clientWidth', { value: 0 });
+      Object.defineProperty(parentPanel, 'clientHeight', { value: 0 });
+      
+      const { renderProductionSlide } = await import('../src/canvas/production-renderer.js');
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+      
+      await renderProductionSlide(container);
+      
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Invalid dimensions, cannot render')
+      );
+      expect(container.innerHTML).toContain('Loading...');
+      
+      consoleSpy.mockRestore();
+    });
+    
+    test('should handle missing boxes', async () => {
+      workbench.dataset.view = 'production';
+      parentPanel.style.display = 'flex';
+      Object.defineProperty(parentPanel, 'clientWidth', { value: 800 });
+      Object.defineProperty(parentPanel, 'clientHeight', { value: 600 });
+      
+      // Clear boxes
+      window.TemplateStudio.state.boxes = [];
+      
+      const { renderProductionSlide } = await import('../src/canvas/production-renderer.js');
+      
+      await renderProductionSlide(container);
+      
+      expect(container.innerHTML).toContain('No regions to render');
+    });
+    
+    test('should prevent render loops', async () => {
+      workbench.dataset.view = 'production';
+      parentPanel.style.display = 'flex';
+      Object.defineProperty(parentPanel, 'clientWidth', { value: 800 });
+      Object.defineProperty(parentPanel, 'clientHeight', { value: 600 });
+      
+      const { renderProductionSlide } = await import('../src/canvas/production-renderer.js');
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      
+      // Set rendering flag
+      container._isRendering = true;
+      
+      await renderProductionSlide(container);
+      
+      expect(consoleSpy).toHaveBeenCalledWith('Production render: Already rendering, skipping');
+      expect(container._isRendering).toBe(true); // Should still be true
+      
+      consoleSpy.mockRestore();
+    });
+  });
+});

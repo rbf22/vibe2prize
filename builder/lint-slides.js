@@ -6,6 +6,7 @@ import matter from 'gray-matter';
 import { evaluateTextOverflow } from '../core/layout/overflow-metrics.js';
 import { collectDiagnostics } from '../core/layout/diagnostics.js';
 import { getBrandSnapshot } from '../core/brand/loader.js';
+import { collectDomOverflowIssuesNode } from '../core/layout/dom-overflow.js';
 
 const GRID_AREA_REGEX = /<GridArea\s+[^>]*area=\"([^\"]+)\"/g;
 
@@ -22,6 +23,7 @@ const args = process.argv.slice(2);
 const configArgPath = extractConfigArgPath(args);
 const fileFilterArgs = extractFileFilters(args);
 const visualOverflowEnabled = extractVisualOverflowFlag(args);
+const withPreviewTextEnabled = extractWithPreviewTextFlag(args);
 
 const MAX_TABLE_COLUMNS = 4;
 const MAX_TABLE_ROWS = 8;
@@ -78,11 +80,12 @@ async function main() {
     }
 
     detectOverflowTables(content, slide.file, errors);
-    runSharedDiagnostics({
+    await runSharedDiagnostics({
       file: slide.file,
       frontmatter: data,
       content,
       includeVisual: visualOverflowEnabled,
+      withPreviewText: withPreviewTextEnabled,
       errors
     });
     detectPotentialWidows(content, slide.file, errors);
@@ -130,7 +133,7 @@ function detectOverflowTables(content, file, errors) {
   detectMarkdownTables(content, file, errors);
 }
 
-function runSharedDiagnostics({ file, frontmatter, content, includeVisual, errors }) {
+async function runSharedDiagnostics({ file, frontmatter, content, includeVisual, withPreviewText, errors }) {
   if (!frontmatter?.layout || frontmatter.layout.type !== 'grid-designer') {
     return;
   }
@@ -140,7 +143,7 @@ function runSharedDiagnostics({ file, frontmatter, content, includeVisual, error
     return;
   }
 
-  const textByArea = extractRegionContentMap(content);
+  const textByArea = extractRegionContentMap(content, withPreviewText);
   const brandSnapshot = resolveBrandSnapshot(frontmatter.brand);
   const templateSettings = frontmatter.templateSettings || frontmatter.layout || {};
   const pagination = frontmatter.pagination || null;
@@ -158,25 +161,79 @@ function runSharedDiagnostics({ file, frontmatter, content, includeVisual, error
     errors.push(`${file}: ${issue.message}`);
   });
 
-  if (includeVisual) {
+  // Add DOM-based overflow detection if withPreviewText is enabled
+  if (withPreviewText && includeVisual) {
+    try {
+      const domIssues = await collectDomOverflowIssuesNode({
+        regions,
+        textByArea,
+        templateSettings,
+        brandSnapshot
+      });
+      
+      domIssues.forEach((issue) => {
+        errors.push(`${file}: ${issue.message}`);
+      });
+    } catch (error) {
+      console.error(`Error in DOM overflow detection for ${file}:`, error);
+      errors.push(`${file}: DOM overflow detection failed - ${error.message}`);
+    }
+  } else if (includeVisual) {
     diagnostics.visual.forEach((issue) => {
       errors.push(`${file}: ${issue.message}`);
     });
   }
 }
 
-function extractRegionContentMap(content) {
+function extractRegionContentMap(content, withPreviewText = false) {
   const map = new Map();
-  const areaRegex = /<GridArea[^>]*area="([^"]+)"[^>]*>([\s\S]*?)<\/GridArea>/gi;
+  // Use a more flexible regex that matches attributes in any order
+  // This regex captures area, contentType, and content regardless of attribute order
+  const areaRegex = /<GridArea[^>]*\barea="([^"]+)"[^>]*\bcontentType="([^"]*)"[^>]*>([\s\S]*?)<\/GridArea>/gi;
   let match;
+  
+  // Use same preview text as Template Studio
+  const LOREM_SHORT = 'Lorem ipsum dolor sit amet.';
+  const LOREM_MEDIUM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dictum porta at sapien.';
+  const LOREM_LONG = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae lacus cursus, auctor arcu eget, aliquet ipsum.';
+  const LOREM_LIST = '\u2022 Lorem ipsum dolor sit amet.\n\u2022 Consectetur adipiscing elit.\n\u2022 Integer dictum porta sapien.';
+  
+  const ROLE_COPY = {
+    'primary-title': LOREM_SHORT,
+    'secondary-title': LOREM_SHORT,
+    'supporting-text': LOREM_LONG,
+    'criteria-list': LOREM_LIST,
+    'key-data': LOREM_SHORT,
+    'context-info': LOREM_SHORT,
+    'logo': LOREM_SHORT,
+    'page-number': LOREM_SHORT,
+    'footer': LOREM_MEDIUM,
+    'section-title': LOREM_SHORT,
+    'data-table': '',
+    'visual-aid': LOREM_SHORT,
+    'supporting-data': LOREM_SHORT
+  };
+  
   while ((match = areaRegex.exec(content))) {
-    const [, area, inner] = match;
+    const [, area, contentType, inner] = match;
     if (!area) continue;
-    const text = inner
+    
+    let text = inner
       .replace(/<ContentRenderer[^>]*content={"([^"]*)"}[^>]*\/>/gi, (_, value) => value || '')
       .replace(/<[^>]+>/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
+    
+    // If text is empty and withPreviewText is enabled, use preview text
+    if (!text && withPreviewText) {
+      if (contentType === 'page-number') {
+        // Use same format as Template Studio
+        text = '01 / 12'; // Matches Template Studio's formatPageNumberLabel
+      } else {
+        text = ROLE_COPY[contentType] || ROLE_COPY['supporting-text'];
+      }
+    }
+    
     map.set(area, text);
   }
   return map;
@@ -437,6 +494,20 @@ function extractFileFilters(argv) {
   }
 
   return flatValues.map((raw) => ({ raw, normalized: normalizeSlideSpecifier(raw) }));
+}
+
+function extractWithPreviewTextFlag(argv) {
+  if (!Array.isArray(argv) || !argv.length) {
+    return false;
+  }
+
+  for (const arg of argv) {
+    if (arg === '--with-preview-text' || arg === '--preview-text') {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function extractVisualOverflowFlag(argv) {

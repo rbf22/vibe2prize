@@ -2,6 +2,25 @@ import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert';
 import { installGlobalDom, dom } from './helpers/dom-env.js';
 
+// Mock ResizeObserver for Node.js environment
+global.ResizeObserver = class ResizeObserver {
+  constructor(callback) {
+    this.callback = callback;
+  }
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
+// Mock MutationObserver for Node.js environment
+global.MutationObserver = class MutationObserver {
+  constructor(callback) {
+    this.callback = callback;
+  }
+  observe() {}
+  disconnect() {}
+};
+
 import { renderSlidePreview } from '../src/canvas/rendered-view.js';
 import { state, resetState } from '../src/state.js';
 import { applyFrontmatterToState } from '../src/persistence/importer.js';
