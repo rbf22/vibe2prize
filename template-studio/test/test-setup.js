@@ -1,7 +1,9 @@
 // Test setup for Template Studio regression tests
 // This file sets up the browser environment for Node.js testing
 
-import { JSDOM } from 'jsdom';
+import { JSDOM, VirtualConsole } from 'jsdom';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 // Create and configure DOM environment
 const dom = new JSDOM('<!DOCTYPE html><html><head><title>Test</title></head><body></body></html>', {
@@ -9,19 +11,92 @@ const dom = new JSDOM('<!DOCTYPE html><html><head><title>Test</title></head><bod
   pretendToBeVisual: true,
   resources: 'usable',
   runScripts: 'dangerously',
-  virtualConsole: new (require('jsdom').VirtualConsole)()
+  virtualConsole: new VirtualConsole()
 });
 
 // Set up global browser APIs
 global.window = dom.window;
 global.document = dom.window.document;
-global.navigator = dom.window.navigator;
+if (typeof global.navigator === 'undefined') {
+  global.navigator = dom.window.navigator;
+} else {
+  Object.defineProperty(global, 'navigator', {
+    configurable: true,
+    enumerable: true,
+    get: () => dom.window.navigator
+  });
+}
 global.HTMLElement = dom.window.HTMLElement;
 global.Element = dom.window.Element;
 global.Node = dom.window.Node;
 global.getComputedStyle = dom.window.getComputedStyle;
 global.requestAnimationFrame = dom.window.requestAnimationFrame;
 global.cancelAnimationFrame = dom.window.cancelAnimationFrame;
+
+const ROOT_DIR = process.cwd();
+const nativeFetch = global.fetch;
+
+function normalizeFetchInput(input) {
+  if (typeof input === 'string') return input;
+  if (!input) return '';
+  if (typeof input === 'object') {
+    if (typeof input.url === 'string') return input.url;
+    if (typeof input.href === 'string') return input.href;
+    if (typeof input.toString === 'function') {
+      const value = input.toString();
+      if (typeof value === 'string' && value.length) return value;
+    }
+  }
+  return '';
+}
+
+global.fetch = async function testFetch(input, init) {
+  const rawUrl = normalizeFetchInput(input);
+  if (!rawUrl) {
+    const error = new TypeError('Invalid fetch input');
+    error.input = input;
+    throw error;
+  }
+
+  const isFileLike = rawUrl.startsWith('/') || rawUrl.startsWith('./') || rawUrl.startsWith('../');
+
+  if (isFileLike) {
+    const relativePath = rawUrl.startsWith('/') ? rawUrl.slice(1) : rawUrl;
+    const absolutePath = path.join(ROOT_DIR, relativePath);
+    try {
+      const buffer = await fs.readFile(absolutePath);
+      const textContent = buffer.toString();
+      return {
+        ok: true,
+        status: 200,
+        statusText: 'OK',
+        url: rawUrl,
+        json: async () => JSON.parse(textContent),
+        text: async () => textContent,
+        arrayBuffer: async () => buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength),
+        blob: async () => buffer,
+        headers: new Map(),
+        redirected: false,
+        type: 'basic'
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        status: 404,
+        statusText: 'Not Found',
+        url: rawUrl,
+        json: async () => { throw error; },
+        text: async () => { throw error; }
+      };
+    }
+  }
+
+  if (typeof nativeFetch === 'function') {
+    return nativeFetch(input, init);
+  }
+
+  throw new TypeError(`Cannot fetch URL: ${rawUrl}`);
+};
 
 // Mock canvas and related APIs
 global.HTMLCanvasElement = dom.window.HTMLCanvasElement;

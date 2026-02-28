@@ -28,12 +28,25 @@ async function buildStudio() {
       bundle: true,
       outfile: path.join(DIST_DIR, 'main.js'),
       format: 'esm',
-      target: 'es2020',
+      target: 'es2022',
       minify: true,
       sourcemap: true,
       treeShaking: true,
       platform: 'browser',
-      external: ['*.mdx'], // Don't bundle MDX files
+      external: [
+        '*.mdx',
+        'fs-extra',
+        'ajv',
+        'node:path',
+        'node:fs',
+        'node:url',
+        'path',
+        'fs',
+        'assert',
+        'util',
+        'stream',
+        'constants'
+      ], // Don't bundle MDX files or Node-only deps used by shared loader
       define: {
         'process.env.NODE_ENV': '"production"'
       },

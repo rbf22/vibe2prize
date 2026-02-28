@@ -61,6 +61,11 @@ function resolveRequestPath(urlPath) {
     return safeJoin(ROOT, relative);
   }
 
+  // Allow loading brand assets/configs directly from templates/
+  if (relative.startsWith('templates/')) {
+    return safeJoin(ROOT, relative);
+  }
+
   return safeJoin(STUDIO_DIR, relative);
 }
 

@@ -22,6 +22,8 @@ npm run analyze:content# Generate semantic/content analysis reports
 
 Single-slide linting is now supported: `bun run lint:slides -- --file=mdx/epam-quote-leadership.mdx`. You can pass the flag multiple times or provide comma-separated values; paths are resolved relative to `templates/`.
 
+The linter now surfaces the same semantic/visual overflow diagnostics as Template Studio. Pass `--visual-overflow` (or the short `--visual`) to enable approximate pixel-overflow checks from Node, mirroring the preview badges.
+
 ### Static Dev Workflow
 1. Run `npm run dev:static`.
 2. Visit the printed `http://localhost:<port>` (defaults to `4173`).

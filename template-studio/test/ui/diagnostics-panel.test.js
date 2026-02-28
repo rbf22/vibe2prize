@@ -1,8 +1,8 @@
 import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert';
-import { JSDOM } from 'jsdom';
 import { initDiagnosticsPanel } from '../../src/ui/diagnostics-panel.js';
 import { state, resetState } from '../../src/state.js';
+import { installGlobalDom } from '../helpers/dom-env.js';
 
 const TEMPLATE_HTML = `
   <div>
@@ -12,26 +12,23 @@ const TEMPLATE_HTML = `
 `;
 
 describe('Diagnostics Panel', () => {
-  let dom;
+  let documentRef;
 
   beforeEach(() => {
     resetState();
-    dom = new JSDOM(TEMPLATE_HTML);
-    global.window = dom.window;
-    global.document = dom.window.document;
-    global.CustomEvent = dom.window.CustomEvent;
+    ({ document: documentRef } = installGlobalDom(`<html><body>${TEMPLATE_HTML}</body></html>`));
     state.diagnostics.overflow = [];
   });
 
   it('renders empty state initially', () => {
-    const summaryEl = document.getElementById('summary');
+    const summaryEl = documentRef.getElementById('summary');
     initDiagnosticsPanel({
-      bodyEl: document.getElementById('body'),
+      bodyEl: documentRef.getElementById('body'),
       summaryEl
     });
 
-    assert.strictEqual(document.querySelectorAll('.diagnostic-card').length, 0);
-    assert.strictEqual(document.querySelectorAll('.diagnostics-empty').length, 1);
+    assert.strictEqual(documentRef.querySelectorAll('.diagnostic-table').length, 0);
+    assert.strictEqual(documentRef.querySelectorAll('.diagnostics-empty').length, 1);
     assert.match(summaryEl.textContent, /0 issues/i);
   });
 
@@ -46,17 +43,17 @@ describe('Diagnostics Panel', () => {
       }
     ];
 
-    const summaryEl = document.getElementById('summary');
+    const summaryEl = documentRef.getElementById('summary');
 
     initDiagnosticsPanel({
-      bodyEl: document.getElementById('body'),
+      bodyEl: documentRef.getElementById('body'),
       summaryEl
     });
 
-    const cards = document.querySelectorAll('.diagnostic-card');
-    assert.strictEqual(cards.length, 1);
+    const rows = documentRef.querySelectorAll('.diagnostic-table tbody tr');
+    assert.strictEqual(rows.length, 1);
     assert.match(summaryEl.textContent, /1 issue/i);
-    assert.strictEqual(cards[0].dataset.boxId, 'box-1');
+    assert.strictEqual(rows[0].dataset.boxId, 'box-1');
   });
 
   it('dispatches focus event when card is clicked', async () => {
@@ -71,17 +68,21 @@ describe('Diagnostics Panel', () => {
     ];
 
     initDiagnosticsPanel({
-      bodyEl: document.getElementById('body'),
-      summaryEl: document.getElementById('summary')
+      bodyEl: documentRef.getElementById('body'),
+      summaryEl: documentRef.getElementById('summary')
     });
 
+    documentRef.dispatchEvent(new documentRef.defaultView.CustomEvent('templateDiagnosticsUpdated', {
+      detail: { overflow: state.diagnostics.overflow }
+    }));
+
     const focusPromise = new Promise((resolve) => {
-      document.addEventListener('diagnosticRegionFocus', (event) => {
+      documentRef.addEventListener('diagnosticRegionFocus', (event) => {
         resolve(event.detail.boxId);
       }, { once: true });
     });
 
-    document.querySelector('.diagnostic-card').click();
+    documentRef.querySelector('.diagnostic-focus-btn').click();
     const focusedId = await focusPromise;
     assert.strictEqual(focusedId, 'box-focus');
   });

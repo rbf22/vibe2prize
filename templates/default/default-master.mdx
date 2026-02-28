@@ -1,0 +1,280 @@
+---
+title: "Grid Blueprint: Narrative Slide"
+maxWords: 280
+phase: "draft"
+templateSettings:
+  canvasWidth: 1920
+  canvasHeight: 1080
+  columns: 80
+  rows: 45
+  columnSize: "1fr"
+  rowSize: "1fr"
+  gap: "0.5rem"
+layout:
+  type: "grid-designer"
+  template: "Grid Blueprint: Narrative Slide"
+  components:
+    - type: "GridArea"
+      id: "section-label"
+      role: "section-title"
+      area: "section-label"
+      maxWords: 12
+    - type: "GridArea"
+      id: "hero-title"
+      role: "primary-title"
+      area: "hero-title"
+      maxWords: 18
+    - type: "GridArea"
+      id: "hero-subtitle"
+      role: "secondary-title"
+      area: "hero-subtitle"
+      maxWords: 28
+    - type: "GridArea"
+      id: "summary-body"
+      role: "supporting-text"
+      area: "summary"
+      maxWords: 160
+    - type: "GridArea"
+      id: "insight-callout"
+      role: "key-data"
+      area: "insight"
+      maxWords: 40
+    - type: "GridArea"
+      id: "stat-cluster"
+      role: "data-table"
+      area: "stat-cluster"
+      maxWords: 40
+    - type: "GridArea"
+      id: "stat-caption"
+      role: "context-info"
+      area: "stat-caption"
+      maxWords: 60
+    - type: "GridArea"
+      id: "quote"
+      role: "supporting-text"
+      area: "quote"
+      maxWords: 70
+    - type: "GridArea"
+      id: "brand-logo"
+      role: "logo"
+      area: "logo"
+    - type: "GridArea"
+      id: "page-number"
+      role: "page-number"
+      area: "page-number"
+    - type: "GridArea"
+      id: "footer"
+      role: "footer"
+      area: "footer"
+  rows: 45
+  columns: 80
+  gap: "0.5rem"
+exclusions:
+  top: 4
+  bottom: 4
+  left: 3
+  right: 3
+brand:
+  id: "default"
+  variant: "dark"
+regions:
+  - id: "section-label"
+    area: "section-label"
+    role: "section-title"
+    required: false
+    inputType: "text"
+    type: "section-title"
+    fieldTypes:
+      - "section-title"
+    llmHint: "Eyebrow or track name anchoring the narrative."
+    grid:
+      x: 3
+      y: 2
+      width: 26
+      height: 1
+  - id: "hero-title"
+    area: "hero-title"
+    role: "primary-title"
+    required: true
+    inputType: "text"
+    type: "primary-title"
+    fieldTypes:
+      - "primary-title"
+    maxWords: 18
+    llmHint: "Primary narrative headline."
+    grid:
+      x: 3
+      y: 4
+      width: 48
+      height: 3
+  - id: "hero-subtitle"
+    area: "hero-subtitle"
+    role: "secondary-title"
+    required: false
+    inputType: "text"
+    type: "secondary-title"
+    fieldTypes:
+      - "secondary-title"
+    maxWords: 28
+    llmHint: "Subtitle that frames the story."
+    grid:
+      x: 3
+      y: 7
+      width: 42
+      height: 2
+  - id: "summary-body"
+    area: "summary"
+    role: "supporting-text"
+    required: true
+    inputType: "text"
+    type: "supporting-text"
+    fieldTypes:
+      - "supporting-text"
+    maxWords: 160
+    llmHint: "Core narrative paragraph or two."
+    grid:
+      x: 3
+      y: 10
+      width: 46
+      height: 12
+  - id: "insight-callout"
+    area: "insight"
+    role: "key-data"
+    required: false
+    inputType: "text"
+    type: "key-data"
+    fieldTypes:
+      - "key-data"
+    maxWords: 40
+    llmHint: "Highlight metric or actionable insight."
+    grid:
+      x: 52
+      y: 10
+      width: 25
+      height: 16
+  - id: "stat-cluster"
+    area: "stat-cluster"
+    role: "data-table"
+    required: false
+    inputType: "table"
+    type: "data-table"
+    fieldTypes:
+      - "data-table"
+    maxWords: 40
+    llmHint: "Structured stats or checklist."
+    grid:
+      x: 3
+      y: 24
+      width: 34
+      height: 10
+  - id: "stat-caption"
+    area: "stat-caption"
+    role: "context-info"
+    required: false
+    inputType: "text"
+    type: "context-info"
+    fieldTypes:
+      - "context-info"
+    maxWords: 60
+    llmHint: "Explain how the data ties back to the story."
+    grid:
+      x: 38
+      y: 24
+      width: 39
+      height: 10
+  - id: "quote"
+    area: "quote"
+    role: "supporting-text"
+    required: false
+    inputType: "text"
+    type: "supporting-text"
+    fieldTypes:
+      - "supporting-text"
+    maxWords: 70
+    llmHint: "Short testimonial or voice-of-customer pull."
+    grid:
+      x: 3
+      y: 35
+      width: 50
+      height: 6
+  - id: "brand-logo"
+    area: "logo"
+    role: "logo"
+    required: false
+    inputType: "image"
+    type: "logo"
+    fieldTypes:
+      - "logo"
+    llmHint: "Brand identifier or watermark."
+    grid:
+      x: 3
+      y: 42
+      width: 10
+      height: 2
+  - id: "page-number"
+    area: "page-number"
+    role: "page-number"
+    required: true
+    inputType: "text"
+    type: "page-number"
+    fieldTypes:
+      - "page-number"
+    llmHint: "Slide number indicator."
+    grid:
+      x: 68
+      y: 42
+      width: 9
+      height: 2
+  - id: "footer"
+    area: "footer"
+    role: "footer"
+    required: true
+    inputType: "text"
+    type: "footer"
+    fieldTypes:
+      - "footer"
+    llmHint: "Legal copy or confidentiality notice."
+    grid:
+      x: 22
+      y: 43
+      width: 32
+      height: 1
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../core/layout/components.js";
+
+<GridDesigner template="Grid Blueprint: Narrative Slide">
+  <GridArea area="section-label" contentType="section-title" importance="supporting">
+    <ContentRenderer type="section-title" content={""} />
+  </GridArea>
+  <GridArea area="hero-title" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content={""} />
+  </GridArea>
+  <GridArea area="hero-subtitle" contentType="secondary-title" importance="supporting">
+    <ContentRenderer type="secondary-title" content={""} />
+  </GridArea>
+  <GridArea area="summary" contentType="supporting-text" importance="critical">
+    <ContentRenderer type="supporting-text" content={""} />
+  </GridArea>
+  <GridArea area="insight" contentType="key-data" importance="supporting">
+    <ContentRenderer type="key-data" content={""} />
+  </GridArea>
+  <GridArea area="stat-cluster" contentType="data-table" importance="supporting">
+    <ContentRenderer type="data-table" content={""} />
+  </GridArea>
+  <GridArea area="stat-caption" contentType="context-info" importance="supporting">
+    <ContentRenderer type="context-info" content={""} />
+  </GridArea>
+  <GridArea area="quote" contentType="supporting-text" importance="supporting">
+    <ContentRenderer type="supporting-text" content={""} />
+  </GridArea>
+  <GridArea area="logo" contentType="logo" importance="supporting">
+    <ContentRenderer type="logo" content={""} />
+  </GridArea>
+  <GridArea area="page-number" contentType="page-number" importance="critical">
+    <ContentRenderer type="page-number" content={""} />
+  </GridArea>
+  <GridArea area="footer" contentType="footer" importance="critical">
+    <ContentRenderer type="footer" content={""} />
+  </GridArea>
+</GridDesigner>

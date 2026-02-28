@@ -22,10 +22,6 @@
       <section class="settings-panel">
         <div class="settings-panel-header">
           <h2>Template Settings</h2>
-          <div class="settings-panel-actions">
-            <button type="button" class="import-btn" id="importMdxBtn">Import MDX</button>
-            <input type="file" id="mdxFileInput" accept=".mdx" style="display: none;" />
-          </div>
         </div>
 
         <div class="settings-field-grid">
@@ -192,9 +188,15 @@
           <button type="button" class="preset-btn" data-preset="clear">Clear All</button>
         </div>
         <p class="preset-helper" id="presetStatus">Select a region, then choose a semantic role to auto-fill metadata.</p>
-        <div class="preview-toggle" role="group" aria-label="Preview view toggle">
-          <button type="button" class="preview-toggle-btn active" data-preview-view="canvas">Grid Canvas</button>
-          <button type="button" class="preview-toggle-btn" data-preview-view="slide">Rendered Slide</button>
+        <div class="preview-toggle-row">
+          <div class="preview-toggle" role="group" aria-label="Preview view toggle">
+            <button type="button" class="preview-toggle-btn active" data-preview-view="canvas">Grid Canvas</button>
+            <button type="button" class="preview-toggle-btn" data-preview-view="slide">Rendered Slide</button>
+          </div>
+          <div class="preview-toggle-actions">
+            <button type="button" class="import-btn" id="importMdxBtn">Import MDX</button>
+            <input type="file" id="mdxFileInput" accept=".mdx" style="display: none;" />
+          </div>
         </div>
         <div class="preview-workbench" id="previewWorkbench" data-view="canvas">
           <div class="canvas-container" id="canvasContainer">

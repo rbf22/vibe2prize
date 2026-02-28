@@ -1,18 +1,24 @@
 import { describe, it, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert';
-import { dom } from './helpers/dom-env.js';
+import { installGlobalDom } from './helpers/dom-env.js';
 
 // Import Template Studio modules
 import * as TemplateStudio from '../src/main.js';
 import { state, resetState } from '../src/state.js';
 
 describe('Template Studio Core Regression Tests', () => {
+  let dom;
+
   beforeEach(() => {
     resetState();
+    dom = installGlobalDom();
+    dom.window.document.body.innerHTML = '';
   });
 
   afterEach(() => {
-    dom.window.document.body.innerHTML = '';
+    if (dom?.window?.document) {
+      dom.window.document.body.innerHTML = '';
+    }
   });
 
   describe('State Management', () => {

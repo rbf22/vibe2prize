@@ -51,8 +51,8 @@ export function createBox(x, y, width, height, name = null, previewGrid) {
   for (const box of state.boxes) {
     if (!(gridX2 <= box.gridX || gridX1 >= box.gridX + box.gridWidth ||
           gridY2 <= box.gridY || gridY1 >= box.gridY + box.gridHeight)) {
-      // Overlap detected
-      alert('Regions cannot overlap. Please draw in an empty area.');
+      // Overlap detected; log a non-blocking warning and skip creation
+      console.warn('Regions cannot overlap. Please draw in an empty area.');
       return null;
     }
   }
@@ -118,10 +118,7 @@ export function createBoxFromGrid(gridX, gridY, gridWidth, gridHeight, name = nu
   for (const box of state.boxes) {
     if (!(gridX + gridWidth <= box.gridX || gridX >= box.gridX + box.gridWidth ||
           gridY + gridHeight <= box.gridY || gridY >= box.gridY + box.gridHeight)) {
-      // Overlap detected
-      if (typeof alert !== 'undefined') {
-        alert('Regions cannot overlap. Please draw in an empty area.');
-      }
+      console.warn('Regions cannot overlap. Please draw in an empty area.');
       return null;
     }
   }

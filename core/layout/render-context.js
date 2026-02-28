@@ -6,7 +6,8 @@ export const RendererContext = React.createContext({
   label: 'Page',
   previewChrome: false,
   showDiagnostics: false,
-  showRegionOutlines: false
+  showRegionOutlines: false,
+  brandSnapshot: null
 });
 
 export const RendererProvider = ({ value, children }) => (

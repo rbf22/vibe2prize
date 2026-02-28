@@ -1,32 +1,19 @@
 import { describe, it, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert';
-import { JSDOM } from 'jsdom';
+import { installGlobalDom } from './helpers/dom-env.js';
 import { emitBrandStateChanged } from '../src/branding/brands.js';
 
-function setupDom() {
-  const dom = new JSDOM('<div></div>');
-  global.window = dom.window;
-  global.document = dom.window.document;
-  global.CustomEvent = dom.window.CustomEvent;
-  global.Event = dom.window.Event;
-  return dom;
-}
-
 describe('emitBrandStateChanged', () => {
-  let dom;
+  let previousHtml = '';
 
   beforeEach(() => {
-    dom = setupDom();
+    const { document } = installGlobalDom('<div id="brand-test"></div>');
+    previousHtml = document.body.innerHTML;
   });
 
   afterEach(() => {
-    if (dom) {
-      dom.window.close();
-    }
-    delete global.window;
-    delete global.document;
-    delete global.CustomEvent;
-    delete global.Event;
+    const { document } = installGlobalDom();
+    document.body.innerHTML = previousHtml;
   });
 
   it('dispatches CustomEvent with brand detail when available', async () => {

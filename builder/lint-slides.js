@@ -4,6 +4,8 @@ import path from 'node:path';
 import fs from 'fs-extra';
 import matter from 'gray-matter';
 import { evaluateTextOverflow } from '../core/layout/overflow-metrics.js';
+import { collectDiagnostics } from '../core/layout/diagnostics.js';
+import { getBrandSnapshot } from '../core/brand/loader.js';
 
 const GRID_AREA_REGEX = /<GridArea\s+[^>]*area=\"([^\"]+)\"/g;
 
@@ -19,6 +21,7 @@ let resolvedConfigPath = null;
 const args = process.argv.slice(2);
 const configArgPath = extractConfigArgPath(args);
 const fileFilterArgs = extractFileFilters(args);
+const visualOverflowEnabled = extractVisualOverflowFlag(args);
 
 const MAX_TABLE_COLUMNS = 4;
 const MAX_TABLE_ROWS = 8;
@@ -75,11 +78,11 @@ async function main() {
     }
 
     detectOverflowTables(content, slide.file, errors);
-    detectRegionOverflow({
+    runSharedDiagnostics({
       file: slide.file,
-      layout: data?.layout,
-      regions: data?.regions,
+      frontmatter: data,
       content,
+      includeVisual: visualOverflowEnabled,
       errors
     });
     detectPotentialWidows(content, slide.file, errors);
@@ -127,45 +130,38 @@ function detectOverflowTables(content, file, errors) {
   detectMarkdownTables(content, file, errors);
 }
 
-function detectRegionOverflow({ file, layout, regions, content, errors }) {
-  if (!layout || layout.type !== 'grid-designer' || !Array.isArray(regions) || !regions.length) {
+function runSharedDiagnostics({ file, frontmatter, content, includeVisual, errors }) {
+  if (!frontmatter?.layout || frontmatter.layout.type !== 'grid-designer') {
     return;
   }
 
-  const regionByArea = new Map();
-  for (const region of regions) {
-    if (!region?.area) continue;
-    const grid = region.grid || {};
-    regionByArea.set(region.area, {
-      id: region.id || region.area,
-      role: region.role || region.fieldTypes?.[0],
-      gridWidth: grid.width || grid.w || 1,
-      gridHeight: grid.height || grid.h || 1,
-      maxWords: region.maxWords,
-      areaLabel: region.area
-    });
-  }
-
-  if (!regionByArea.size) {
+  const regions = Array.isArray(frontmatter.regions) ? frontmatter.regions : [];
+  if (!regions.length) {
     return;
   }
 
-  const regionContent = extractRegionContentMap(content);
-  for (const [area, region] of regionByArea.entries()) {
-    const sample = regionContent.get(area) || '';
-    const metrics = evaluateTextOverflow({
-      text: sample,
-      gridWidth: region.gridWidth,
-      gridHeight: region.gridHeight,
-      role: region.role,
-      maxWords: region.maxWords
+  const textByArea = extractRegionContentMap(content);
+  const brandSnapshot = resolveBrandSnapshot(frontmatter.brand);
+  const templateSettings = frontmatter.templateSettings || frontmatter.layout || {};
+  const pagination = frontmatter.pagination || null;
+
+  const diagnostics = collectDiagnostics({
+    regions,
+    textByArea,
+    templateSettings,
+    brandSnapshot,
+    pagination,
+    options: { includeVisual }
+  });
+
+  diagnostics.semantic.forEach((issue) => {
+    errors.push(`${file}: ${issue.message}`);
+  });
+
+  if (includeVisual) {
+    diagnostics.visual.forEach((issue) => {
+      errors.push(`${file}: ${issue.message}`);
     });
-    if (metrics.overflowChars > 0) {
-      const percentOver = metrics.capacity > 0
-        ? Math.round((metrics.overflowChars / metrics.capacity) * 100)
-        : 0;
-      errors.push(`${file}: region "${area}" exceeds capacity by ${metrics.overflowChars} chars (~${percentOver}% over). Trim ~${metrics.suggestedTrim} characters or enlarge the box.`);
-    }
   }
 }
 
@@ -184,6 +180,15 @@ function extractRegionContentMap(content) {
     map.set(area, text);
   }
   return map;
+}
+
+function resolveBrandSnapshot(brandFrontmatter) {
+  if (!brandFrontmatter) {
+    return getBrandSnapshot('default');
+  }
+  const brandId = brandFrontmatter.id || 'default';
+  const variant = brandFrontmatter.variant;
+  return getBrandSnapshot(brandId, variant);
 }
 
 function detectPotentialWidows(content, file, errors) {
@@ -432,6 +437,23 @@ function extractFileFilters(argv) {
   }
 
   return flatValues.map((raw) => ({ raw, normalized: normalizeSlideSpecifier(raw) }));
+}
+
+function extractVisualOverflowFlag(argv) {
+  if (!Array.isArray(argv) || !argv.length) {
+    return true;
+  }
+
+  let enabled = true;
+  for (const arg of argv) {
+    if (arg === '--no-visual' || arg === '--no-visual-overflow') {
+      enabled = false;
+    } else if (arg === '--visual-overflow' || arg === '--visual') {
+      enabled = true;
+    }
+  }
+
+  return enabled;
 }
 
 function collectNormalizedFileFilters(fileEntries, errors) {

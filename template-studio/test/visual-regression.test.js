@@ -2,7 +2,7 @@ import { describe, it, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert';
 import fs from 'fs/promises';
 import path from 'path';
-import { dom } from './helpers/dom-env.js';
+import { installGlobalDom } from './helpers/dom-env.js';
 
 // Import Template Studio modules
 import * as TemplateStudio from '../src/main.js';
@@ -15,35 +15,43 @@ function setGridMeasurements(element, width = 800, height = 400) {
   });
 }
 
+let domEnv;
+
+function getDocument() {
+  return domEnv?.document ?? document;
+}
+
 function buildControls() {
+  const document = getDocument();
   return {
-    templateName: dom.window.document.getElementById('templateName'),
-    canvasWidth: dom.window.document.getElementById('canvasWidth'),
-    canvasHeight: dom.window.document.getElementById('canvasHeight'),
-    columnCount: dom.window.document.getElementById('columnCount'),
-    rowCount: dom.window.document.getElementById('rowCount'),
-    columnSize: dom.window.document.getElementById('columnSize'),
-    rowSize: dom.window.document.getElementById('rowSize'),
-    gridGap: dom.window.document.getElementById('gridGap'),
-    previewGrid: dom.window.document.getElementById('previewGrid'),
-    snippetOutput: dom.window.document.getElementById('snippetOutput'),
-    resetNames: dom.window.document.getElementById('resetNames'),
-    openCssGrid: dom.window.document.getElementById('openCssGrid'),
-    copySnippet: dom.window.document.getElementById('copySnippet'),
-    saveMdx: dom.window.document.getElementById('saveMdx'),
-    deleteSelectedBtn: dom.window.document.getElementById('deleteSelectedBtn'),
+    templateName: document.getElementById('templateName'),
+    canvasWidth: document.getElementById('canvasWidth'),
+    canvasHeight: document.getElementById('canvasHeight'),
+    columnCount: document.getElementById('columnCount'),
+    rowCount: document.getElementById('rowCount'),
+    columnSize: document.getElementById('columnSize'),
+    rowSize: document.getElementById('rowSize'),
+    gridGap: document.getElementById('gridGap'),
+    previewGrid: document.getElementById('previewGrid'),
+    snippetOutput: document.getElementById('snippetOutput'),
+    resetNames: document.getElementById('resetNames'),
+    openCssGrid: document.getElementById('openCssGrid'),
+    copySnippet: document.getElementById('copySnippet'),
+    saveMdx: document.getElementById('saveMdx'),
+    deleteSelectedBtn: document.getElementById('deleteSelectedBtn'),
     exclusions: {
-      top: dom.window.document.getElementById('exclusionTop'),
-      bottom: dom.window.document.getElementById('exclusionBottom'),
-      left: dom.window.document.getElementById('exclusionLeft'),
-      right: dom.window.document.getElementById('exclusionRight')
+      top: document.getElementById('exclusionTop'),
+      bottom: document.getElementById('exclusionBottom'),
+      left: document.getElementById('exclusionLeft'),
+      right: document.getElementById('exclusionRight')
     }
   };
 }
 
 function initializeHarness() {
-  const previewGrid = dom.window.document.getElementById('previewGrid');
-  const guideLayer = dom.window.document.getElementById('guideLayer');
+  const document = getDocument();
+  const previewGrid = document.getElementById('previewGrid');
+  const guideLayer = document.getElementById('guideLayer');
   setGridMeasurements(previewGrid);
   const controls = buildControls();
 
@@ -58,10 +66,11 @@ function initializeHarness() {
 describe('Template Studio Visual Regression Tests', () => {
   beforeEach(() => {
     resetState();
+    domEnv = installGlobalDom();
+    const document = domEnv.document;
     
     // Create test DOM structure
-    const testContainer = dom.window.document.createElement('div');
-    testContainer.innerHTML = `
+    document.body.innerHTML = `
       <div class="canvas-container">
         <div class="guide-layer" id="guideLayer"></div>
         <div id="previewGrid" class="preview-grid"></div>
@@ -96,18 +105,18 @@ describe('Template Studio Visual Regression Tests', () => {
         </div>
       </div>
     `;
-    
-    dom.window.document.body.appendChild(testContainer);
     initializeHarness();
   });
 
   afterEach(() => {
-    dom.window.document.body.innerHTML = '';
+    if (domEnv?.document) {
+      domEnv.document.body.innerHTML = '';
+    }
   });
 
   describe('Canvas Rendering', () => {
     it('should render grid blocks with correct CSS classes', () => {
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const previewGrid = getDocument().getElementById('previewGrid');
       
       // Create test boxes
       TemplateStudio.createBoxFromGrid(0, 0, 4, 2, 'header');
@@ -129,7 +138,7 @@ describe('Template Studio Visual Regression Tests', () => {
     });
 
     it('should apply selection styling correctly', () => {
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const previewGrid = getDocument().getElementById('previewGrid');
       
       // Create and select a box
       const box = TemplateStudio.createBoxFromGrid(2, 2, 4, 3, 'selectable');
@@ -148,7 +157,7 @@ describe('Template Studio Visual Regression Tests', () => {
     });
 
     it('should handle thin region styling', () => {
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const previewGrid = getDocument().getElementById('previewGrid');
       
       // Create thin regions
       TemplateStudio.createBoxFromGrid(0, 0, 12, 1, 'thin-horizontal');
@@ -169,7 +178,7 @@ describe('Template Studio Visual Regression Tests', () => {
     });
 
     it('should render region labels correctly', () => {
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const previewGrid = getDocument().getElementById('previewGrid');
       
       // Create regions with different name lengths
       TemplateStudio.createBoxFromGrid(0, 0, 6, 3, 'short');
@@ -192,8 +201,9 @@ describe('Template Studio Visual Regression Tests', () => {
 
   describe('Guide Rendering', () => {
     it('should render center guides when enabled', () => {
-      const guideLayer = dom.window.document.getElementById('guideLayer');
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const document = getDocument();
+      const guideLayer = document.getElementById('guideLayer');
+      const previewGrid = document.getElementById('previewGrid');
       
       // Enable center guides
       state.guideSettings.center = true;
@@ -215,8 +225,9 @@ describe('Template Studio Visual Regression Tests', () => {
     });
 
     it('should render fraction guides when enabled', () => {
-      const guideLayer = dom.window.document.getElementById('guideLayer');
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const document = getDocument();
+      const guideLayer = document.getElementById('guideLayer');
+      const previewGrid = document.getElementById('previewGrid');
       
       // Enable thirds
       state.guideSettings.thirds = true;
@@ -234,8 +245,9 @@ describe('Template Studio Visual Regression Tests', () => {
     });
 
     it('should render exclusion zones', () => {
-      const guideLayer = dom.window.document.getElementById('guideLayer');
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const document = getDocument();
+      const guideLayer = document.getElementById('guideLayer');
+      const previewGrid = document.getElementById('previewGrid');
       
       // Set exclusions
       state.exclusions.top = 2;
@@ -255,8 +267,9 @@ describe('Template Studio Visual Regression Tests', () => {
     });
 
     it('should render margin outline', () => {
-      const guideLayer = dom.window.document.getElementById('guideLayer');
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const document = getDocument();
+      const guideLayer = document.getElementById('guideLayer');
+      const previewGrid = document.getElementById('previewGrid');
       
       // Enable margin
       state.guideSettings.margin = true;
@@ -277,7 +290,7 @@ describe('Template Studio Visual Regression Tests', () => {
 
   describe('Interactive Elements', () => {
     it('should render resize handles on hover', () => {
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const previewGrid = getDocument().getElementById('previewGrid');
       
       // Create a box
       const box = TemplateStudio.createBoxFromGrid(2, 2, 4, 3, 'resizable');
@@ -299,8 +312,9 @@ describe('Template Studio Visual Regression Tests', () => {
     });
 
     it('should handle guide button interactions', () => {
-      const centerBtn = dom.window.document.querySelector('[data-guide="center"]');
-      const thirdsBtn = dom.window.document.querySelector('[data-guide="thirds"]');
+      const document = getDocument();
+      const centerBtn = document.querySelector('[data-guide="center"]');
+      const thirdsBtn = document.querySelector('[data-guide="thirds"]');
       assert(centerBtn);
       assert(thirdsBtn);
 
@@ -315,7 +329,7 @@ describe('Template Studio Visual Regression Tests', () => {
     });
 
     it('should update control states based on selection', () => {
-      const deleteBtn = dom.window.document.createElement('button');
+      const deleteBtn = getDocument().createElement('button');
       deleteBtn.id = 'deleteSelectedBtn';
       deleteBtn.disabled = true;
       
@@ -336,7 +350,7 @@ describe('Template Studio Visual Regression Tests', () => {
 
   describe('Responsive Behavior', () => {
     it('should adapt to different canvas sizes', () => {
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const previewGrid = getDocument().getElementById('previewGrid');
       
       // Test small canvas
       previewGrid.style.width = '300px';
@@ -361,7 +375,7 @@ describe('Template Studio Visual Regression Tests', () => {
     });
 
     it('should handle different grid dimensions', () => {
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const previewGrid = getDocument().getElementById('previewGrid');
       
       // Test with many columns and rows
       state.columns = 20;
@@ -382,8 +396,7 @@ describe('Template Studio Visual Regression Tests', () => {
 
   describe('Error Recovery', () => {
     it('should handle missing DOM elements gracefully', () => {
-      // Remove preview grid
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const previewGrid = getDocument().getElementById('previewGrid');
       previewGrid.remove();
       
       // Should not throw
@@ -393,7 +406,7 @@ describe('Template Studio Visual Regression Tests', () => {
     });
 
     it('should handle corrupted state gracefully', () => {
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const previewGrid = getDocument().getElementById('previewGrid');
       
       // Corrupt state
       state.boxes = [{ invalid: 'box' }];
@@ -409,7 +422,8 @@ describe('Template Studio Visual Regression Tests', () => {
     });
 
     it('should handle CSS calculation errors', () => {
-      const previewGrid = dom.window.document.getElementById('previewGrid');
+      const document = getDocument();
+      const previewGrid = document.getElementById('previewGrid');
       
       // Set invalid dimensions
       previewGrid.style.width = '0px';
@@ -418,7 +432,7 @@ describe('Template Studio Visual Regression Tests', () => {
       // Should handle gracefully
       assert.doesNotThrow(() => {
         TemplateStudio.renderPreview(previewGrid, () => {});
-        TemplateStudio.renderGuides(dom.window.document.getElementById('guideLayer'), previewGrid);
+        TemplateStudio.renderGuides(document.getElementById('guideLayer'), previewGrid);
       });
     });
   });

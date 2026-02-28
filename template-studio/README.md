@@ -39,6 +39,7 @@ template-studio/
 - **Real-time Preview**: See your CSS Grid layout update as you work
 - **MDX Export**: Generate valid MDX frontmatter compatible with the shared schema
 - **MDX Import**: Load existing MDX templates and continue editing
+- **Brand-aware UI**: Brand selectors, typography tokens, and diagnostics pull from `templates/<brand>/brand.json`
 - **Guides & Exclusions**: Visual guides and exclusion zones for precise layouts
 - **Region Metadata**: Configure input types, field types, and LLM hints per region
 - **Undo/Redo**: Full history support for design iterations
@@ -90,6 +91,16 @@ npm run test:watch
 4. **Use Guides**: Enable visual guides (center, thirds, quarters, etc.) for alignment
 5. **Export MDX**: Save your template as valid MDX frontmatter
 6. **Import MDX**: Load existing templates to continue editing
+
+### Brand Configuration
+
+Brands are defined outside of Template Studio under `templates/<brand>/brand.json`. The Studio reads these files at runtime (via `/core/brand/loader.js`) and applies the selected brand’s typography, palette, master template pointer, and logos. To register a new brand:
+
+1. Create `templates/<brand>/brand.json` following `core/brand/brand-schema.json` (typography, copy, `assets.logo.dark/light`, `variants`, etc.).
+2. Place any referenced assets under `templates/<brand>/assets/...` so the dev server can serve them.
+3. Append `{ "id": "<brand>", "label": "Display Name", "version": <number> }` to `templates/brands.json`.
+
+Template Studio’s dev server already exposes `/templates`, so brand configs and assets are available to the browser with no bundling.
 
 ## MDX Schema
 

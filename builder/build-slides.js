@@ -10,6 +10,7 @@ import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { RendererProvider } from '../core/layout/render-context.js';
+import { getBrandSnapshot } from '../core/brand/loader.js';
 
 const ROOT = path.resolve(process.cwd());
 const SLIDES_DIR = path.join(ROOT, 'templates');
@@ -58,6 +59,16 @@ async function build() {
       }
       const Component = module.default;
 
+      const brandFrontmatter = data.brand || {};
+      const brandId = brandFrontmatter.id || 'default';
+      const brandVariant = brandFrontmatter.variant;
+      let brandSnapshot = null;
+      try {
+        brandSnapshot = getBrandSnapshot(brandId, brandVariant);
+      } catch (error) {
+        console.warn(`Failed to load brand snapshot for ${brandId} (${brandVariant || 'default'}):`, error.message);
+      }
+
       const element = React.createElement(
         RendererProvider,
         {
@@ -68,6 +79,7 @@ async function build() {
             previewChrome: false,
             showDiagnostics: false,
             showRegionOutlines: false,
+            brandSnapshot
           }
         },
         React.createElement(Component, data)

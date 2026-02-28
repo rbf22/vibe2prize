@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BrandDefinition",
+  "type": "object",
+  "required": [
+    "id",
+    "label",
+    "version",
+    "masterTemplate",
+    "typography",
+    "copy",
+    "assets",
+    "defaultTheme",
+    "variants"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "label": { "type": "string", "minLength": 1 },
+    "version": { "type": "integer", "minimum": 1 },
+    "masterTemplate": { "type": ["string", "null"], "minLength": 1 },
+    "typography": {
+      "type": "object",
+      "required": ["heading", "body"],
+      "properties": {
+        "heading": { "type": "string", "minLength": 1 },
+        "body": { "type": "string", "minLength": 1 },
+        "roles": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "fontSize": { "type": "number", "minimum": 1 },
+              "lineHeight": { "type": "number", "minimum": 1 }
+            }
+          }
+        }
+      }
+    },
+    "copy": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "assets": {
+      "type": "object",
+      "properties": {
+        "logo": {
+          "type": "object",
+          "properties": {
+            "dark": { "type": ["string", "null"] },
+            "light": { "type": ["string", "null"] }
+          },
+          "required": ["dark", "light"]
+        }
+      },
+      "additionalProperties": true
+    },
+    "editorialThemes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "defaultTheme": { "type": "string", "minLength": 1 },
+    "variants": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "cssVars": {
+            "type": "object",
+            "additionalProperties": { "type": ["string", "null"] }
+          },
+          "tokens": {
+            "type": "object",
+            "properties": {
+              "palette": {
+                "type": "object",
+                "additionalProperties": { "type": "string" }
+              }
+            }
+          },
+          "assets": {
+            "type": "object",
+            "additionalProperties": { "type": ["string", "null"] }
+          },
+          "copy": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

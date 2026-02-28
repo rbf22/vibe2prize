@@ -10,43 +10,18 @@ import {
   createImagePlaceholder
 } from '../utils/preview-content.js';
 import { getBrandSnapshot } from '../branding/brands.js';
-import { evaluateTextOverflow } from '../../../core/layout/overflow-metrics.js';
+import { collectDiagnostics } from '../../../core/layout/diagnostics.js';
 import {
   formatPageNumberLabel,
   normalizeRendererFlags
 } from '../../../core/layout/renderer-utils.js';
+import { collectDomOverflowIssues } from './dom-overflow.js';
 function emptyState(container) {
   container.innerHTML = '';
   const empty = document.createElement('div');
   empty.className = 'slide-preview-empty';
   empty.innerHTML = '<p>Draw regions to preview a slide.</p><p class="hint">The preview mirrors approximate typography, spacing, and data blocks.</p>';
   container.appendChild(empty);
-}
-
-function recordOverflowDiagnostics({ box, role, previewText, collection }) {
-  if (!previewText) {
-    return null;
-  }
-  const metrics = evaluateTextOverflow({
-    text: previewText,
-    gridWidth: box.gridWidth,
-    gridHeight: box.gridHeight,
-    role,
-    maxWords: box.metadata?.maxWords
-  });
-  if (metrics.overflowChars > 0 && Array.isArray(collection)) {
-    const percentOver = metrics.capacity > 0
-      ? Math.max(0, Math.round((metrics.overflowChars / metrics.capacity) * 100))
-      : 0;
-    collection.push({
-      boxId: box.id,
-      area: box.name,
-      role,
-      metrics,
-      message: `Region "${box.name || box.id}" exceeds capacity by ${metrics.overflowChars} chars (~${percentOver}% over budget). Remove ~${metrics.suggestedTrim} characters or enlarge the region.`
-    });
-  }
-  return metrics;
 }
 
 function ensureOverflowBadge(region, textContent) {
@@ -146,40 +121,6 @@ function resolvePageNumberCopy({ role, pagination }) {
 }
 
 
-function recordVisualOverflow({ board, boxes, diagnostics }) {
-  if (!board) return;
-  const boxIndex = new Map(boxes.map((box) => [box.id, box]));
-  board.querySelectorAll('.slide-preview-region').forEach((region) => {
-    const boxId = region.dataset.boxId;
-    const box = boxIndex.get(boxId);
-    if (!box) return;
-    const overflowPx = Math.ceil(region.scrollHeight - region.clientHeight);
-    if (overflowPx <= 1) return;
-    region.dataset.overflow = 'true';
-    const hasBadge = region.querySelector('.slide-preview-overflow-badge');
-    if (!hasBadge) {
-      ensureOverflowBadge(region, `+${overflowPx}px`);
-    }
-    const alreadyRecorded = diagnostics.some((entry) => entry.boxId === boxId);
-    if (!alreadyRecorded) {
-      diagnostics.push({
-        boxId,
-        area: box.name,
-        role: getRoleFromBox(box),
-        metrics: {
-          overflowPx,
-          type: 'visual'
-        },
-        message: [
-          `Region "${box.name || box.id}" visually overflows by ~${overflowPx}px.`,
-          'Global fix: lower this role’s font size/line-height in Template Studio → Brand (or tweak template-studio/src/branding/brands.js).',
-          'Local fix: give the region more rows/columns or swap to a smaller text style.'
-        ].join(' ')
-      });
-    }
-  });
-}
-
 export function renderSlidePreview(container) {
   if (!container) return;
   const boxes = state.boxes || [];
@@ -221,7 +162,7 @@ export function renderSlidePreview(container) {
   board.dataset.regionOutlines = flags.showRegionOutlines ? 'true' : 'false';
   container.appendChild(board);
 
-  const overflowDiagnostics = diagnosticsEnabled ? [] : null;
+  const diagnosticsBuffer = diagnosticsEnabled ? { regions: [], textMap: new Map() } : null;
   const brandSnapshot = getBrandSnapshot(state.brand?.id, state.brand?.variant);
 
   boxes.forEach((box) => {
@@ -243,6 +184,8 @@ export function renderSlidePreview(container) {
     const horizontalPadding = Math.min(regionWidth * 0.08, 24);
     region.style.padding = `${verticalPadding}px ${horizontalPadding}px`;
 
+    const descriptor = diagnosticsBuffer ? buildDiagnosticsDescriptor(box, role) : null;
+
     if (role === 'data-table') {
       region.appendChild(buildTablePreview(box.metadata));
     } else if (inputType === 'image' || isImageRole(role)) {
@@ -256,31 +199,20 @@ export function renderSlidePreview(container) {
       const body = document.createElement('p');
       body.className = 'slide-preview-region-copy';
       const basePreviewText = resolvePreviewText(box, role);
-      const footerAwareCopy = resolveFooterCopy({ box, role, previewText: basePreviewText, snapshot: brandSnapshot });
+      const footerAwareCopy = resolveFooterCopy({ role, previewText: basePreviewText, brandSnapshot });
       const systemCopy = resolvePageNumberCopy({ role, pagination });
       const resolvedCopy = systemCopy || footerAwareCopy || basePreviewText || '';
       body.textContent = resolvedCopy;
       region.appendChild(body);
 
-      if (diagnosticsEnabled) {
-        const metrics = recordOverflowDiagnostics({ box, role, previewText: resolvedCopy, collection: overflowDiagnostics });
-        if (metrics?.overflowChars > 0) {
-          region.dataset.overflow = 'true';
-          ensureOverflowBadge(region, `-${metrics.suggestedTrim} chars`);
-        } else {
-          region.removeAttribute('data-overflow');
-          const badge = region.querySelector('.slide-preview-overflow-badge');
-          if (badge) {
-            badge.remove();
-          }
-        }
-      } else {
-        region.removeAttribute('data-overflow');
-        const badge = region.querySelector('.slide-preview-overflow-badge');
-        if (badge) {
-          badge.remove();
-        }
+      if (diagnosticsBuffer && descriptor) {
+        descriptor.text = resolvedCopy;
+        diagnosticsBuffer.textMap.set(descriptor.area, resolvedCopy);
       }
+    }
+
+    if (diagnosticsBuffer && descriptor) {
+      diagnosticsBuffer.regions.push(descriptor);
     }
 
     board.appendChild(region);
@@ -292,12 +224,48 @@ export function renderSlidePreview(container) {
       region.removeAttribute('title');
     }
   });
+  const domOverflowIssues = diagnosticsEnabled && flags.detectDomOverflow
+    ? collectDomOverflowIssues({
+        board,
+        descriptors: diagnosticsBuffer?.regions || []
+      })
+    : [];
 
-  if (diagnosticsEnabled) {
-    recordVisualOverflow({ board, boxes, diagnostics: overflowDiagnostics });
+  const diagnostics = diagnosticsEnabled
+    ? collectDiagnostics({
+        regions: diagnosticsBuffer?.regions,
+        textByArea: diagnosticsBuffer?.textMap,
+        templateSettings: {
+          canvasWidth: state.canvasWidth,
+          canvasHeight: state.canvasHeight,
+          columns: state.columns,
+          rows: state.rows,
+          gap: state.gap
+        },
+        brandSnapshot,
+        pagination: state.pagination,
+        options: { includeVisual: true }
+      })
+    : { semantic: [], visual: [], issues: [] };
+
+  if (diagnosticsEnabled && domOverflowIssues.length) {
+    const domBoxIds = new Set(domOverflowIssues.map((issue) => issue.boxId).filter(Boolean));
+    const visualWithoutDom = (diagnostics.visual || []).filter((issue) => {
+      if (issue.type !== 'visual') return true;
+      if (!domBoxIds.size) return true;
+      return !domBoxIds.has(issue.boxId);
+    });
+    diagnostics.visual = [...visualWithoutDom, ...domOverflowIssues];
+    diagnostics.issues = [...(diagnostics.semantic || []), ...diagnostics.visual];
   }
 
-  const nextDiagnostics = diagnosticsEnabled ? overflowDiagnostics : [];
+  if (diagnosticsEnabled) {
+    applyDiagnosticsToBoard({ board, diagnostics });
+  } else {
+    clearRegionOverflowBadges(board);
+  }
+
+  const nextDiagnostics = diagnosticsEnabled ? diagnostics.issues : [];
   state.diagnostics = state.diagnostics || {};
   state.diagnostics.overflow = nextDiagnostics;
   document.dispatchEvent(new CustomEvent('templateDiagnosticsUpdated', {
@@ -305,4 +273,75 @@ export function renderSlidePreview(container) {
       overflow: nextDiagnostics
     }
   }));
+}
+
+function buildDiagnosticsDescriptor(box, role) {
+  return {
+    id: box.id,
+    area: box.name || box.id,
+    role,
+    grid: {
+      width: Math.max(box.gridWidth, 1),
+      height: Math.max(box.gridHeight, 1),
+      x: box.gridX ?? 0,
+      y: box.gridY ?? 0
+    },
+    metadata: box.metadata || {},
+    maxWords: box.metadata?.maxWords || null,
+    text: null
+  };
+}
+
+function applyDiagnosticsToBoard({ board, diagnostics }) {
+  const issuesByBox = new Map();
+  diagnostics.issues.forEach((issue) => {
+    if (!issuesByBox.has(issue.boxId)) {
+      issuesByBox.set(issue.boxId, []);
+    }
+    issuesByBox.get(issue.boxId).push(issue);
+  });
+
+  board.querySelectorAll('.slide-preview-region').forEach((region) => {
+    const boxId = region.dataset.boxId;
+    const issues = issuesByBox.get(boxId) || [];
+    if (!issues.length) {
+      region.removeAttribute('data-overflow');
+      region.removeAttribute('data-dom-overflow');
+      const badge = region.querySelector('.slide-preview-overflow-badge');
+      if (badge) badge.remove();
+      return;
+    }
+
+    region.dataset.overflow = 'true';
+    if (issues.some((issue) => issue.metrics?.origin === 'preview-dom')) {
+      region.dataset.domOverflow = 'true';
+    } else {
+      region.removeAttribute('data-dom-overflow');
+    }
+    const semanticIssue = issues.find((issue) => issue.type === 'semantic');
+    const visualIssue = issues.find((issue) => issue.type === 'visual');
+    const badgeLabel = formatBadgeLabel({ semanticIssue, visualIssue });
+    ensureOverflowBadge(region, badgeLabel);
+  });
+}
+
+function clearRegionOverflowBadges(board) {
+  board.querySelectorAll('.slide-preview-region').forEach((region) => {
+    region.removeAttribute('data-overflow');
+    region.removeAttribute('data-dom-overflow');
+    const badge = region.querySelector('.slide-preview-overflow-badge');
+    if (badge) {
+      badge.remove();
+    }
+  });
+}
+
+function formatBadgeLabel({ semanticIssue, visualIssue }) {
+  if (semanticIssue?.metrics?.suggestedTrim) {
+    return `-${semanticIssue.metrics.suggestedTrim} chars`;
+  }
+  if (visualIssue?.metrics?.overflowPx) {
+    return `+${visualIssue.metrics.overflowPx}px`;
+  }
+  return 'Check layout';
 }

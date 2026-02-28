@@ -1,0 +1,98 @@
+{
+  "id": "epam",
+  "label": "EPAM Systems",
+  "version": 1,
+  "masterTemplate": "templates/epam/epam-master.mdx",
+  "typography": {
+    "heading": "\"Museo\", \"Newsreader\", serif",
+    "body": "\"Source Sans Pro\", \"Space Grotesk\", \"Segoe UI\", sans-serif",
+    "roles": {
+      "primary-title": { "fontSize": 16, "lineHeight": 20 },
+      "secondary-title": { "fontSize": 10, "lineHeight": 12 },
+      "section-title": { "fontSize": 10, "lineHeight": 12 },
+      "logo": { "fontSize": 6, "lineHeight": 8 },
+      "footer": { "fontSize": 9, "lineHeight": 11 }
+    }
+  },
+  "copy": {
+    "footer": "EPAM Continuum Proprietary and Confidential"
+  },
+  "assets": {
+    "logo": {
+      "dark": "templates/epam/assets/dark/logo.svg",
+      "light": "templates/epam/assets/light/logo.svg"
+    }
+  },
+  "editorialThemes": [
+    "Converging Forces",
+    "The Modernization Imperative",
+    "Orchestrating Complexity",
+    "The Value of Trust"
+  ],
+  "defaultTheme": "dark",
+  "variants": {
+    "dark": {
+      "label": "Sea Night",
+      "cssVars": {
+        "--bg": "linear-gradient(120deg, #050b1a 0%, #0b182f 100%)",
+        "--panel": "rgba(8, 16, 40, 0.85)",
+        "--panel-border": "rgba(255, 255, 255, 0.08)",
+        "--primary": "#00F6FF",
+        "--accent": "#00FFF0",
+        "--muted": "rgba(246, 251, 255, 0.7)",
+        "--text-primary": "#F4FBFF",
+        "--text-muted": "rgba(244, 251, 255, 0.72)",
+        "--grid-line": "rgba(123, 168, 255, 0.3)",
+        "--indicator": "#00FFF0",
+        "--indicator-soft": "rgba(0, 255, 240, 0.35)",
+        "--guide-line": "rgba(0, 255, 240, 0.35)",
+        "--guide-accent": "#00F6FF",
+        "--guide-label": "rgba(8, 16, 40, 0.7)",
+        "--font-heading": "\"Museo\", \"Newsreader\", serif",
+        "--font-body": "\"Source Sans Pro\", \"Space Grotesk\", \"Segoe UI\", sans-serif"
+      },
+      "tokens": {
+        "palette": {
+          "sea": "#00F6FF",
+          "mint": "#00FFF0",
+          "lilac": "#B896FF",
+          "sky": "#7BA8FF",
+          "night": "#060606"
+        }
+      },
+      "assets": {
+        "backgroundNoise": "radial-gradient(circle at 20% 20%, rgba(0, 255, 240, 0.08), transparent 55%)"
+      }
+    },
+    "light": {
+      "label": "Cobalt Day",
+      "cssVars": {
+        "--bg": "linear-gradient(120deg, #f5f7fb 0%, #ffffff 100%)",
+        "--panel": "rgba(255, 255, 255, 0.92)",
+        "--panel-border": "rgba(10, 34, 92, 0.1)",
+        "--primary": "#0047FF",
+        "--accent": "#00D1FF",
+        "--muted": "rgba(0, 0, 0, 0.65)",
+        "--text-primary": "#0B1633",
+        "--text-muted": "rgba(11, 22, 51, 0.7)",
+        "--grid-line": "rgba(74, 113, 189, 0.25)",
+        "--indicator": "#0047FF",
+        "--indicator-soft": "rgba(0, 71, 255, 0.2)",
+        "--guide-line": "rgba(0, 71, 255, 0.2)",
+        "--guide-accent": "#0047FF",
+        "--guide-label": "rgba(255, 255, 255, 0.9)",
+        "--font-heading": "\"Museo\", \"Newsreader\", serif",
+        "--font-body": "\"Source Sans Pro\", \"Space Grotesk\", \"Segoe UI\", sans-serif"
+      },
+      "tokens": {
+        "palette": {
+          "cobalt": "#0047FF",
+          "aqua": "#0078C2",
+          "iris": "#8453D2",
+          "slate": "#4A71BD",
+          "snow": "#FBFAFA"
+        }
+      }
+    }
+  }
+}

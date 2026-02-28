@@ -1,0 +1,6 @@
+{
+  "brands": [
+    { "id": "default", "label": "Template Studio", "version": 1 },
+    { "id": "epam", "label": "EPAM Systems", "version": 1 }
+  ]
+}

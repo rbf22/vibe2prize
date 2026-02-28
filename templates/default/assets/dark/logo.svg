@@ -1,0 +1,11 @@
+<svg width="220" height="64" viewBox="0 0 220 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="arcDarkGradient" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8CF7E0" />
+      <stop offset="1" stop-color="#4BE0FF" />
+    </linearGradient>
+  </defs>
+  <path d="M14 44C9 32 13 18 24 10C40 0 62 5 72 20" stroke="url(#arcDarkGradient)" stroke-width="6" stroke-linecap="round" />
+  <path d="M20 38C18 30 22 22 30 18C38 14 48 16 54 22" stroke="#FFFFFF" stroke-opacity="0.7" stroke-width="4" stroke-linecap="round" />
+  <text x="90" y="42" fill="#F5FBFF" font-family="'Space Grotesk', 'Segoe UI', sans-serif" font-size="28" font-weight="600" letter-spacing="0.12em" text-transform="uppercase">ARC</text>
+</svg>

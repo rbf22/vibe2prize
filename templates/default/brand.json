@@ -1,0 +1,86 @@
+{
+  "id": "default",
+  "label": "Template Studio",
+  "version": 1,
+  "masterTemplate": "templates/default/default-master.mdx",
+  "typography": {
+    "heading": "\"Newsreader\", serif",
+    "body": "\"Space Grotesk\", \"Segoe UI\", sans-serif",
+    "roles": {
+      "section-title": { "fontSize": 9, "lineHeight": 12 },
+      "logo": { "fontSize": 6, "lineHeight": 8 },
+      "footer": { "fontSize": 10, "lineHeight": 12 }
+    }
+  },
+  "copy": {
+    "footer": "© 2026 Template Studio. All rights reserved."
+  },
+  "assets": {
+    "logo": {
+      "dark": "templates/default/assets/dark/logo.svg",
+      "light": "templates/default/assets/light/logo.svg"
+    }
+  },
+  "defaultTheme": "dark",
+  "variants": {
+    "dark": {
+      "label": "Midnight",
+      "cssVars": {
+        "--bg": "radial-gradient(circle at top left, #0f1c34, #040715 65%)",
+        "--panel": "rgba(6, 12, 24, 0.85)",
+        "--panel-border": "rgba(255, 255, 255, 0.09)",
+        "--primary": "#81f0c8",
+        "--accent": "#f6b36c",
+        "--muted": "rgba(255, 255, 255, 0.7)",
+        "--text-primary": "#eef2ff",
+        "--text-muted": "rgba(255, 255, 255, 0.72)",
+        "--grid-line": "rgba(160, 170, 190, 0.35)",
+        "--indicator": "rgba(255, 94, 214, 0.9)",
+        "--indicator-soft": "rgba(255, 94, 214, 0.35)",
+        "--guide-line": "rgba(255, 94, 214, 0.35)",
+        "--guide-accent": "rgba(255, 94, 214, 0.9)",
+        "--guide-label": "rgba(8, 19, 37, 0.7)",
+        "--font-heading": "\"Newsreader\", serif",
+        "--font-body": "\"Space Grotesk\", \"Segoe UI\", sans-serif"
+      },
+      "tokens": {
+        "palette": {
+          "primary": "#81f0c8",
+          "accent": "#f6b36c",
+          "muted": "rgba(255, 255, 255, 0.7)",
+          "surface": "#040715"
+        }
+      }
+    },
+    "light": {
+      "label": "Frost",
+      "cssVars": {
+        "--bg": "radial-gradient(circle at top left, #ffffff, #eef2ff 65%)",
+        "--panel": "rgba(247, 248, 255, 0.95)",
+        "--panel-border": "rgba(10, 34, 92, 0.12)",
+        "--primary": "#3a6ff8",
+        "--accent": "#f07f4f",
+        "--muted": "rgba(18, 23, 44, 0.7)",
+        "--text-primary": "#0b1633",
+        "--text-muted": "rgba(11, 22, 51, 0.7)",
+        "--grid-line": "rgba(34, 54, 94, 0.25)",
+        "--indicator": "#3a6ff8",
+        "--indicator-soft": "rgba(58, 111, 248, 0.3)",
+        "--guide-line": "rgba(58, 111, 248, 0.3)",
+        "--guide-accent": "#3a6ff8",
+        "--guide-label": "rgba(255, 255, 255, 0.8)",
+        "--font-heading": "\"Newsreader\", serif",
+        "--font-body": "\"Space Grotesk\", \"Segoe UI\", sans-serif"
+      },
+      "tokens": {
+        "palette": {
+          "primary": "#3a6ff8",
+          "accent": "#f07f4f",
+          "muted": "rgba(18, 23, 44, 0.7)",
+          "surface": "#f7f8ff"
+        }
+      }
+    }
+  },
+  "editorialThemes": []
+}

@@ -239,15 +239,24 @@ export function applyFrontmatterToState(frontmatter) {
   if (typeof layout?.rows === 'number') {
     state.rows = layout.rows;
     updateInputValue('rowCount', state.rows);
+  } else if (typeof templateSettings?.rows === 'number') {
+    state.rows = templateSettings.rows;
+    updateInputValue('rowCount', state.rows);
   }
 
   if (typeof layout?.columns === 'number') {
     state.columns = layout.columns;
     updateInputValue('columnCount', state.columns);
+  } else if (typeof templateSettings?.columns === 'number') {
+    state.columns = templateSettings.columns;
+    updateInputValue('columnCount', state.columns);
   }
 
-  if (layout?.gap) {
+  if (typeof layout?.gap === 'number' && !Number.isNaN(layout.gap)) {
     state.gap = layout.gap;
+    updateInputValue('gridGap', state.gap);
+  } else if (typeof templateSettings?.gap === 'number' && !Number.isNaN(templateSettings.gap)) {
+    state.gap = templateSettings.gap;
     updateInputValue('gridGap', state.gap);
   }
 
@@ -311,11 +320,17 @@ export function applyFrontmatterToState(frontmatter) {
       }
       return fallback;
     };
-    const fallbackFlags = state.previewFlags || { previewChrome: true, showDiagnostics: true, showRegionOutlines: true };
+    const fallbackFlags = state.previewFlags || {
+      previewChrome: true,
+      showDiagnostics: true,
+      showRegionOutlines: true,
+      detectDomOverflow: true
+    };
     state.previewFlags = {
       previewChrome: normalize(frontmatter.previewFlags.previewChrome, fallbackFlags.previewChrome),
       showDiagnostics: normalize(frontmatter.previewFlags.showDiagnostics, fallbackFlags.showDiagnostics),
       showRegionOutlines: normalize(frontmatter.previewFlags.showRegionOutlines, fallbackFlags.showRegionOutlines),
+      detectDomOverflow: normalize(frontmatter.previewFlags.detectDomOverflow, fallbackFlags.detectDomOverflow)
     };
     setCheckboxChecked('previewChromeToggle', state.previewFlags.previewChrome);
     setCheckboxChecked('diagnosticsToggle', state.previewFlags.showDiagnostics);

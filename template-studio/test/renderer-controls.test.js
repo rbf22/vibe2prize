@@ -1,12 +1,12 @@
 import { describe, it, beforeEach } from 'node:test';
 import assert from 'node:assert';
-import { JSDOM } from 'jsdom';
 import { state, resetState } from '../src/state.js';
 import {
   initializeRendererControls,
   syncPaginationControls,
   syncPreviewFlagControls,
 } from '../src/ui/controls.js';
+import { installGlobalDom } from './helpers/dom-env.js';
 
 const CONTROL_TEMPLATE = `
   <div>
@@ -20,14 +20,15 @@ const CONTROL_TEMPLATE = `
 `;
 
 describe('Renderer Controls', () => {
-  let dom;
   let controls;
+  let defaultView;
 
   beforeEach(() => {
     resetState();
-    dom = new JSDOM(CONTROL_TEMPLATE);
-    global.window = dom.window;
-    global.document = dom.window.document;
+    const installed = installGlobalDom();
+    const { document } = installed;
+    defaultView = installed.defaultView;
+    document.body.innerHTML = CONTROL_TEMPLATE;
     controls = {
       paginationInputs: {
         pageNumber: document.getElementById('pageNumberInput'),
@@ -58,16 +59,16 @@ describe('Renderer Controls', () => {
     initializeRendererControls(controls, () => {});
 
     controls.paginationInputs.pageNumber.value = '3';
-    controls.paginationInputs.pageNumber.dispatchEvent(new dom.window.Event('input'));
+    controls.paginationInputs.pageNumber.dispatchEvent(new defaultView.Event('input'));
     assert.strictEqual(state.pagination.pageNumber, 3);
     assert.strictEqual(state.pagination.totalSlides, 12);
 
     controls.paginationInputs.totalSlides.value = '20';
-    controls.paginationInputs.totalSlides.dispatchEvent(new dom.window.Event('input'));
+    controls.paginationInputs.totalSlides.dispatchEvent(new defaultView.Event('input'));
     assert.strictEqual(state.pagination.totalSlides, 20);
 
     controls.paginationInputs.label.value = 'Slide';
-    controls.paginationInputs.label.dispatchEvent(new dom.window.Event('input'));
+    controls.paginationInputs.label.dispatchEvent(new defaultView.Event('input'));
     assert.strictEqual(state.pagination.label, 'Slide');
   });
 
@@ -75,15 +76,15 @@ describe('Renderer Controls', () => {
     initializeRendererControls(controls, () => {});
 
     controls.previewToggles.previewChrome.checked = false;
-    controls.previewToggles.previewChrome.dispatchEvent(new dom.window.Event('change'));
+    controls.previewToggles.previewChrome.dispatchEvent(new defaultView.Event('change'));
     assert.strictEqual(state.previewFlags.previewChrome, false);
 
     controls.previewToggles.regionOutlines.checked = false;
-    controls.previewToggles.regionOutlines.dispatchEvent(new dom.window.Event('change'));
+    controls.previewToggles.regionOutlines.dispatchEvent(new defaultView.Event('change'));
     assert.strictEqual(state.previewFlags.showRegionOutlines, false);
 
     controls.previewToggles.diagnostics.checked = false;
-    controls.previewToggles.diagnostics.dispatchEvent(new dom.window.Event('change'));
+    controls.previewToggles.diagnostics.dispatchEvent(new defaultView.Event('change'));
     assert.strictEqual(state.previewFlags.showDiagnostics, false);
   });
 

@@ -33,7 +33,7 @@ const DEFAULT_STATE = {
     right: 0
   },
   brand: {
-    id: 'epam',
+    id: 'default',
     variant: 'dark'
   },
   pagination: {
@@ -44,7 +44,8 @@ const DEFAULT_STATE = {
   previewFlags: {
     previewChrome: true,
     showDiagnostics: true,
-    showRegionOutlines: true
+    showRegionOutlines: true,
+    detectDomOverflow: true
   },
   diagnostics: {
     overflow: []

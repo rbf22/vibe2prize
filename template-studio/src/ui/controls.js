@@ -68,7 +68,8 @@ function ensurePreviewFlagState() {
     state.previewFlags = {
       previewChrome: true,
       showDiagnostics: true,
-      showRegionOutlines: true
+      showRegionOutlines: true,
+      detectDomOverflow: true
     };
   }
 }
@@ -85,10 +86,11 @@ function syncPaginationControls(controls) {
 function syncPreviewFlagControls(controls) {
   if (!controls?.previewToggles) return;
   ensurePreviewFlagState();
-  const { previewChrome, regionOutlines, diagnostics } = controls.previewToggles;
+  const { previewChrome, regionOutlines, diagnostics, domOverflow } = controls.previewToggles;
   if (previewChrome) previewChrome.checked = !!state.previewFlags.previewChrome;
   if (regionOutlines) regionOutlines.checked = !!state.previewFlags.showRegionOutlines;
   if (diagnostics) diagnostics.checked = !!state.previewFlags.showDiagnostics;
+  if (domOverflow) domOverflow.checked = !!state.previewFlags.detectDomOverflow;
 }
 
 function coerceInt(value, { fallback = 0, min = -Infinity, max = Infinity } = {}) {
@@ -367,6 +369,10 @@ export function attachControlHandlers(controls, renderPreview, renderSnippet, re
   }
 
   // Guide toggles
+  if (typeof document === 'undefined') {
+    return;
+  }
+
   const guideButtons = document.querySelectorAll('.guide-btn');
   console.log('Found guide buttons:', guideButtons.length);
   
