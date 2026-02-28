@@ -3,6 +3,17 @@ import { renderSlidePreview } from '../src/canvas/rendered-view.js';
 import { state } from '../src/state.js';
 import { getBrandSnapshot } from '../src/branding/brands.js';
 
+if (typeof global.ResizeObserver === 'undefined') {
+  global.ResizeObserver = class ResizeObserver {
+    constructor(callback) {
+      this.callback = callback;
+    }
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}
+
 // Test helper to measure rendered elements
 function measureElement(element) {
   const rect = element.getBoundingClientRect();

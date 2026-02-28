@@ -5,6 +5,15 @@ import { JSDOM, VirtualConsole } from 'jsdom';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+const ROOT_DIR = process.cwd();
+const previewCssPath = path.join(ROOT_DIR, 'template-studio', 'styles', 'main.css');
+let previewCss = '';
+try {
+  previewCss = await fs.readFile(previewCssPath, 'utf8');
+} catch (error) {
+  console.warn('template-studio/test/test-setup: failed to load preview CSS:', error.message);
+}
+
 // Create and configure DOM environment
 const dom = new JSDOM('<!DOCTYPE html><html><head><title>Test</title></head><body></body></html>', {
   url: 'http://localhost:8080',
@@ -13,6 +22,12 @@ const dom = new JSDOM('<!DOCTYPE html><html><head><title>Test</title></head><bod
   runScripts: 'dangerously',
   virtualConsole: new VirtualConsole()
 });
+
+if (previewCss) {
+  const styleTag = dom.window.document.createElement('style');
+  styleTag.textContent = previewCss;
+  dom.window.document.head.appendChild(styleTag);
+}
 
 // Set up global browser APIs
 global.window = dom.window;
@@ -33,7 +48,6 @@ global.getComputedStyle = dom.window.getComputedStyle;
 global.requestAnimationFrame = dom.window.requestAnimationFrame;
 global.cancelAnimationFrame = dom.window.cancelAnimationFrame;
 
-const ROOT_DIR = process.cwd();
 const nativeFetch = global.fetch;
 
 function normalizeFetchInput(input) {

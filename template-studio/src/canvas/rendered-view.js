@@ -10,7 +10,7 @@ import {
   createImagePlaceholder
 } from '../utils/preview-content.js';
 import { getRoleTypographyStyle, styleObjectToCss } from '../utils/shared-styles.js';
-import { getBrandSnapshot } from '../branding/brands.js';
+import { getBrandSnapshot, adaptSnapshotToDom } from '../branding/brands.js';
 import { collectDiagnostics } from '../../../core/layout/diagnostics.js';
 import {
   formatPageNumberLabel,
@@ -18,6 +18,33 @@ import {
 } from '../../../core/layout/renderer-utils.js';
 import { collectDomOverflowIssues } from './dom-overflow.js';
 const IMAGE_REGION_PADDING = '0.4rem';
+const DATA_TABLE_PADDING = '0.45rem';
+
+function applyStyleObject(element, style = {}) {
+  if (!element || !style) return;
+  Object.entries(style).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    element.style[key] = value;
+  });
+}
+
+function getRegionBaseStyle({ theme }) {
+  const isLight = theme === 'light';
+  return {
+    border: '1px solid rgba(255, 255, 255, 0.15)',
+    borderRadius: '0.2rem',
+    backdropFilter: 'blur(4px)',
+    background: isLight ? 'rgba(0, 0, 0, 0.02)' : 'rgba(0, 0, 0, 0.35)',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.35rem',
+    transition: 'border 0.2s ease',
+    boxSizing: 'border-box',
+    overflow: 'hidden',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start'
+  };
+}
 function emptyState(container) {
   container.innerHTML = '';
   const empty = document.createElement('div');
@@ -227,7 +254,7 @@ export function renderSlidePreview(container, resizeEntry) {
   container.appendChild(board);
 
   const diagnosticsBuffer = diagnosticsEnabled ? { regions: [], textMap: new Map() } : null;
-  const brandSnapshot = getBrandSnapshot(state.brand?.id, state.brand?.variant);
+  const brandSnapshot = adaptSnapshotToDom(getBrandSnapshot(state.brand?.id, state.brand?.variant));
 
   boxes.forEach((box) => {
     const role = getRoleFromBox(box);
@@ -240,6 +267,7 @@ export function renderSlidePreview(container, resizeEntry) {
     region.style.gridColumn = `${box.gridX + 1} / span ${Math.max(box.gridWidth, 1)}`;
     region.style.gridRow = `${box.gridY + 1} / span ${Math.max(box.gridHeight, 1)}`;
     region.style.borderColor = hashColor(box.id);
+    applyStyleObject(region, getRegionBaseStyle({ theme: brandSnapshot?.theme }));
     region.classList.add(flags.showRegionOutlines ? 'slide-preview-region--outlined' : 'slide-preview-region--plain');
 
     const regionWidth = Math.max(box.gridWidth, 1) * cellWidth;
@@ -251,9 +279,11 @@ export function renderSlidePreview(container, resizeEntry) {
     const descriptor = diagnosticsBuffer ? buildDiagnosticsDescriptor(box, role) : null;
 
     if (role === 'data-table') {
+      region.style.padding = DATA_TABLE_PADDING;
       region.appendChild(buildTablePreview({ metadata: box.metadata, scale, brandSnapshot }));
     } else if (inputType === 'image' || isImageRole(role)) {
-      region.style.padding = IMAGE_REGION_PADDING;
+      const imagePadding = role === 'logo' ? '0px' : IMAGE_REGION_PADDING;
+      region.style.padding = imagePadding;
       region.style.justifyContent = 'center';
       region.style.alignItems = 'stretch';
       const brandImage = createBrandImage({ snapshot: brandSnapshot, role });
@@ -263,6 +293,8 @@ export function renderSlidePreview(container, resizeEntry) {
         region.appendChild(createImagePlaceholder(role));
       }
     } else {
+      region.style.justifyContent = region.style.justifyContent || 'flex-start';
+      region.style.alignItems = region.style.alignItems || 'flex-start';
       const body = document.createElement('p');
       body.className = 'slide-preview-region-copy';
       const basePreviewText = resolvePreviewText(box, role);

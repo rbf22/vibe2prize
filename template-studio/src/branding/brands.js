@@ -33,6 +33,21 @@ export function getBrandSnapshot(brandId, variantId) {
   return loadBrandSnapshot(brandId || DEFAULT_BRAND_ID, variantId);
 }
 
+export function adaptSnapshotToDom(snapshot) {
+  if (typeof document === 'undefined' || !snapshot?.theme) {
+    return snapshot;
+  }
+  const root = document.documentElement;
+  const appliedTheme = root.dataset.brandTheme;
+  if (!appliedTheme) {
+    return snapshot;
+  }
+  return {
+    ...snapshot,
+    theme: appliedTheme
+  };
+}
+
 function toCssVarName(roleKey, metric) {
   return `--role-${roleKey.replace(/[^a-z0-9-]/gi, '-').toLowerCase()}-${metric}`;
 }

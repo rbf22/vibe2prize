@@ -31,6 +31,7 @@ let React;
 let ReactDOM;
 
 const IMAGE_REGION_PADDING = '0.4rem';
+const DATA_TABLE_PADDING = '0.45rem';
 
 // Test helper to ensure fallback path can be exercised
 export function __resetReactCacheForTests() {
@@ -111,6 +112,8 @@ function createBrandImageElement({ React, snapshot, role, scale }) {
     src: src,
     alt: `${snapshot.label || snapshot.id || 'Brand'} logo`,
     style: {
+      width: '100%',
+      height: '100%',
       maxWidth: '100%',
       maxHeight: '100%',
       objectFit: 'contain',
@@ -172,33 +175,25 @@ function createTableElement({ React, metadata, scale, brandSnapshot }) {
 function createTableHTML({ metadata, scale, brandSnapshot }) {
   const { columns, rows } = getPreviewTableData(metadata);
   const styleConfig = getTableStyleConfig({ scale, brandSnapshot });
-  
-  const headerCells = columns.map(col => `<th>${col}</th>`).join('');
-  const bodyRows = rows.map(row => 
-    `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`
-  ).join('');
+
+  const headerCells = columns.map(col => `<th style='${styleObjectToCss(styleConfig.headCell)}'>${col}</th>`).join('');
+  const bodyRows = rows.map((row, rowIndex) => {
+    const cells = row.map(cell => `<td style='${styleObjectToCss(styleConfig.bodyCell)}'>${cell}</td>`).join('');
+    let rowHtml = `<tr>${cells}</tr>`;
+    if (rowIndex === rows.length - 1) {
+      rowHtml = rowHtml.replace(/style="([^"]*?)border-bottom:[^;]*;?([^"]*?)"/g, 'style="$1$2"');
+    }
+    return rowHtml;
+  }).join('');
 
   return `
-    <table style="
-      width: 100%;
-      border-collapse: collapse;
-      font-size: ${0.8 * scale}rem;
-      line-height: 1.3;
-    ">
+    <table style='${styleObjectToCss(styleConfig.table)}'>
       <thead>
         <tr>${headerCells}</tr>
       </thead>
       <tbody>
         ${bodyRows}
       </tbody>
-      <style>
-        th {
-          ${styleObjectToCss(styleConfig.headCell)}
-        }
-        td {
-          ${styleObjectToCss(styleConfig.bodyCell)}
-        }
-      </style>
     </table>
   `;
 }
@@ -304,14 +299,19 @@ function createSimpleGridDesigner({ React, boxes, brandSnapshot, pagination, con
       flexDirection: 'column',
       gap: '0.35rem',
       transition: 'border 0.2s ease',
-      backdropFilter: 'blur(4px)'
+      backdropFilter: 'blur(4px)',
+      justifyContent: 'flex-start',
+      alignItems: 'flex-start'
     };
 
     // Adjust for image roles
     if (inputType === 'image' || isImageRole(role)) {
-      regionStyle.padding = IMAGE_REGION_PADDING;
+      const imagePadding = role === 'logo' ? '0px' : IMAGE_REGION_PADDING;
+      regionStyle.padding = imagePadding;
       regionStyle.justifyContent = 'center';
       regionStyle.alignItems = 'stretch';
+    } else if (role === 'data-table') {
+      regionStyle.padding = DATA_TABLE_PADDING;
     }
 
     // Create content element based on role and input type
@@ -414,7 +414,7 @@ function renderFallbackSlide(container, boxes, brandSnapshot, pagination) {
     } else if (inputType === 'image' || isImageRole(role)) {
       const logoSrc = selectBrandLogo(brandSnapshot);
       if (logoSrc && role === 'logo') {
-        contentHTML = `<img src="${logoSrc}" alt="${brandSnapshot?.label || brandSnapshot?.id || 'Brand'} logo" class="slide-preview-brand-asset" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;">`;
+        contentHTML = `<img src="${logoSrc}" alt="${brandSnapshot?.label || brandSnapshot?.id || 'Brand'} logo" class="slide-preview-brand-asset" style="width: 100%; height: 100%; max-width: 100%; max-height: 100%; object-fit: contain; display: block;">`;
       } else {
         // Create placeholder
         const placeholderContent = createImagePlaceholder(role);
@@ -427,21 +427,15 @@ function renderFallbackSlide(container, boxes, brandSnapshot, pagination) {
         }
       }
     } else {
-      // Convert typography styles to CSS string
-      const typographyCSS = `
-        font-family: ${typographyStyles.fontFamily};
-        font-size: ${typographyStyles.fontSize};
-        line-height: ${typographyStyles.lineHeight};
-        color: ${typographyStyles.color};
-        margin: ${typographyStyles.margin || '0'};
-        display: ${typographyStyles.display || 'block'};
-        ${typographyStyles.fontWeight ? `font-weight: ${typographyStyles.fontWeight};` : ''}
-        ${typographyStyles.letterSpacing ? `letter-spacing: ${typographyStyles.letterSpacing};` : ''}
-        ${typographyStyles.textTransform ? `text-transform: ${typographyStyles.textTransform};` : ''}
-        ${typographyStyles.whiteSpace ? `white-space: ${typographyStyles.whiteSpace};` : ''}
-      `;
-      contentHTML = `<p class="slide-preview-region-copy" style="${typographyCSS}">${content}</p>`;
+      const typographyCSS = styleObjectToCss(typographyStyles);
+      contentHTML = `<p class='slide-preview-region-copy' style='${typographyCSS}'>${content}</p>`;
     }
+
+    const resolvedPadding = (inputType === 'image' || isImageRole(role))
+      ? (role === 'logo' ? '0px' : IMAGE_REGION_PADDING)
+      : (role === 'data-table'
+        ? DATA_TABLE_PADDING
+        : `${geometry.padding.vertical}px ${geometry.padding.horizontal}px`);
 
     let regionStyle = `
       position: absolute;
@@ -449,7 +443,7 @@ function renderFallbackSlide(container, boxes, brandSnapshot, pagination) {
       top: ${geometry.top}px;
       width: ${geometry.width}px;
       height: ${geometry.height}px;
-      padding: ${(inputType === 'image' || isImageRole(role)) ? IMAGE_REGION_PADDING : `${geometry.padding.vertical}px ${geometry.padding.horizontal}px`};
+      padding: ${resolvedPadding};
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 0.2rem;
       background-color: ${brandSnapshot?.theme === 'light' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(0, 0, 0, 0.35)'};
@@ -459,7 +453,7 @@ function renderFallbackSlide(container, boxes, brandSnapshot, pagination) {
       flex-direction: column;
       gap: 0.35rem;
       transition: border 0.2s ease;
-      ${(inputType === 'image' || isImageRole(role)) ? 'justify-content: center; align-items: stretch;' : ''}
+      ${(inputType === 'image' || isImageRole(role)) ? 'justify-content: center; align-items: stretch;' : 'justify-content: flex-start; align-items: flex-start;'}
       backdrop-filter: blur(4px);
     `;
 
@@ -623,32 +617,30 @@ export async function renderProductionSlide(container, resizeEntry) {
     }
   }
   
-  // Get container dimensions - always use parent panel
-  let containerWidth, containerHeight;
-  
+  // Get container dimensions, preferring the actual preview surface to match slide preview sizing
+  let containerWidth;
+  let containerHeight;
+
   // Clean up parent panel observer
   if (parentPanel && parentPanel._parentResizeObserver) {
     parentPanel._parentResizeObserver.disconnect();
     parentPanel._parentResizeObserver = null;
   }
-  
-  if (parentPanel) {
-    if (resizeEntry) {
-      // Use dimensions from resize event
-      containerWidth = resizeEntry.contentRect.width;
-      containerHeight = resizeEntry.contentRect.height;
-      console.log('Production render: Using resize entry dimensions:', { containerWidth, containerHeight });
-    } else {
-      // Use current parent panel dimensions
+
+  if (resizeEntry && resizeEntry.contentRect.width > 0 && resizeEntry.contentRect.height > 0) {
+    containerWidth = resizeEntry.contentRect.width;
+    containerHeight = resizeEntry.contentRect.height;
+    console.log('Production render: Using resize entry dimensions:', { containerWidth, containerHeight });
+  } else {
+    containerWidth = container.clientWidth;
+    containerHeight = container.clientHeight;
+    console.log('Production render: Using container element dimensions:', { containerWidth, containerHeight });
+
+    if ((containerWidth <= 0 || containerHeight <= 0) && parentPanel) {
       containerWidth = parentPanel.clientWidth;
       containerHeight = parentPanel.clientHeight;
-      console.log('Production render: Using parent panel dimensions:', { containerWidth, containerHeight });
+      console.log('Production render: Fallback to parent panel dimensions:', { containerWidth, containerHeight });
     }
-  } else {
-    // Fallback to container dimensions
-    containerWidth = resizeEntry ? resizeEntry.contentRect.width : container.clientWidth;
-    containerHeight = resizeEntry ? resizeEntry.contentRect.height : container.clientHeight;
-    console.log('Production render: Using container dimensions (no parent):', { containerWidth, containerHeight });
   }
   
   const boxes = state.boxes || [];
@@ -672,12 +664,6 @@ export async function renderProductionSlide(container, resizeEntry) {
     canvasWidth: state.canvasWidth,
     canvasHeight: state.canvasHeight
   });
-  
-  if (!boxes.length) {
-    container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: rgba(255,255,255,0.5);"><p>No regions to render</p></div>';
-    container._isRendering = false;
-    return;
-  }
   
   // Check if we have valid dimensions
   if (containerWidth <= 0 || containerHeight <= 0) {
@@ -745,6 +731,12 @@ export async function renderProductionSlide(container, resizeEntry) {
         setupResizeObserver(container, parentPanel);
       }
     }
+    return;
+  }
+  
+  if (!boxes.length) {
+    container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: rgba(255,255,255,0.5);"><p>No regions to render</p></div>';
+    container._isRendering = false;
     return;
   }
   
