@@ -228,6 +228,60 @@ describe('Preview vs Production renderer parity', () => {
     );
   });
 
+  test('logo region keeps a 1px transparent preview border for layout parity', async () => {
+    renderSlidePreview(previewContainer);
+    await renderProductionSlide(productionContainer);
+
+    const previewLogo = previewContainer.querySelector('[data-role="logo"]');
+    assert(previewLogo, 'Preview logo region should exist');
+    const previewStyles = window.getComputedStyle(previewLogo);
+    assert.strictEqual(
+      previewStyles.getPropertyValue('border-top-width'),
+      '1px',
+      'Preview logo region must keep a 1px border so removing it fails tests'
+    );
+
+    const productionLogo = productionContainer.querySelector('[data-role="logo"]');
+    assert(productionLogo, 'Production logo region should exist');
+    const productionStyles = window.getComputedStyle(productionLogo);
+    assert.strictEqual(
+      productionStyles.getPropertyValue('border-top-width'),
+      '0px',
+      'Production logo region should remain visually borderless'
+    );
+  });
+
+  test('logo region maintains matching bounds between preview and production', async () => {
+    renderSlidePreview(previewContainer);
+    await renderProductionSlide(productionContainer);
+
+    const previewLogo = previewContainer.querySelector('[data-role="logo"]');
+    assert(previewLogo, 'Preview logo region should exist');
+    const productionLogo = productionContainer.querySelector('[data-role="logo"]');
+    assert(productionLogo, 'Production logo region should exist');
+
+    const previewRect = previewLogo.getBoundingClientRect();
+    const productionRect = productionLogo.getBoundingClientRect();
+
+    const deltas = {
+      left: Math.abs(previewRect.left - productionRect.left),
+      top: Math.abs(previewRect.top - productionRect.top),
+      width: Math.abs(previewRect.width - productionRect.width),
+      height: Math.abs(previewRect.height - productionRect.height)
+    };
+
+    console.info('logo region bounds', {
+      preview: { left: previewRect.left, top: previewRect.top, width: previewRect.width, height: previewRect.height },
+      production: { left: productionRect.left, top: productionRect.top, width: productionRect.width, height: productionRect.height },
+      deltas
+    });
+
+    assert(
+      deltas.left <= 1 && deltas.top <= 1 && deltas.width <= 1 && deltas.height <= 1,
+      `Logo region bounds mismatch: ${JSON.stringify(deltas)}`
+    );
+  });
+
   test('reports preview vs production board dimensions', async () => {
     renderSlidePreview(previewContainer);
     await renderProductionSlide(productionContainer);

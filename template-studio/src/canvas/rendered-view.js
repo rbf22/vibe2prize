@@ -11,6 +11,7 @@ import {
 } from '../utils/preview-content.js';
 import { getRoleTypographyStyle, styleObjectToCss } from '../utils/shared-styles.js';
 import { getBrandSnapshot, adaptSnapshotToDom } from '../branding/brands.js';
+import { getRegionFrameStyle, calculateRegionPadding } from './region-layout.js';
 import { collectDiagnostics } from '../../../core/layout/diagnostics.js';
 import {
   formatPageNumberLabel,
@@ -18,7 +19,6 @@ import {
 } from '../../../core/layout/renderer-utils.js';
 import { collectDomOverflowIssues } from './dom-overflow.js';
 const IMAGE_REGION_PADDING = '0.4rem';
-const DATA_TABLE_PADDING = '0.45rem';
 
 function applyStyleObject(element, style = {}) {
   if (!element || !style) return;
@@ -28,23 +28,6 @@ function applyStyleObject(element, style = {}) {
   });
 }
 
-function getRegionBaseStyle({ theme }) {
-  const isLight = theme === 'light';
-  return {
-    border: '1px solid rgba(255, 255, 255, 0.15)',
-    borderRadius: '0.2rem',
-    backdropFilter: 'blur(4px)',
-    background: isLight ? 'rgba(0, 0, 0, 0.02)' : 'rgba(0, 0, 0, 0.35)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.35rem',
-    transition: 'border 0.2s ease',
-    boxSizing: 'border-box',
-    overflow: 'hidden',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start'
-  };
-}
 function emptyState(container) {
   container.innerHTML = '';
   const empty = document.createElement('div');
@@ -163,6 +146,9 @@ export function renderSlidePreview(container, resizeEntry) {
     return;
   }
   
+  const parentPanel = container.closest('.slide-preview-panel') || container.parentElement;
+  const observedElement = parentPanel || container;
+
   // Remove any existing resize observer (but not on resize calls to avoid infinite loop)
   if (!resizeEntry) {
     if (container._resizeObserver) {
@@ -178,24 +164,23 @@ export function renderSlidePreview(container, resizeEntry) {
       }, 100);
     };
     
-    // Create resize observer to handle container resizing
-    const resizeObserver = new ResizeObserver(entries => {
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-        if (width > 0 && height > 0) {
-          // Debounce re-render on resize
-          debouncedRender(entry);
+    if (observedElement) {
+      // Create resize observer to handle container resizing
+      const resizeObserver = new ResizeObserver(entries => {
+        for (const entry of entries) {
+          const { width, height } = entry.contentRect;
+          if (width > 0 && height > 0) {
+            debouncedRender(entry);
+          }
         }
-      }
-    });
-    
-    container._resizeObserver = resizeObserver;
-    resizeObserver.observe(container);
+      });
+      container._resizeObserver = resizeObserver;
+      resizeObserver.observe(observedElement);
+    }
     
     // Also add window resize listener as backup
     if (!container._windowResizeHandler) {
       container._windowResizeHandler = () => {
-        // Force a re-render on window resize
         setTimeout(() => {
           renderSlidePreview(container);
         }, 50);
@@ -220,9 +205,10 @@ export function renderSlidePreview(container, resizeEntry) {
     containerWidth = resizeEntry.contentRect.width;
     containerHeight = resizeEntry.contentRect.height;
   } else {
-    const containerRect = container.getBoundingClientRect();
-    containerWidth = container.clientWidth || containerRect.width;
-    containerHeight = container.clientHeight || containerRect.height;
+    const measurementSource = observedElement || container;
+    const rect = measurementSource?.getBoundingClientRect();
+    containerWidth = measurementSource?.clientWidth || rect?.width || container.clientWidth;
+    containerHeight = measurementSource?.clientHeight || rect?.height || container.clientHeight;
   }
   
   if (containerWidth <= 0 || containerHeight <= 0) {
@@ -253,6 +239,16 @@ export function renderSlidePreview(container, resizeEntry) {
   board.dataset.regionOutlines = flags.showRegionOutlines ? 'true' : 'false';
   container.appendChild(board);
 
+  // Log sizing diagnostics after layout settles
+  requestAnimationFrame(() => {
+    const panelRect = observedElement?.getBoundingClientRect?.();
+    const boardRect = board.getBoundingClientRect();
+    console.info('Preview board metrics:', {
+      panel: panelRect ? { width: panelRect.width, height: panelRect.height } : null,
+      board: { width: boardRect.width, height: boardRect.height }
+    });
+  });
+
   const diagnosticsBuffer = diagnosticsEnabled ? { regions: [], textMap: new Map() } : null;
   const brandSnapshot = adaptSnapshotToDom(getBrandSnapshot(state.brand?.id, state.brand?.variant));
 
@@ -266,24 +262,26 @@ export function renderSlidePreview(container, resizeEntry) {
     region.dataset.inputType = inputType;
     region.style.gridColumn = `${box.gridX + 1} / span ${Math.max(box.gridWidth, 1)}`;
     region.style.gridRow = `${box.gridY + 1} / span ${Math.max(box.gridHeight, 1)}`;
-    region.style.borderColor = hashColor(box.id);
-    applyStyleObject(region, getRegionBaseStyle({ theme: brandSnapshot?.theme }));
+    const regionBorderColor = hashColor(box.id);
+    applyStyleObject(region, getRegionFrameStyle(brandSnapshot?.theme));
+    region.style.borderColor = regionBorderColor;
     region.classList.add(flags.showRegionOutlines ? 'slide-preview-region--outlined' : 'slide-preview-region--plain');
 
     const regionWidth = Math.max(box.gridWidth, 1) * cellWidth;
     const regionHeight = Math.max(box.gridHeight, 1) * cellHeight;
-    const verticalPadding = Math.min(regionHeight * 0.25, 18);
-    const horizontalPadding = Math.min(regionWidth * 0.08, 24);
-    region.style.padding = `${verticalPadding}px ${horizontalPadding}px`;
+    region.style.padding = calculateRegionPadding({
+      role,
+      inputType,
+      regionWidth,
+      regionHeight,
+      isImageRole: isImageRole(role)
+    });
 
     const descriptor = diagnosticsBuffer ? buildDiagnosticsDescriptor(box, role) : null;
 
     if (role === 'data-table') {
-      region.style.padding = DATA_TABLE_PADDING;
       region.appendChild(buildTablePreview({ metadata: box.metadata, scale, brandSnapshot }));
     } else if (inputType === 'image' || isImageRole(role)) {
-      const imagePadding = role === 'logo' ? '0px' : IMAGE_REGION_PADDING;
-      region.style.padding = imagePadding;
       region.style.justifyContent = 'center';
       region.style.alignItems = 'stretch';
       const brandImage = createBrandImage({ snapshot: brandSnapshot, role });

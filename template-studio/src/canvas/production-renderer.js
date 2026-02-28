@@ -1,17 +1,16 @@
 import { state } from '../state.js';
-import { getBrandSnapshot } from '../branding/brands.js';
 import { getRoleFromBox } from '../utils/roles.js';
+import { getRoleTypographyStyle, getTableStyleConfig } from '../utils/shared-styles.js';
 import { 
   resolvePreviewText,
   isImageRole,
   createImagePlaceholder,
   getPreviewTableData
 } from '../utils/preview-content.js';
-import { 
-  getRoleTypographyStyle,
-  getTableStyleConfig,
-  styleObjectToCss
-} from '../utils/shared-styles.js';
+import { getRoleTypographyStyle as getProductionTypography } from '../utils/shared-styles.js';
+import { styleObjectToCss } from '../utils/shared-styles.js';
+import { getRegionFrameStyle, calculateRegionPadding } from './region-layout.js';
+import { getBrandSnapshot } from '../branding/brands.js';
 import { computeRegionGeometry } from '../../../core/layout/region-geometry.js';
 
 // Simple hash function for colors (copied from renderer.js)
@@ -30,7 +29,6 @@ function hashColor(str) {
 let React;
 let ReactDOM;
 
-const IMAGE_REGION_PADDING = '0.4rem';
 const DATA_TABLE_PADDING = '0.45rem';
 
 // Test helper to ensure fallback path can be exercised
@@ -289,29 +287,21 @@ function createSimpleGridDesigner({ React, boxes, brandSnapshot, pagination, con
       top: `${top}px`,
       width: `${width}px`,
       height: `${height}px`,
-      padding: `${geometry.padding.vertical}px ${geometry.padding.horizontal}px`,
-      border: '1px solid rgba(255, 255, 255, 0.15)',
-      borderRadius: '0.2rem',
-      backgroundColor: brandSnapshot?.theme === 'light' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(0, 0, 0, 0.35)',
-      overflow: 'hidden',
-      boxSizing: 'border-box',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.35rem',
-      transition: 'border 0.2s ease',
-      backdropFilter: 'blur(4px)',
-      justifyContent: 'flex-start',
-      alignItems: 'flex-start'
+      padding: calculateRegionPadding({
+        role,
+        inputType,
+        regionWidth: width,
+        regionHeight: height,
+        isImageRole: isImageRole(role)
+      }),
+      ...getRegionFrameStyle(brandSnapshot?.theme, { variant: 'production' }),
+      background: 'transparent',
+      className: 'production-region'
     };
 
-    // Adjust for image roles
     if (inputType === 'image' || isImageRole(role)) {
-      const imagePadding = role === 'logo' ? '0px' : IMAGE_REGION_PADDING;
-      regionStyle.padding = imagePadding;
       regionStyle.justifyContent = 'center';
       regionStyle.alignItems = 'stretch';
-    } else if (role === 'data-table') {
-      regionStyle.padding = DATA_TABLE_PADDING;
     }
 
     // Create content element based on role and input type
@@ -338,7 +328,7 @@ function createSimpleGridDesigner({ React, boxes, brandSnapshot, pagination, con
 
     return React.createElement('article', {
       key: box.id,
-      className: 'slide-preview-region slide-preview-region--plain',
+      className: 'production-region',
       'data-box-id': box.id,
       'data-role': role,
       'data-input-type': inputType,
@@ -431,11 +421,13 @@ function renderFallbackSlide(container, boxes, brandSnapshot, pagination) {
       contentHTML = `<p class='slide-preview-region-copy' style='${typographyCSS}'>${content}</p>`;
     }
 
-    const resolvedPadding = (inputType === 'image' || isImageRole(role))
-      ? (role === 'logo' ? '0px' : IMAGE_REGION_PADDING)
-      : (role === 'data-table'
-        ? DATA_TABLE_PADDING
-        : `${geometry.padding.vertical}px ${geometry.padding.horizontal}px`);
+    const resolvedPadding = calculateRegionPadding({
+      role,
+      inputType,
+      regionWidth: geometry.width,
+      regionHeight: geometry.height,
+      isImageRole: isImageRole(role)
+    });
 
     let regionStyle = `
       position: absolute;
@@ -444,21 +436,20 @@ function renderFallbackSlide(container, boxes, brandSnapshot, pagination) {
       width: ${geometry.width}px;
       height: ${geometry.height}px;
       padding: ${resolvedPadding};
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: none;
       border-radius: 0.2rem;
-      background-color: ${brandSnapshot?.theme === 'light' ? 'rgba(0, 0, 0, 0.02)' : 'rgba(0, 0, 0, 0.35)'};
+      background: transparent;
       overflow: hidden;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      gap: 0.35rem;
-      transition: border 0.2s ease;
-      ${(inputType === 'image' || isImageRole(role)) ? 'justify-content: center; align-items: stretch;' : 'justify-content: flex-start; align-items: flex-start;'}
-      backdrop-filter: blur(4px);
+      gap: 0;
+      justify-content: ${inputType === 'image' || isImageRole(role) ? 'center' : 'flex-start'};
+      align-items: ${inputType === 'image' || isImageRole(role) ? 'stretch' : 'flex-start'};
     `;
 
     return `
-      <article class="slide-preview-region slide-preview-region--plain" data-box-id="${box.id}" data-role="${role}" data-input-type="${inputType}" style="${regionStyle}">
+      <article class="production-region" data-box-id="${box.id}" data-role="${role}" data-input-type="${inputType}" style="${regionStyle}">
         ${contentHTML}
       </article>
     `;
@@ -518,57 +509,6 @@ function setupResizeObserver(container, parentPanel) {
     };
     window.addEventListener('resize', container._windowResizeHandler, { passive: true });
   }
-  
-  // Add MutationObserver to detect when panel becomes visible
-  if (parentPanel && !container._visibilityObserver) {
-    container._visibilityObserver = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes') {
-          // Handle style/class changes on the panel
-          if (mutation.attributeName === 'style' || mutation.attributeName === 'class') {
-            const computedStyle = window.getComputedStyle(parentPanel);
-            if (computedStyle.display !== 'none' && parentPanel.clientWidth > 0 && parentPanel.clientHeight > 0) {
-              console.log('Production render: Panel became visible, triggering render');
-              // Cancel any pending retry to avoid conflicts
-              if (container._retryTimeout) {
-                clearTimeout(container._retryTimeout);
-                container._retryTimeout = null;
-              }
-              setTimeout(() => renderProductionSlide(container), 50);
-            }
-          }
-          // Handle data-view changes on the workbench
-          else if (mutation.attributeName === 'data-view' && mutation.target.dataset.view === 'production') {
-            console.log('Production render: Switched to production view, triggering render');
-            // Ensure we have the right container
-            const currentContainer = document.querySelector('#productionPreview');
-            if (currentContainer && document.contains(currentContainer)) {
-              // Cancel any pending retry to avoid conflicts
-              if (currentContainer._retryTimeout) {
-                clearTimeout(currentContainer._retryTimeout);
-                currentContainer._retryTimeout = null;
-              }
-              setTimeout(() => renderProductionSlide(currentContainer), 100);
-            }
-          }
-        }
-      });
-    });
-    
-    // Observe both the panel and its parent (workbench)
-    container._visibilityObserver.observe(parentPanel, {
-      attributes: true,
-      attributeFilter: ['style', 'class']
-    });
-    
-    const workbench = parentPanel.closest('.preview-workbench');
-    if (workbench) {
-      container._visibilityObserver.observe(workbench, {
-        attributes: true,
-        attributeFilter: ['data-view']
-      });
-    }
-  }
 }
 
 export async function renderProductionSlide(container, resizeEntry) {
@@ -605,27 +545,9 @@ export async function renderProductionSlide(container, resizeEntry) {
     return;
   }
   
-  // Clean up all existing observers (but not on resize calls)
-  if (!resizeEntry) {
-    if (container._resizeObserver) {
-      container._resizeObserver.disconnect();
-      container._resizeObserver = null;
-    }
-    if (container._windowResizeHandler) {
-      window.removeEventListener('resize', container._windowResizeHandler);
-      container._windowResizeHandler = null;
-    }
-  }
-  
   // Get container dimensions, preferring the actual preview surface to match slide preview sizing
   let containerWidth;
   let containerHeight;
-
-  // Clean up parent panel observer
-  if (parentPanel && parentPanel._parentResizeObserver) {
-    parentPanel._parentResizeObserver.disconnect();
-    parentPanel._parentResizeObserver = null;
-  }
 
   if (resizeEntry && resizeEntry.contentRect.width > 0 && resizeEntry.contentRect.height > 0) {
     containerWidth = resizeEntry.contentRect.width;
@@ -641,6 +563,12 @@ export async function renderProductionSlide(container, resizeEntry) {
       containerHeight = parentPanel.clientHeight;
       console.log('Production render: Fallback to parent panel dimensions:', { containerWidth, containerHeight });
     }
+  }
+
+  if (containerWidth <= 0 || containerHeight <= 0) {
+    console.warn('Production render: Invalid dimensions, cannot render:', { containerWidth, containerHeight });
+    container._isRendering = false;
+    return;
   }
   
   const boxes = state.boxes || [];
@@ -667,70 +595,7 @@ export async function renderProductionSlide(container, resizeEntry) {
   
   // Check if we have valid dimensions
   if (containerWidth <= 0 || containerHeight <= 0) {
-    console.warn('Production render: Invalid dimensions, cannot render:', { containerWidth, containerHeight });
-    
-    // Check if the panel is visible but just hasn't rendered yet
-    if (parentPanel && window.getComputedStyle(parentPanel).display !== 'none') {
-      console.log('Production render: Panel is visible but has no dimensions, retrying...');
-      container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: rgba(255,255,255,0.5);"><p>Loading...</p></div>';
-      
-      // Set up ResizeObserver to retry when dimensions are available
-      if (!resizeEntry) {
-        console.log('Production render: Setting up ResizeObserver to retry render');
-        setupResizeObserver(container, parentPanel);
-      }
-      
-      // Retry using requestAnimationFrame for better timing
-      let retryCount = 0;
-      const maxRetries = 10;
-      
-      const retryRender = () => {
-        retryCount++;
-        const newWidth = parentPanel.clientWidth;
-        const newHeight = parentPanel.clientHeight;
-        
-        console.log(`Production render: Retry ${retryCount}/${maxRetries} - dimensions: ${newWidth} x ${newHeight}`);
-        
-        if (newWidth > 0 && newHeight > 0) {
-          console.log('Production render: Retry successful - rendering with new dimensions');
-          renderProductionSlide(container);
-        } else if (retryCount < maxRetries) {
-          container._retryTimeout = setTimeout(() => {
-            container._retryTimeout = null;
-            retryRender();
-          }, 16); // Use requestAnimationFrame timing (~16ms)
-        } else {
-          console.warn('Production render: Max retries reached, giving up');
-          container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: rgba(255,255,255,0.5);"><p>Failed to load</p></div>';
-        }
-      };
-      
-      // Start retrying with coordinated timeout
-      container._retryTimeout = setTimeout(() => {
-        container._retryTimeout = null;
-        retryRender();
-      }, 16); // Use requestAnimationFrame timing (~16ms)
-      
-      // Also try setTimeout as backup
-      setTimeout(() => {
-        if (retryCount < maxRetries) {
-          const newWidth = parentPanel.clientWidth;
-          const newHeight = parentPanel.clientHeight;
-          if (newWidth > 0 && newHeight > 0) {
-            console.log('Production render: Timeout retry successful');
-            renderProductionSlide(container);
-          }
-        }
-      }, 200);
-    } else {
-      container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: rgba(255,255,255,0.5);"><p>Invalid container dimensions</p></div>';
-      
-      // Still set up ResizeObserver even with invalid dimensions
-      if (!resizeEntry) {
-        console.log('Production render: Setting up ResizeObserver even with invalid dimensions');
-        setupResizeObserver(container, parentPanel);
-      }
-    }
+    container._isRendering = false;
     return;
   }
   
@@ -740,9 +605,9 @@ export async function renderProductionSlide(container, resizeEntry) {
     return;
   }
   
-  // Set up ResizeObserver on initial render
-  if (!resizeEntry) {
-    console.log('Production render: Setting up ResizeObserver on initial render');
+  // Set up ResizeObserver on first render
+  if (!container._resizeObserver) {
+    console.log('Production render: Setting up ResizeObserver');
     setupResizeObserver(container, parentPanel);
   }
   
@@ -790,7 +655,16 @@ export async function renderProductionSlide(container, resizeEntry) {
       console.error('Production render: React render failed:', error);
       throw error;
     }
-    
+
+    requestAnimationFrame(() => {
+      const panelRect = parentPanel?.getBoundingClientRect?.();
+      const boardRect = container.firstElementChild?.getBoundingClientRect?.();
+      console.info('Production board metrics:', {
+        panel: panelRect ? { width: panelRect.width, height: panelRect.height } : null,
+        board: boardRect ? { width: boardRect.width, height: boardRect.height } : null
+      });
+    });
+
     // Wait a bit and check if it rendered
     setTimeout(() => {
       // Check if container is still in DOM before validating

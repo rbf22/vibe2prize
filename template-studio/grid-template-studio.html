@@ -305,10 +305,18 @@
             TemplateStudio.renderGuides(guideLayer, previewGrid);
           };
 
+          const renderActivePreview = () => {
+            const view = workbench.dataset.view;
+            if (view === 'slide') {
+              requestAnimationFrame(() => TemplateStudio.renderSlidePreview(slidePreview));
+            } else if (view === 'production') {
+              requestAnimationFrame(() => TemplateStudio.renderProductionSlide(productionPreview));
+            }
+          };
+
           const renderAll = () => {
             renderCanvas();
-            TemplateStudio.renderSlidePreview(slidePreview);
-            TemplateStudio.renderProductionSlide(productionPreview);
+            renderActivePreview();
           };
           const controls = {
             templateName: document.getElementById('templateName'),
@@ -432,21 +440,8 @@
               workbench.dataset.view = view;
               if (view === 'canvas') {
                 renderCanvas();
-              } else if (view === 'slide') {
-                TemplateStudio.renderSlidePreview(slidePreview);
-              } else if (view === 'production') {
-                // Add a delay to ensure the panel is visible and has dimensions
-                setTimeout(() => {
-                  TemplateStudio.renderProductionSlide(productionPreview);
-                  // Force another render after a delay in case the first one failed
-                  setTimeout(() => {
-                    const container = productionPreview;
-                    if (container.children.length === 0 || container.children[0].offsetWidth === 0) {
-                      console.log('Production render: First attempt failed, retrying...');
-                      TemplateStudio.renderProductionSlide(productionPreview);
-                    }
-                  }, 200);
-                }, 100);
+              } else {
+                renderActivePreview();
               }
             });
           });
@@ -467,8 +462,7 @@
             );
 
             TemplateStudio.updateSelectionControls(controls);
-            TemplateStudio.renderSlidePreview(slidePreview);
-            TemplateStudio.renderProductionSlide(productionPreview);
+            renderActivePreview();
           });
 
           document.addEventListener('keydown', (e) => {

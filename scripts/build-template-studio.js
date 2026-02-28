@@ -45,8 +45,9 @@ async function buildStudio() {
         'assert',
         'util',
         'stream',
-        'constants'
-      ], // Don't bundle MDX files or Node-only deps used by shared loader
+        'constants',
+        'jsdom'
+      ], // Don't bundle MDX files or Node-only deps used by shared loader / lint tooling
       define: {
         'process.env.NODE_ENV': '"production"'
       },

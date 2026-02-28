@@ -18,6 +18,7 @@ const OUTPUT_DIR = path.join(ROOT_DIR, 'template-studio', 'test-output');
 const PREVIEW_IMG = path.join(OUTPUT_DIR, 'preview-surface.png');
 const PRODUCTION_IMG = path.join(OUTPUT_DIR, 'production-surface.png');
 const DIFF_IMG = path.join(OUTPUT_DIR, 'pixel-diff.png');
+const RAW_CAPTURE = process.argv.includes('--raw');
 
 const VIEWPORT = { width: 1440, height: 900 };
 
@@ -58,19 +59,7 @@ async function captureElement(page, selector, outputPath) {
   if (!element) {
     throw new Error(`Unable to locate element for selector: ${selector}`);
   }
-  const box = await element.boundingBox();
-  if (!box) {
-    throw new Error(`Failed to compute bounding box for selector: ${selector}`);
-  }
-  await page.screenshot({
-    path: outputPath,
-    clip: {
-      x: box.x,
-      y: box.y,
-      width: box.width,
-      height: box.height
-    }
-  });
+  await element.screenshot({ path: outputPath });
 }
 
 function readPng(buffer) {
@@ -78,6 +67,7 @@ function readPng(buffer) {
 }
 
 async function normalizeSurfaces(page) {
+  if (RAW_CAPTURE) return;
   await page.addStyleTag({
     content: `
       #capturePreview,
@@ -134,6 +124,27 @@ async function renderCaptureBoards(page) {
     TemplateStudio.renderSlidePreview(previewContainer);
     TemplateStudio.renderProductionSlide(productionContainer);
 
+    const addGridOverlay = (container) => {
+      const state = TemplateStudio.state;
+      const cellWidth = container.clientWidth / Math.max(state.columns || 1, 1);
+      const cellHeight = container.clientHeight / Math.max(state.rows || 1, 1);
+      const overlay = document.createElement('div');
+      overlay.style.position = 'absolute';
+      overlay.style.inset = '0';
+      overlay.style.pointerEvents = 'none';
+      overlay.style.backgroundImage = `
+        linear-gradient(transparent ${cellHeight - 1}px, rgba(255,255,255,0.12) ${cellHeight - 1}px),
+        linear-gradient(90deg, transparent ${cellWidth - 1}px, rgba(255,255,255,0.12) ${cellWidth - 1}px)
+      `;
+      overlay.style.backgroundSize = `${cellWidth}px ${cellHeight}px`;
+      overlay.style.mixBlendMode = 'normal';
+      overlay.style.zIndex = '10';
+      container.appendChild(overlay);
+    };
+
+    addGridOverlay(previewContainer);
+    addGridOverlay(productionContainer);
+
     await new Promise((resolve) => setTimeout(resolve, 500));
   });
 }
@@ -143,6 +154,24 @@ async function cleanupCaptureBoards(page) {
     document.getElementById('capturePreview')?.remove();
     document.getElementById('captureProduction')?.remove();
   });
+}
+
+async function logBoardBounds(page) {
+  const bounds = await page.evaluate(() => {
+    const previewRect = document.getElementById('capturePreview')?.getBoundingClientRect();
+    const productionRect = document.getElementById('captureProduction')?.getBoundingClientRect();
+    const pick = (rect) =>
+      rect
+        ? {
+            x: Math.round(rect.x),
+            y: Math.round(rect.y),
+            width: Math.round(rect.width),
+            height: Math.round(rect.height)
+          }
+        : null;
+    return { preview: pick(previewRect), production: pick(productionRect) };
+  });
+  console.log('📏 Renderer board bounds (px):', bounds);
 }
 
 async function canReachStudio() {
@@ -228,8 +257,9 @@ async function createPixelDiff() {
     serverProcess = await startStudioServer();
   }
   const browser = await puppeteer.launch({ headless: 'new', defaultViewport: VIEWPORT });
+  let page;
   try {
-    const page = await browser.newPage();
+    page = await browser.newPage();
     await page.goto(STUDIO_URL, { waitUntil: 'networkidle0' });
     await waitForStudio(page);
     await configureState(page);
@@ -238,9 +268,12 @@ async function createPixelDiff() {
 
     await captureElement(page, '#capturePreview', PREVIEW_IMG);
     await captureElement(page, '#captureProduction', PRODUCTION_IMG);
+    await logBoardBounds(page);
   } finally {
+    if (page) {
+      await cleanupCaptureBoards(page);
+    }
     await browser.close();
-    await cleanupCaptureBoards(page);
     await stopStudioServer(serverProcess);
   }
 

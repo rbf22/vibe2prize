@@ -16,7 +16,12 @@ export function slugify(value, fallback) {
 
 export function applyCanvasDimensions(controls) {
   const ratio = `${state.canvasWidth} / ${state.canvasHeight}`;
-  const targetElements = [controls.previewGrid, controls.canvasContainer, controls.slidePreviewSurface].filter(Boolean);
+  const targetElements = [
+    controls.previewGrid,
+    controls.canvasContainer,
+    controls.slidePreviewSurface,
+    controls.productionPreviewSurface
+  ].filter(Boolean);
   targetElements.forEach((element) => {
     element.style.setProperty('--canvas-width', `${state.canvasWidth}px`);
     element.style.setProperty('--canvas-height', `${state.canvasHeight}px`);
@@ -213,25 +218,6 @@ export function getCellDimensions(previewGrid) {
 }
 
 export function attachControlHandlers(controls, renderPreview, renderSnippet, renderRegionsTable) {
-  let resizeFrame = null;
-  const handleWindowResize = () => {
-    if (typeof window === 'undefined') return;
-    if (resizeFrame !== null) {
-      window.cancelAnimationFrame(resizeFrame);
-    }
-    resizeFrame = window.requestAnimationFrame(() => {
-      resizeFrame = null;
-      renderPreview();
-    });
-  };
-
-  if (typeof window !== 'undefined') {
-    if (window.__templateStudioResizeHandler) {
-      window.removeEventListener('resize', window.__templateStudioResizeHandler);
-    }
-    window.__templateStudioResizeHandler = handleWindowResize;
-    window.addEventListener('resize', handleWindowResize);
-  }
 
   controls.templateName.addEventListener('input', (e) => {
     state.templateName = slugify(e.target.value, 'cssgrid-template');
@@ -554,8 +540,22 @@ export function applyPreset(
     state.metadata = {};
     state.selectedBoxId = null;
     renderRegionsTable();
-    renderPreview();
-    renderSnippet();
+    const renderCanvas = () => {
+      TemplateStudio.renderPreview(previewGrid);
+      TemplateStudio.renderGuides(guideLayer, previewGrid);
+    };
+
+    const renderActivePreview = () => {
+      const view = workbench.dataset.view;
+      if (view === 'slide') {
+        TemplateStudio.renderSlidePreview(slidePreview);
+      } else if (view === 'production') {
+        TemplateStudio.renderProductionSlide(productionPreview);
+      }
+    };
+
+    renderActivePreview();
+    renderCanvas();
     updateSelectionControls(controls);
     return;
   }
