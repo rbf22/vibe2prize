@@ -220,6 +220,7 @@ export function setCheckboxChecked(id, checked) {
 export function applyFrontmatterToState(frontmatter) {
   pushHistory();
   const { layout = {}, regions = [], templateSettings = {}, exclusions = {}, brand: brandInput } = frontmatter || {};
+  state._boxesInitialized = true;
 
   const updateInputValue = (id, value) => {
     const input = getInputById(id);
@@ -324,17 +325,20 @@ export function applyFrontmatterToState(frontmatter) {
       previewChrome: true,
       showDiagnostics: true,
       showRegionOutlines: true,
-      detectDomOverflow: true
+      detectDomOverflow: true,
+      showBackgroundShapes: true
     };
     state.previewFlags = {
       previewChrome: normalize(frontmatter.previewFlags.previewChrome, fallbackFlags.previewChrome),
       showDiagnostics: normalize(frontmatter.previewFlags.showDiagnostics, fallbackFlags.showDiagnostics),
       showRegionOutlines: normalize(frontmatter.previewFlags.showRegionOutlines, fallbackFlags.showRegionOutlines),
-      detectDomOverflow: normalize(frontmatter.previewFlags.detectDomOverflow, fallbackFlags.detectDomOverflow)
+      detectDomOverflow: normalize(frontmatter.previewFlags.detectDomOverflow, fallbackFlags.detectDomOverflow),
+      showBackgroundShapes: normalize(frontmatter.previewFlags.showBackgroundShapes, fallbackFlags.showBackgroundShapes)
     };
     setCheckboxChecked('previewChromeToggle', state.previewFlags.previewChrome);
     setCheckboxChecked('diagnosticsToggle', state.previewFlags.showDiagnostics);
     setCheckboxChecked('regionOutlineToggle', state.previewFlags.showRegionOutlines);
+    setCheckboxChecked('backgroundShapesToggle', state.previewFlags.showBackgroundShapes);
   }
 
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -343,6 +347,9 @@ export function applyFrontmatterToState(frontmatter) {
   state.boxes = [];
   state.metadata = {};
   state.selectedBoxId = null;
+  state.backgroundShapes = Array.isArray(frontmatter?.backgroundShapes)
+    ? frontmatter.backgroundShapes.map((shape) => ({ ...shape }))
+    : [];
 
   (regions || []).forEach((region, index) => {
     const grid = region.grid || {};

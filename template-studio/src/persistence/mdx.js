@@ -8,6 +8,149 @@ function escapeYamlString(value) {
     .replace(/\n/g, '\\n');
 }
 
+function cloneObject(value) {
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+  return { ...value };
+}
+
+function normalizeBackgroundShapes(shapes = []) {
+  if (!Array.isArray(shapes)) return [];
+  return shapes
+    .filter(Boolean)
+    .map((shape, index) => {
+      const id = typeof shape.id === 'string' && shape.id.trim()
+        ? shape.id.trim()
+        : `background-shape-${index + 1}`;
+      const normalized = { id };
+      if (typeof shape.kind === 'string' && shape.kind.trim()) {
+        normalized.kind = shape.kind.trim();
+      }
+      if (typeof shape.html === 'string') {
+        normalized.html = shape.html;
+      }
+      if (typeof shape.svg === 'string') {
+        normalized.svg = shape.svg;
+      }
+      if (typeof shape.className === 'string' && shape.className.trim()) {
+        normalized.className = shape.className.trim();
+      }
+      if (typeof shape.label === 'string' && shape.label.trim()) {
+        normalized.label = shape.label.trim();
+      }
+      if (typeof shape.blendMode === 'string' && shape.blendMode.trim()) {
+        normalized.blendMode = shape.blendMode.trim();
+      }
+      if (typeof shape.opacity === 'number' && Number.isFinite(shape.opacity)) {
+        normalized.opacity = shape.opacity;
+      }
+      if (typeof shape.zIndex === 'number' && Number.isFinite(shape.zIndex)) {
+        normalized.zIndex = shape.zIndex;
+      }
+      if (shape.coords && typeof shape.coords === 'object') {
+        normalized.coords = cloneObject(shape.coords);
+      }
+      if (shape.style && typeof shape.style === 'object') {
+        normalized.style = cloneObject(shape.style);
+      }
+      if (shape.gridSpan && typeof shape.gridSpan === 'object') {
+        normalized.gridSpan = cloneObject(shape.gridSpan);
+      }
+      if (shape.transform && typeof shape.transform === 'object') {
+        normalized.transform = cloneObject(shape.transform);
+      }
+      if (shape.attrs && typeof shape.attrs === 'object') {
+        normalized.attrs = cloneObject(shape.attrs);
+      }
+      return normalized;
+    });
+}
+
+function formatScalar(value) {
+  if (typeof value === 'string') return quote(value);
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  if (typeof value === 'boolean') return value ? 'true' : 'false';
+  if (value === null) return 'null';
+  return quote(String(value ?? ''));
+}
+
+function serializeYamlKeyValue(key, value, indent = 0) {
+  const pad = ' '.repeat(indent);
+  if (value === undefined || value === null) {
+    return [`${pad}${key}: null`];
+  }
+  if (Array.isArray(value)) {
+    if (!value.length) {
+      return [`${pad}${key}: []`];
+    }
+    const lines = [`${pad}${key}:`];
+    value.forEach((entry) => {
+      if (entry && typeof entry === 'object') {
+        lines.push(`${pad}  -`);
+        const nested = Object.entries(entry);
+        if (!nested.length) {
+          lines.push(`${pad}    {}`);
+        } else {
+          nested.forEach(([childKey, childValue]) => {
+            serializeYamlKeyValue(childKey, childValue, indent + 4).forEach((line) => {
+              lines.push(line);
+            });
+          });
+        }
+      } else {
+        lines.push(`${pad}  - ${formatScalar(entry)}`);
+      }
+    });
+    return lines;
+  }
+  if (typeof value === 'object') {
+    const entries = Object.entries(value);
+    if (!entries.length) {
+      return [`${pad}${key}: {}`];
+    }
+    const lines = [`${pad}${key}:`];
+    entries.forEach(([childKey, childValue]) => {
+      serializeYamlKeyValue(childKey, childValue, indent + 2).forEach((line) => {
+        lines.push(line);
+      });
+    });
+    return lines;
+  }
+  return [`${pad}${key}: ${formatScalar(value)}`];
+}
+
+function serializeBackgroundShapes(shapes) {
+  if (!Array.isArray(shapes) || !shapes.length) {
+    return 'backgroundShapes: []';
+  }
+  const lines = ['backgroundShapes:'];
+  shapes.forEach((shape) => {
+    lines.push('  -');
+    Object.entries(shape)
+      .filter(([, value]) => value !== undefined)
+      .forEach(([key, value]) => {
+        serializeYamlKeyValue(key, value, 4).forEach((line) => {
+          lines.push(line);
+        });
+      });
+  });
+  return lines.join('\n');
+}
+
+function serializePreviewFlags(flags) {
+  if (!flags || typeof flags !== 'object') {
+    return '';
+  }
+  const lines = ['previewFlags:'];
+  ['previewChrome', 'showDiagnostics', 'showRegionOutlines', 'detectDomOverflow', 'showBackgroundShapes'].forEach((key) => {
+    if (key in flags) {
+      lines.push(`  ${key}: ${flags[key] ? 'true' : 'false'}`);
+    }
+  });
+  return lines.join('\n');
+}
+
 function quote(value) {
   return `"${escapeYamlString(value)}"`;
 }
@@ -132,7 +275,9 @@ export function buildFrontmatterFromState(state) {
     layout,
     exclusions,
     regions,
-    brand: state.brand ? { id: state.brand.id, variant: state.brand.variant } : undefined
+    brand: state.brand ? { id: state.brand.id, variant: state.brand.variant } : undefined,
+    previewFlags: state.previewFlags ? { ...state.previewFlags } : undefined,
+    backgroundShapes: normalizeBackgroundShapes(state.backgroundShapes)
   };
 
   validateFrontmatter(frontmatter);
@@ -243,6 +388,8 @@ export function buildMdxSource(state) {
   const templateSettingsYaml = serializeTemplateSettings(frontmatter.templateSettings);
   const exclusionsYaml = serializeExclusions(frontmatter.exclusions);
   const brandYaml = serializeBrand(frontmatter.brand);
+  const previewFlagsYaml = serializePreviewFlags(frontmatter.previewFlags);
+  const backgroundShapesYaml = serializeBackgroundShapes(frontmatter.backgroundShapes);
   const frontmatterYaml = [
     '---',
     `title: ${quote(frontmatter.title)}`,
@@ -252,6 +399,8 @@ export function buildMdxSource(state) {
     layoutYaml,
     exclusionsYaml,
     brandYaml,
+    previewFlagsYaml,
+    backgroundShapesYaml,
     regionsYaml,
     '---',
   ].join('\n');

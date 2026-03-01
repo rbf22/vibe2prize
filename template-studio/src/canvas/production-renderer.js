@@ -191,29 +191,33 @@ export function __resetReactCacheForTests() {
 }
 
 async function ensureReactLoaded() {
-  if (!React || !ReactDOM) {
-    // Try to load React from the global scope (loaded from CDN)
-    if (typeof window !== 'undefined' && window.React && window.ReactDOM) {
-      React = window.React;
-      ReactDOM = window.ReactDOM;
-    } else {
-      // Wait a bit longer for React to load (in case script is still loading)
-      let attempts = 0;
-      while (attempts < 50 && (!window.React || !window.ReactDOM)) {
-        await new Promise(resolve => setTimeout(resolve, 100));
-        attempts++;
-      }
-      
-      if (typeof window !== 'undefined' && window.React && window.ReactDOM) {
-        React = window.React;
-        ReactDOM = window.ReactDOM;
-      } else {
-        // Provide a fallback without React
-        throw new Error('React not loaded. Please check your internet connection and refresh the page.');
-      }
-    }
+  if (React && ReactDOM) {
+    return { React, ReactDOM };
   }
-  return { React, ReactDOM };
+
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  if (window.React && window.ReactDOM) {
+    React = window.React;
+    ReactDOM = window.ReactDOM;
+    return { React, ReactDOM };
+  }
+
+  let attempts = 0;
+  while (attempts < 50 && (!window.React || !window.ReactDOM)) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    attempts += 1;
+  }
+
+  if (window.React && window.ReactDOM) {
+    React = window.React;
+    ReactDOM = window.ReactDOM;
+    return { React, ReactDOM };
+  }
+
+  return null;
 }
 
 function formatPageNumberLabel({ pageNumber, totalSlides, label = 'Page' } = {}) {
@@ -681,14 +685,14 @@ export async function renderProductionSlide(container, resizeEntry) {
 
   // Add a flag to force rendering for integration tests
   const forceRender = container._forceRender || false;
+  ensureVisibilityObserver(container, parentPanel, workbench);
 
   if (!forceRender && !isProductionPanelActive(parentPanel, workbench)) {
-    console.log('Production render: Panel is not visible, skipping render');
+    showLoadingState(container, 'Waiting for production panel...');
     container._isRendering = false;
     return;
   }
-
-  ensureVisibilityObserver(container, parentPanel, workbench);
+  container._forceRender = false;
   
   // Prevent render loops with better coordination
   if (container._isRendering && !resizeEntry) {
@@ -777,141 +781,128 @@ export async function renderProductionSlide(container, resizeEntry) {
     setupResizeObserver(container, parentPanel);
   }
   
+  const brandSnapshot = getBrandSnapshot(state.brand?.id, state.brand?.variant);
+  const pagination = state.pagination || {};
+  const renderWithFallback = () => {
+    container._fallbackAttempted = true;
+    renderFallbackSlide(container, boxes, brandSnapshot, pagination);
+  };
+
   try {
-    const { React, ReactDOM } = await ensureReactLoaded();
-    console.log('Production render: React loaded successfully');
-    
-    // Prepare data
-    const brandSnapshot = getBrandSnapshot(state.brand?.id, state.brand?.variant);
-    const pagination = state.pagination || {};
-    console.log('Production render: brandSnapshot:', brandSnapshot?.theme);
-    
-    // Build the element tree
-    const slideElement = createSimpleGridDesigner({
-      React,
-      boxes,
-      brandSnapshot,
-      pagination,
-      containerWidth,
-      containerHeight
-    });
-    console.log('Production render: element tree created');
-    console.log('Production render: slideElement type:', typeof slideElement);
-    console.log('Production render: slideElement:', slideElement);
-    
-    // Reuse existing root or create new one
-    let root = container._productionRoot;
-    if (!root) {
-      // Clear previous content and create new root
-      container.innerHTML = '';
-      root = ReactDOM.createRoot(container);
-      container._productionRoot = root;
-      console.log('Production render: new React root created');
+    const reactContext = await ensureReactLoaded();
+    if (!reactContext) {
+      console.warn('Production render: React unavailable, using fallback renderer');
+      renderWithFallback();
     } else {
-      console.log('Production render: reusing existing React root');
-    }
-    
-    // Render the element
-    console.log('Production render: about to render to React root');
-    try {
-      root.render(slideElement);
-      console.log('Production render: React render completed without errors');
-    } catch (error) {
-      console.error('Production render: React render failed:', error);
-      throw error;
-    }
-
-    requestAnimationFrame(() => {
-      const panelRect = parentPanel?.getBoundingClientRect?.();
-      const boardRect = container.firstElementChild?.getBoundingClientRect?.();
-      console.info('Production board metrics:', {
-        panel: panelRect ? { width: panelRect.width, height: panelRect.height } : null,
-        board: boardRect ? { width: boardRect.width, height: boardRect.height } : null
+      const { React, ReactDOM } = reactContext;
+      console.log('Production render: React loaded successfully');
+      
+      const slideElement = createSimpleGridDesigner({
+        React,
+        boxes,
+        brandSnapshot,
+        pagination,
+        containerWidth,
+        containerHeight
       });
-    });
-
-    // Wait a bit and check if it rendered
-    setTimeout(() => {
-      // Check if container is still in DOM before validating
-      if (!document.contains(container)) {
-        console.log('Production render: Container removed from DOM, skipping validation');
-        return;
+      console.log('Production render: element tree created');
+      console.log('Production render: slideElement type:', typeof slideElement);
+      console.log('Production render: slideElement:', slideElement);
+      
+      let root = container._productionRoot;
+      if (!root) {
+        container.innerHTML = '';
+        root = ReactDOM.createRoot(container);
+        container._productionRoot = root;
+        console.log('Production render: new React root created');
+      } else {
+        console.log('Production render: reusing existing React root');
       }
       
-      const hasChildren = container.children.length > 0;
-      console.log('Production render: rendered element styles:', {
-        hasChildren,
-        childrenCount: container.children.length,
-        innerHTML: hasChildren ? container.innerHTML.substring(0, 100) : 'empty'
+      console.log('Production render: about to render to React root');
+      try {
+        root.render(slideElement);
+        console.log('Production render: React render completed without errors');
+      } catch (error) {
+        console.error('Production render: React render failed:', error);
+        throw error;
+      }
+
+      requestAnimationFrame(() => {
+        const panelRect = parentPanel?.getBoundingClientRect?.();
+        const boardRect = container.firstElementChild?.getBoundingClientRect?.();
+        console.info('Production board metrics:', {
+          panel: panelRect ? { width: panelRect.width, height: panelRect.height } : null,
+          board: boardRect ? { width: boardRect.width, height: boardRect.height } : null
+        });
       });
-      
-      if (!hasChildren) {
-        console.error('Production render: React render failed - no children in container');
-        // Try fallback if React render failed silently
-        if (!container._fallbackAttempted) {
-          container._fallbackAttempted = true;
-          console.log('Production render: Attempting fallback render');
-          renderFallbackSlide(container, boxes, brandSnapshot, pagination);
+
+      setTimeout(() => {
+        if (!document.contains(container)) {
+          console.log('Production render: Container removed from DOM, skipping validation');
+          return;
         }
-      }
-    }, 100);
-    
-    // Check if content is visible with additional validation
-    setTimeout(() => {
-      // Check if container is still in DOM
-      if (!document.contains(container)) {
-        return;
-      }
-      
-      const firstChild = container.firstElementChild;
-      if (!firstChild || firstChild.offsetWidth === 0 || firstChild.offsetHeight === 0) {
-        throw new Error('React render produced invisible output');
-      }
-      const computedStyle = window.getComputedStyle(firstChild);
-      console.log('Production render: rendered element styles:', {
-        width: firstChild.style.width,
-        height: firstChild.style.height,
-        display: firstChild.style.display,
-        backgroundColor: firstChild.style.backgroundColor,
-        computedDisplay: computedStyle.display,
-        computedVisibility: computedStyle.visibility,
-        offsetWidth: firstChild.offsetWidth,
-        offsetHeight: firstChild.offsetHeight
-      });
-      
-      // Warn if element is not visible
-      if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden' || firstChild.offsetWidth === 0) {
-        console.warn('Production render: Rendered element is not visible', {
+
+        const hasChildren = container.children.length > 0;
+        console.log('Production render: rendered element styles:', {
+          hasChildren,
+          childrenCount: container.children.length,
+          innerHTML: hasChildren ? container.innerHTML.substring(0, 100) : 'empty'
+        });
+
+        if (!hasChildren) {
+          console.error('Production render: React render failed - no children in container');
+          if (!container._fallbackAttempted) {
+            console.log('Production render: Attempting fallback render');
+            renderWithFallback();
+          }
+        }
+      }, 100);
+
+      setTimeout(() => {
+        if (!document.contains(container)) {
+          return;
+        }
+
+        const firstChild = container.firstElementChild;
+        if (!firstChild || firstChild.offsetWidth === 0 || firstChild.offsetHeight === 0) {
+          throw new Error('React render produced invisible output');
+        }
+        const computedStyle = window.getComputedStyle(firstChild);
+        console.log('Production render: rendered element styles:', {
+          width: firstChild.style.width,
+          height: firstChild.style.height,
+          display: firstChild.style.display,
+          backgroundColor: firstChild.style.backgroundColor,
+          computedDisplay: computedStyle.display,
+          computedVisibility: computedStyle.visibility,
           offsetWidth: firstChild.offsetWidth,
           offsetHeight: firstChild.offsetHeight
         });
-      }
-    }, 100);
-    
+
+        if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden' || firstChild.offsetWidth === 0) {
+          console.warn('Production render: Rendered element is not visible', {
+            offsetWidth: firstChild.offsetWidth,
+            offsetHeight: firstChild.offsetHeight
+          });
+        }
+      }, 100);
+    }
   } catch (error) {
     console.warn('React render failed, using fallback:', error.message);
-    
-    // Clear any existing React root
+
     if (container._productionRoot) {
       try {
         container._productionRoot.unmount();
         container._productionRoot = null;
       } catch (e) {
-        // Ignore cleanup errors
         console.warn('Error during React root cleanup:', e);
       }
     }
-    
-    // Use fallback renderer
-    const brandSnapshot = getBrandSnapshot(state.brand?.id, state.brand?.variant);
-    const pagination = state.pagination || {};
-    
-    // Mark that fallback was attempted
-    container._fallbackAttempted = true;
-    
-    renderFallbackSlide(container, boxes, brandSnapshot, pagination);
+
+    renderWithFallback();
   }
-  
+
   // Reset render flag
   container._isRendering = false;
 }

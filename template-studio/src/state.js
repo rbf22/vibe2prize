@@ -13,6 +13,7 @@ const DEFAULT_STATE = {
   referenceBackground: null,
   currentPreset: null,
   boxes: [],
+  backgroundShapes: [],
   selectedBoxId: null,
   isDrawing: false,
   dragStart: null,
@@ -45,11 +46,13 @@ const DEFAULT_STATE = {
     previewChrome: true,
     showDiagnostics: true,
     showRegionOutlines: true,
-    detectDomOverflow: true
+    detectDomOverflow: true,
+    showBackgroundShapes: true
   },
   diagnostics: {
     overflow: []
-  }
+  },
+  _boxesInitialized: false
 };
 
 const history = {
@@ -79,6 +82,7 @@ export function cloneBoxes(boxes) {
 function snapshotState() {
   return {
     boxes: cloneBoxes(state.boxes),
+    backgroundShapes: state.backgroundShapes ? state.backgroundShapes.map((shape) => ({ ...shape })) : [],
     metadata: Object.fromEntries(
       Object.entries(state.metadata).map(([id, metadata]) => [id, { ...metadata }])
     ),
@@ -111,6 +115,9 @@ export function resetInteractionHistory() {
 
 export function restoreSnapshot(snapshot) {
   state.boxes = cloneBoxes(snapshot.boxes);
+  state.backgroundShapes = Array.isArray(snapshot.backgroundShapes)
+    ? snapshot.backgroundShapes.map((shape) => ({ ...shape }))
+    : [];
   state.metadata = {};
   state.boxes.forEach((box) => {
     state.metadata[box.id] = box.metadata;

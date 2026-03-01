@@ -129,6 +129,16 @@ regions:
 ---
 ```
 
+### Region Metadata Guidelines
+
+Even when you design highly customized masters, keep these guardrails in mind so Template Studio, the preview renderer, and downstream tooling stay in sync:
+
+1. **Required per-region fields** – Every region should still define `id`, `role`, `area`, and a `grid` block (`x`, `y`, `width`, `height`). Include `required`, `inputType`, `fieldTypes`, and `type` when you care about validation or data-entry widgets (images, tables, etc.). Optional helpers like `llmHint`, `maxWords`, or `previewText` can vary freely.
+2. **Brand-mandatory regions** – EPAM masters must retain `brand-logo`, `page-number`, and `footer` regions so assets, pagination, and footer copy stay aligned with brand policy. If you omit them, Studio will fall back to generic boxes or flag the template as incomplete.
+3. **Visual overrides** – Typography and padding come from the brand role styles. If you need per-region overrides, add new metadata keys (e.g., `paddingOverride`, `fontSize`) and update the renderers accordingly, but keep brand roles as the default to ensure parity between preview and production renders.
+
+Sticking to those rules lets you trim or expand any template without breaking hydration, while keeping the brand-specific guarantees intact.
+
 ## Module API
 
 The modular architecture exposes the following API through `src/main.js`:
