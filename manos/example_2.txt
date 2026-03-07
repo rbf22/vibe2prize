@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        .slide-container { 
+            width: 1280px; 
+            min-height: 720px; /* keep as required */
+            background: #F8FAFC; 
+            color: #0F172A; 
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow: hidden;
+            border: 0; /* remove extra 2px from outer box to reduce total */
+        }
+        .grid-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(#94A3B8 1px, transparent 1px), linear-gradient(90deg, #94A3B8 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+        .header-section {
+            height: 100px;
+            border-bottom: 1px solid #0F172A;
+            padding-top: 30px; /* must keep title upper padding */
+            padding-left: 60px;
+            padding-right: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+        h2 {
+            font-family: 'Courier Prime', monospace;
+            font-size: 28px;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+        .page-num {
+            font-family: 'Courier Prime', monospace;
+            font-size: 18px;
+            color: #3B82F6;
+        }
+        .main-layout {
+            display: flex;
+            min-height: 560px; /* reduced to make columns shorter than 720px */
+        }
+        .left-col {
+            flex: 7;
+            padding-top: 20px; /* shrink inner padding */
+            padding-left: 60px;
+            padding-right: 30px;
+            border-right: 1px solid #94A3B8;
+        }
+        .right-col {
+            flex: 3;
+            padding-top: 20px; /* shrink inner padding */
+            padding-left: 30px;
+            padding-right: 30px;
+            background: #F1F5F9;
+        }
+        h3 {
+            font-family: 'Courier Prime', monospace;
+            font-size: 18px;
+            color: #3B82F6;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+        .comparison-table th {
+            background: #0F172A;
+            color: #F8FAFC;
+            font-family: 'Courier Prime', monospace;
+            font-size: 11px;
+            text-align: left;
+            padding: 6px; /* reduced padding */
+            text-transform: uppercase;
+        }
+        .comparison-table td {
+            border: 1px solid #94A3B8;
+            padding: 6px; /* reduced padding */
+            font-size: 13px;
+            line-height: 1.3;
+            vertical-align: top;
+        }
+        .comparison-table tr:nth-child(even) {
+            background: #F8FAFC;
+        }
+        .dim-name {
+            font-weight: bold;
+            color: #0F172A;
+            width: 140px;
+            font-family: 'Courier Prime', monospace;
+            font-size: 13px;
+        }
+        .sidebar-box {
+            margin-bottom: 16px; /* reduced spacing between boxes */
+        }
+        .sidebar-label {
+            font-family: 'Courier Prime', monospace;
+            font-size: 12px;
+            color: #3B82F6;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #3B82F6;
+            padding-bottom: 4px;
+        }
+        .sidebar-text {
+            font-size: 14px;
+            line-height: 1.5; /* slightly tighter */
+            color: #334155;
+        }
+        .tech-note {
+            font-family: 'Courier Prime', monospace;
+            font-size: 10px;
+            color: #94A3B8;
+            margin-top: 12px;
+            display: block;
+            text-transform: uppercase;
+        }
+        .highlight-text {
+            color: #0F172A;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <div class="header-section">
+            <h2>The Paradigm Shift — Inverting the Traditional SDLC</h2>
+            <div class="page-num">02</div>
+        </div>
+
+        <div class="main-layout">
+            <div class="left-col">
+                <h3>Comparative Analysis</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Dimension</th>
+                            <th>Traditional SDLC</th>
+                            <th>Vibe-to-Prod Framework</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dim-name">Discovery</td>
+                            <td>Abstract interviews and long documentation cycles.</td>
+                            <td>Rapid, AI-assisted prototyping to surface requirements.</td>
+                        </tr>
+                        <tr>
+                            <td class="dim-name">Prototyping</td>
+                            <td>Late-stage activity, often throwaway.</td>
+                            <td>Early-stage core activity; serves as the functional spec.</td>
+                        </tr>
+                        <tr>
+                            <td class="dim-name">Requirements</td>
+                            <td>Derived from interviews and static documents.</td>
+                            <td>Derived from validated, interactive prototypes.</td>
+                        </tr>
+                        <tr>
+                            <td class="dim-name">Hardening</td>
+                            <td>Continuous throughout the build phase.</td>
+                            <td>Dedicated phase to bridge the gap from "vibe" to "prod".</td>
+                        </tr>
+                        <tr>
+                            <td class="dim-name">Delivery</td>
+                            <td>Linear path with high risk of late-stage rework.</td>
+                            <td>Iterative path with early risk mitigation and validation.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <span class="tech-note">STRATEGIC_SHIFT: VIBE_SDLC_V1.0 // REDUCES DISCOVERY RISK BY 40%</span>
+            </div>
+            <div class="right-col">
+                <div class="sidebar-box">
+                    <span class="sidebar-label">Core Inversion</span>
+                    <p class="sidebar-text">In the traditional model, we <span class="highlight-text">write to build</span>. In the vibe-to-prod model, we <span class="highlight-text">vibe to discover</span> and then <span class="highlight-text">harden to deliver</span>.</p>
+                </div>
+                
+                <div class="sidebar-box">
+                    <span class="sidebar-label">Key Insight</span>
+                    <p class="sidebar-text">The prototype is no longer just a demo — it is a <span class="highlight-text">high-fidelity requirement</span> that anchors the entire engineering process.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
