@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        .slide-container { 
+            width: 1280px; 
+            min-height: 720px; 
+            background: #F8FAFC; 
+            color: #0F172A; 
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #94A3B8;
+        }
+        .grid-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(#94A3B8 1px, transparent 1px), linear-gradient(90deg, #94A3B8 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+        .header-section {
+            height: 100px;
+            border-bottom: 2px solid #0F172A;
+            padding-top: 30px;
+            padding-left: 60px;
+            padding-right: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+        h2 {
+            font-family: 'Courier Prime', monospace;
+            font-size: 28px;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+        .page-num {
+            font-family: 'Courier Prime', monospace;
+            font-size: 18px;
+            color: #3B82F6;
+        }
+        .main-layout {
+            display: flex;
+        }
+        .left-col {
+            flex: 7;
+            padding-top: 30px;
+            padding-left: 60px;
+            padding-right: 40px;
+            border-right: 1px solid #94A3B8;
+        }
+        .right-col {
+            flex: 3;
+            padding-top: 30px;
+            padding-left: 40px;
+            padding-right: 40px;
+            background: #F1F5F9;
+        }
+        h3 {
+            font-family: 'Courier Prime', monospace;
+            font-size: 18px;
+            color: #3B82F6;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .suitability-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .suitability-table th {
+            background: #0F172A;
+            color: #F8FAFC;
+            font-family: 'Courier Prime', monospace;
+            font-size: 12px;
+            text-align: left;
+            padding: 12px;
+            text-transform: uppercase;
+        }
+        .suitability-table td {
+            border: 1px solid #94A3B8;
+            padding: 12px;
+            font-size: 14px;
+            line-height: 1.4;
+            vertical-align: top;
+        }
+        .suitability-table tr:nth-child(even) {
+            background: #F8FAFC;
+        }
+        .dimension-name {
+            font-weight: bold;
+            color: #0F172A;
+            width: 180px;
+            font-family: 'Courier Prime', monospace;
+            font-size: 13px;
+        }
+        .fit-ideal {
+            color: #16A34A;
+            font-weight: 600;
+        }
+        .fit-poor {
+            color: #DC2626;
+            font-weight: 600;
+        }
+        .sidebar-box {
+            margin-bottom: 30px;
+        }
+        .sidebar-label {
+            font-family: 'Courier Prime', monospace;
+            font-size: 12px;
+            color: #3B82F6;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #3B82F6;
+            padding-bottom: 5px;
+        }
+        .sidebar-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #334155;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        .check-icon {
+            color: #3B82F6;
+            margin-right: 10px;
+            font-family: 'Courier Prime', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <div class="header-section">
+            <h2>Not Every Problem Is a Good Fit — Start With Qualification</h2>
+            <div class="page-num">04</div>
+        </div>
+
+        <div class="main-layout">
+            <div class="left-col">
+                <h3>Suitability Framework</h3>
+                <table class="suitability-table">
+                    <thead>
+                        <tr>
+                            <th>Dimension</th>
+                            <th>Ideal Fit (High Value)</th>
+                            <th>Poor Fit (High Risk)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dimension-name">UI/UX Focus</td>
+                            <td class="fit-ideal">High — Visual, interactive flows, front-end heavy apps.</td>
+                            <td class="fit-poor">Low — Pure backend, data pipelines, or CLI tools.</td>
+                        </tr>
+                        <tr>
+                            <td class="dimension-name">Integration</td>
+                            <td class="fit-ideal">Low — Few external dependencies or standard APIs.</td>
+                            <td class="fit-poor">High — Many legacy systems or complex middleware.</td>
+                        </tr>
+                        <tr>
+                            <td class="dimension-name">Regulatory</td>
+                            <td class="fit-ideal">Low — Internal tools, dashboards, non-critical apps.</td>
+                            <td class="fit-poor">High — GxP, HIPAA, SOX, or financial systems.</td>
+                        </tr>
+                        <tr>
+                            <td class="dimension-name">Stakeholders</td>
+                            <td class="fit-ideal">High — Engaged, iterative client available for feedback.</td>
+                            <td class="fit-poor">Low — Absent or slow-to-respond stakeholders.</td>
+                        </tr>
+                        <tr>
+                            <td class="dimension-name">Logic Complexity</td>
+                            <td class="fit-ideal">Low — Straightforward rules and standard patterns.</td>
+                            <td class="fit-poor">High — Complex algorithms or proprietary math.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="right-col">
+                <div class="sidebar-box">
+                    <span class="sidebar-label">Core Philosophy</span>
+                    <p class="sidebar-text">Qualification is not a gate to slow things down — it is a tool to focus effort where vibe coding creates the most value.</p>
+                </div>
+                
+                <div class="sidebar-box">
+                    <span class="sidebar-label">Qualification Checklist</span>
+                    <div class="checklist-item">
+                        <span class="check-icon">[ ]</span>
+                        <span>Is the primary value in the user experience?</span>
+                    </div>
+                    <div class="checklist-item">
+                        <span class="check-icon">[ ]</span>
+                        <span>Are integration stubs acceptable for v1?</span>
+                    </div>
+                    <div class="checklist-item">
+                        <span class="check-icon">[ ]</span>
+                        <span>Is the client ready for 48h iteration cycles?</span>
+                    </div>
+                    <div class="checklist-item">
+                        <span class="check-icon">[ ]</span>
+                        <span>Does the team have hardening expertise?</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
