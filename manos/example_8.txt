@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        .slide-container { 
+            width: 1280px; 
+            min-height: 720px; 
+            background: #F8FAFC; 
+            color: #0F172A; 
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #94A3B8;
+        }
+        .grid-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(#94A3B8 1px, transparent 1px), linear-gradient(90deg, #94A3B8 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+        .header-section {
+            height: 100px;
+            border-bottom: 2px solid #0F172A;
+            padding-top: 30px;
+            padding-left: 60px;
+            padding-right: 60px;
+            display: flex;
+            justify-content: space-between;
+        }
+        h2 {
+            font-family: 'Courier Prime', monospace;
+            font-size: 28px;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+        .page-num {
+            font-family: 'Courier Prime', monospace;
+            font-size: 18px;
+            color: #3B82F6;
+        }
+        .main-layout {
+            display: flex;
+            min-height: 520px;
+        }
+        .left-col {
+            flex: 6;
+            padding-top: 30px;
+            padding-left: 60px;
+            padding-right: 40px;
+            border-right: 1px solid #94A3B8;
+        }
+        .right-col {
+            flex: 4;
+            padding-top: 30px;
+            padding-left: 40px;
+            padding-right: 60px;
+            background: #F1F5F9;
+        }
+        h3 {
+            font-family: 'Courier Prime', monospace;
+            font-size: 18px;
+            color: #3B82F6;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        .workstream-item {
+            margin-bottom: 25px;
+            border-left: 3px solid #3B82F6;
+            padding-left: 15px;
+        }
+        .workstream-title {
+            font-family: 'Courier Prime', monospace;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .workstream-desc {
+            font-size: 13px;
+            line-height: 1.5;
+            color: #334155;
+        }
+        .arch-box {
+            border: 1px solid #0F172A;
+            padding-top: 20px;
+            padding-left: 20px;
+            padding-right: 20px;
+            background: #FFFFFF;
+            font-family: 'Courier Prime', monospace;
+            font-size: 12px;
+        }
+        .arch-layer {
+            border: 1px dashed #3B82F6;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .arch-layer.prototype {
+            background: #DBEAFE;
+            color: #3B82F6;
+        }
+        .arch-layer.production {
+            background: #0F172A;
+            color: #F8FAFC;
+        }
+        .footer-note {
+            position: absolute;
+            bottom: 20px;
+            left: 60px;
+            font-family: 'Courier Prime', monospace;
+            font-size: 11px;
+            color: #94A3B8;
+            text-transform: uppercase;
+        }
+        .highlight-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #0F172A;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="grid-overlay"></div>
+        
+        <div class="header-section">
+            <h2>Architecture and Hardening — Building for Production</h2>
+            <div class="page-num">08</div>
+        </div>
+
+        <div class="main-layout">
+            <div class="left-col">
+                <h3>Critical Hardening Workstreams</h3>
+                <div class="workstream-item">
+                    <span class="workstream-title">Security Hardening</span>
+                    <p class="workstream-desc">Implement AuthN/AuthZ, externalize secrets, sanitize all inputs, and conduct OWASP/dependency scans. AI stubs must be replaced with production-grade security layers.</p>
+                </div>
+                <div class="workstream-item">
+                    <span class="workstream-title">Integration Engineering</span>
+                    <p class="workstream-desc">Replace prototype stubs with production API connections, SSO, and persistent data layers. Ensure schema validation and error handling for all external calls.</p>
+                </div>
+                <div class="workstream-item">
+                    <span class="workstream-title">Observability & Ops</span>
+                    <p class="workstream-desc">Instrument with structured logging, distributed tracing, and alerting. Define runbooks and rollback procedures before the first production deployment.</p>
+                </div>
+                <div class="workstream-item">
+                    <span class="workstream-title">CI/CD Pipeline</span>
+                    <p class="workstream-desc">Automate build, test, and deployment workflows. Embed quality gates (static analysis, security scans) into the automated delivery pipeline.</p>
+                </div>
+            </div>
+
+            <div class="right-col">
+                <h3>Structural Decisions</h3>
+                <p class="highlight-text">"The gap between a working prototype and a production-ready application is primarily an architecture problem that AI cannot solve alone."</p>
+                
+                <div class="arch-box">
+                    <div style="margin-bottom: 15px; font-weight: bold; border-bottom: 1px solid #0F172A;">LAYERED ARCHITECTURE MODEL</div>
+                    
+                    <div class="arch-layer production">Production Infrastructure (Cloud/On-Prem)</div>
+                    <div class="arch-layer production">Security & Governance Layer</div>
+                    <div class="arch-layer production">Data Persistence & Integration</div>
+                    <div class="arch-layer prototype">Vibe-Coded Business Logic</div>
+                    <div class="arch-layer prototype">Validated User Interface</div>
+                    
+                    <div style="margin-top: 15px; font-size: 10px; color: #64748B;">
+                        BLUE: PROTOTYPE ARTIFACTS<br>
+                        NAVY: PRODUCTION HARDENING
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; border-top: 1px solid #3B82F6; padding-top: 15px;">
+                    <span class="workstream-title" style="color: #3B82F6;">Performance Validation</span>
+                    <p class="workstream-desc">Load and stress test against agreed NFRs. Optimize query efficiency and async patterns identified during technical assessment.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">ENGINEERING SPECIFICATION // HARDENING_PROTOCOL_V2.0 // CONFIDENTIAL</div>
+    </div>
+</body>
+</html>
