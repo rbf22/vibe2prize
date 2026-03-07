@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Playfair+Display:wght@400;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        .slide-container {
+            width: 1280px;
+            min-height: 720px;
+            background: #FFFFFF;
+            font-family: 'Playfair Display', serif;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+        .nav-column {
+            width: 120px;
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            padding-top: 40px;
+            align-items: center;
+        }
+        .nav-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            color: #FFFFFF;
+            transform: rotate(-90deg);
+            white-space: nowrap;
+            margin-top: 100px;
+        }
+        .main-content {
+            flex: 1;
+            padding-top: 60px;
+            padding-left: 60px;
+            padding-right: 40px;
+        }
+        .headline {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 64px;
+            color: #000000;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 40px;
+        }
+        .standfirst {
+            font-size: 28px;
+            line-height: 1.4;
+            color: #2F4F4F;
+            margin-bottom: 40px;
+            font-weight: 700;
+            border-left: 5px solid #000000;
+            padding-left: 20px;
+        }
+        .body-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: #2F4F4F;
+            margin-bottom: 40px;
+        }
+        .pull-quote-container {
+            background: #000000;
+            padding-top: 30px;
+            padding-left: 30px;
+            padding-right: 30px;
+            min-height: 180px;
+        }
+        .pull-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-style: italic;
+            color: #FFFFFF;
+            line-height: 1.4;
+        }
+        .sidebar {
+            width: 320px;
+            background: #E0E0E0;
+            padding-top: 60px;
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+        .sidebar-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 24px;
+            color: #000000;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 10px;
+        }
+        .objective-item {
+            margin-top: 20px;
+        }
+        .objective-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: #000000;
+            text-transform: uppercase;
+            display: block;
+        }
+        .objective-desc {
+            font-size: 16px;
+            color: #2F4F4F;
+            line-height: 1.4;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="nav-column">
+            <div class="nav-text">SECTION 01 // STRATEGIC ALIGNMENT</div>
+        </div>
+        <div class="main-content">
+            <h1 class="headline">What We Plan to Achieve and Why</h1>
+            <p class="standfirst">Bridging the gap between R&D's domain expertise and IT's platform capabilities.</p>
+            <div class="body-text">
+                This workshop is designed to move from a state of friction and missed opportunities to a focused, collaborative effort that delivers tangible value. By the end of these two days, we will have a clear, actionable roadmap for AI development that will help us close deals, accelerate research, and plan for a successful H2 2026 and H1 2027.
+            </div>
+            <div class="pull-quote-container">
+                <p class="pull-quote">"The core tension to address: R&D knows their pain points but may not know what's technically feasible. IT knows the platform capabilities but may not know which problems matter most. Our job is to create alignment through specificity."</p>
+            </div>
+        </div>
+        <div class="sidebar">
+            <h2 class="sidebar-title">Key Objectives</h2>
+            <div class="objective-item">
+                <span class="objective-label">01 // ALIGN</span>
+                <p class="objective-desc">R&D and IT on 2-3 high-impact AI projects.</p>
+            </div>
+            <div class="objective-item">
+                <span class="objective-label">02 // DEFINE</span>
+                <p class="objective-desc">Clear, 30-day milestones for each project.</p>
+            </div>
+            <div class="objective-item">
+                <span class="objective-label">03 // COMMIT</span>
+                <p class="objective-desc">To a shared roadmap for H2 2026 and H1 2027.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
