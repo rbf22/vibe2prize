@@ -26,14 +26,29 @@ if (!isBrowser) {
   };
 }
 
-const ROOT = isBrowser ? '/' : pathModule.resolve(process.cwd());
-const TEMPLATES_DIR = isBrowser ? '/templates' : 
+const getBrowserRoot = () => {
+  if (!isBrowser) return '/';
+  const path = window.location.pathname;
+  if (path.includes('/template-studio/')) {
+    return path.substring(0, path.indexOf('/template-studio/')) || '/';
+  }
+  return '/';
+};
+
+const ROOT = isBrowser ? getBrowserRoot() : pathModule.resolve(process.cwd());
+
+const TEMPLATES_DIR = isBrowser ?
+  (ROOT === '/' ? '/templates' : `${ROOT}/templates`) :
   (ROOT.includes('template-studio') ? 
     pathModule.join(ROOT, '..', 'templates') :
     pathModule.join(ROOT, 'templates'));
-const BRAND_INDEX_PATH = isBrowser ? '/templates/brands.json' : pathModule.join(TEMPLATES_DIR, 'brands.json');
-// Adjust schema path to work from template-studio directory during tests
-const BRAND_SCHEMA_PATH = isBrowser ? '/core/brand/brand-schema.json' : 
+
+const BRAND_INDEX_PATH = isBrowser ?
+  `${TEMPLATES_DIR}/brands.json` :
+  pathModule.join(TEMPLATES_DIR, 'brands.json');
+
+const BRAND_SCHEMA_PATH = isBrowser ?
+  (ROOT === '/' ? '/core/brand/brand-schema.json' : `${ROOT}/core/brand/brand-schema.json`) :
   (ROOT.includes('template-studio') ? 
     pathModule.join(ROOT, '..', 'core', 'brand', 'brand-schema.json') :
     pathModule.join(ROOT, 'core', 'brand', 'brand-schema.json'));
@@ -110,39 +125,55 @@ function composeSnapshot(definition, variantKey) {
 }
 
 async function initialize() {
-  if (ajvInstance) {
-    const schema = await readJson(BRAND_SCHEMA_PATH);
-    validateBrandDefinition = ajvInstance.compile(schema);
+  try {
+    if (ajvInstance) {
+      const schema = await readJson(BRAND_SCHEMA_PATH);
+      validateBrandDefinition = ajvInstance.compile(schema);
+    }
+
+    const indexData = await readJson(BRAND_INDEX_PATH);
+    if (!indexData || !Array.isArray(indexData.brands)) {
+      throw new Error('templates/brands.json must export an object with a "brands" array');
+    }
+
+    brandIndex = indexData.brands.map((entry) => ({
+      id: entry.id,
+      label: entry.label || entry.id,
+      version: typeof entry.version === 'number' ? entry.version : null
+    }));
+
+    await Promise.all(
+      brandIndex.map(async ({ id, version }) => {
+        const brandPath = isBrowser
+          ? `${TEMPLATES_DIR}/${id}/brand.json`
+          : pathModule.join(TEMPLATES_DIR, id, 'brand.json');
+        const definition = await readJson(brandPath);
+        if (validateBrandDefinition && !validateBrandDefinition(definition)) {
+          const errors = validateBrandDefinition.errors || [];
+          const formatted = errors.map((err) => `${err.instancePath || '(root)'} ${err.message}`).join(', ');
+          throw new Error(`Invalid brand definition for "${id}": ${formatted}`);
+        }
+        if (typeof version === 'number' && definition.version !== version) {
+          throw new Error(`Version mismatch for brand "${id}": index declares ${version}, definition has ${definition.version}`);
+        }
+        brandDefinitions.set(id, definition);
+      })
+    );
+  } catch (error) {
+    console.error('Failed to initialize brand loader:', error.message);
+    if (brandIndex.length === 0) {
+      brandIndex = [{ id: 'default', label: 'Template Studio', version: 1 }];
+      brandDefinitions.set('default', {
+        id: 'default',
+        label: 'Template Studio',
+        version: 1,
+        variants: {
+          dark: { label: 'Dark Theme', tokens: { palette: { primary: '#3498db' } } },
+          light: { label: 'Light Theme', tokens: { palette: { primary: '#2980b9' } } }
+        }
+      });
+    }
   }
-
-  const indexData = await readJson(BRAND_INDEX_PATH);
-  if (!indexData || !Array.isArray(indexData.brands)) {
-    throw new Error('templates/brands.json must export an object with a "brands" array');
-  }
-
-  brandIndex = indexData.brands.map((entry) => ({
-    id: entry.id,
-    label: entry.label || entry.id,
-    version: typeof entry.version === 'number' ? entry.version : null
-  }));
-
-  await Promise.all(
-    brandIndex.map(async ({ id, version }) => {
-      const brandPath = isBrowser
-        ? `${TEMPLATES_DIR}/${id}/brand.json`
-        : pathModule.join(TEMPLATES_DIR, id, 'brand.json');
-      const definition = await readJson(brandPath);
-      if (validateBrandDefinition && !validateBrandDefinition(definition)) {
-        const errors = validateBrandDefinition.errors || [];
-        const formatted = errors.map((err) => `${err.instancePath || '(root)'} ${err.message}`).join(', ');
-        throw new Error(`Invalid brand definition for "${id}": ${formatted}`);
-      }
-      if (typeof version === 'number' && definition.version !== version) {
-        throw new Error(`Version mismatch for brand "${id}": index declares ${version}, definition has ${definition.version}`);
-      }
-      brandDefinitions.set(id, definition);
-    })
-  );
 }
 
 await initialize();
