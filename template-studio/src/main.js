@@ -40,6 +40,7 @@ import {
   loadBrandMasterTemplate
 } from './branding/brands.js';
 import { initDiagnosticsPanel } from './ui/diagnostics-panel.js';
+import { initComposer } from './composer.js';
 
 // Re-export for HTML script usage
 let masterTemplateHydrationPromise = null;

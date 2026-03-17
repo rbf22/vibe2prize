@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Grid Template Studio</title>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#0f172a">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -29,7 +31,12 @@
       <p class="subtitle">Design grid layouts with metadata for LLM content generation</p>
     </header>
 
-    <main class="app-grid">
+    <nav class="app-nav">
+      <button id="designTab" class="nav-btn active" data-tab="design">Design</button>
+      <button id="composeTab" class="nav-btn" data-tab="composer">Composer</button>
+    </nav>
+
+    <main class="app-grid" id="designView">
       <section class="settings-panel">
         <div class="settings-panel-header">
           <h2>Template Settings</h2>
@@ -284,6 +291,54 @@
       </section>
     </main>
 
+    <main class="composer-grid" id="composerView" style="display: none;">
+      <section class="composer-sidebar">
+        <h3>Templates</h3>
+        <div id="templateGallery" class="template-gallery">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <section class="composer-workspace">
+        <div class="workspace-header">
+          <h2 id="currentSlideTitle">Untitled Slide</h2>
+          <div class="workspace-actions">
+            <button id="importPptxBtn" class="secondary-btn">Import PPTX</button>
+            <input type="file" id="pptxFileInput" accept=".pptx" style="display: none;" />
+            <button id="addToDeckBtn" class="primary-btn">Add to Deck</button>
+            <button id="downloadDeckBtn" class="secondary-btn">Download Deck (PPTX)</button>
+          </div>
+        </div>
+
+        <div class="composer-preview-container">
+          <div id="composerPreview" class="production-preview-surface"></div>
+        </div>
+
+        <div class="deck-strip-container">
+          <h3>Deck</h3>
+          <div id="deckStrip" class="deck-strip">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <section class="composer-ai-panel">
+        <div class="ai-header">
+          <h3>AI Assistant</h3>
+          <span id="aiStatus" class="status-badge">Offline</span>
+        </div>
+        <div id="aiChat" class="ai-chat">
+          <div class="ai-message assistant">
+            Hello! I can help you compose your slides. Try selecting a template and giving me a brief.
+          </div>
+        </div>
+        <div class="ai-input-area">
+          <textarea id="aiBrief" placeholder="Enter slide brief or instructions..."></textarea>
+          <button id="generateBtn" class="primary-btn">Generate Content</button>
+        </div>
+      </section>
+    </main>
+
     <script>
       (function() {
         const isDevelopment = window.location.hostname === 'localhost' || 
@@ -292,13 +347,27 @@
 
         const moduleSrc = isDevelopment ? './src/main.js' : './dist/main.js';
 
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+              .then(reg => console.log('SW registered'))
+              .catch(err => console.log('SW registration failed', err));
+          });
+        }
+
         function setupApplication() {
           const ensureReady = () => {
-            if (!window.TemplateStudio || !window.TemplateStudio.attachControlHandlers) {
+            // Check for BOTH TemplateStudio (Design) and Composer
+            const isDesignReady = window.TemplateStudio && window.TemplateStudio.attachControlHandlers;
+            const isComposerReady = typeof window.initComposer === 'function';
+
+            if (!isDesignReady || !isComposerReady) {
               requestAnimationFrame(ensureReady);
               return;
             }
             initializeDom();
+            window.initComposer();
           };
           ensureReady();
         }
@@ -313,6 +382,29 @@
           const previewToggleButtons = Array.from(document.querySelectorAll('.preview-toggle-btn'));
           const diagnosticsBody = document.getElementById('diagnosticsBody');
           const diagnosticsSummary = document.getElementById('diagnosticSummary');
+
+          // Tab switching
+          const designTab = document.getElementById('designTab');
+          const composeTab = document.getElementById('composeTab');
+          const designView = document.getElementById('designView');
+          const composerView = document.getElementById('composerView');
+
+          const switchTab = (tab) => {
+            if (tab === 'design') {
+              designTab.classList.add('active');
+              composeTab.classList.remove('active');
+              designView.style.display = 'grid';
+              composerView.style.display = 'none';
+            } else {
+              designTab.classList.remove('active');
+              composeTab.classList.add('active');
+              designView.style.display = 'none';
+              composerView.style.display = 'grid';
+            }
+          };
+
+          designTab.addEventListener('click', () => switchTab('design'));
+          composeTab.addEventListener('click', () => switchTab('composer'));
 
           const renderCanvas = () => {
             TemplateStudio.renderPreview(previewGrid);

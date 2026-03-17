@@ -1,0 +1,16 @@
+{
+  "name": "Grid Template Studio",
+  "short_name": "GridStudio",
+  "description": "Design and compose slides with local AI and PPTX support",
+  "start_url": "./grid-template-studio.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "https://revealjs.com/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon"
+    }
+  ]
+}
