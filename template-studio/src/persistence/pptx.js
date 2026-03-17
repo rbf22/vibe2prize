@@ -4,7 +4,7 @@ export async function exportToPptx(state) {
   const pres = new pptxgen();
 
   // Set presentation layout (16:9 is default for 1920x1080)
-  pres.layout = 'LAYOUT_169';
+  pres.layout = 'LAYOUT_16x9';
 
   const slide = pres.addSlide();
 
@@ -15,32 +15,46 @@ export async function exportToPptx(state) {
       slide.background = { fill: bgColor };
   }
 
-  const { canvasWidth, canvasHeight, boxes, content } = state;
+  const { canvasWidth, canvasHeight, boxes, content, regions } = state;
+  const itemsToRender = boxes || (regions ? regions.map(r => ({
+      ...r,
+      gridX: r.x,
+      gridY: r.y,
+      gridWidth: r.w,
+      gridHeight: r.h,
+      metadata: { fieldTypes: [r.role || 'supporting-text'] }
+  })) : []);
 
-  boxes.forEach(box => {
+  const columns = state.columns || 80;
+  const rows = state.rows || 45;
+
+  itemsToRender.forEach(box => {
     const role = box.metadata?.fieldTypes?.[0] || 'supporting-text';
-    const userContent = content[box.id] || "";
+    const userContent = (content && content[box.id]) || box.content || "";
 
     // Convert grid coordinates to percentages/inches for PPTX
     // PPTXGenJS uses inches or percentages. We'll use percentages for simplicity.
-    const x = (box.gridX / state.columns) * 100;
-    const y = (box.gridY / state.rows) * 100;
-    const w = (box.gridWidth / state.columns) * 100;
-    const h = (box.gridHeight / state.rows) * 100;
+    const x = (box.gridX / columns) * 100;
+    const y = (box.gridY / rows) * 100;
+    const w = (box.gridWidth / columns) * 100;
+    const h = (box.gridHeight / rows) * 100;
 
     const isImage = box.metadata?.inputType === 'image' || role === 'logo';
 
     if (isImage) {
         // Placeholder for images in POC
+        const placeholderColor = state.brand?.variant === 'dark' ? '333333' : 'eeeeee';
+        const borderColor = state.brand?.variant === 'dark' ? '666666' : 'cccccc';
+
         slide.addShape(pres.ShapeType.rect, {
             x: `${x}%`, y: `${y}%`, w: `${w}%`, h: `${h}%`,
-            fill: { color: 'cccccc' },
-            line: { color: '999999', width: 1 }
+            fill: { color: placeholderColor },
+            line: { color: borderColor, width: 1 }
         });
         slide.addText(`[Image: ${role}]`, {
             x: `${x}%`, y: `${y}%`, w: `${w}%`, h: `${h}%`,
             align: 'center', valign: 'middle',
-            fontSize: 10, color: '666666'
+            fontSize: 10, color: state.brand?.variant === 'dark' ? '999999' : '666666'
         });
     } else {
         // Text box mapping
@@ -53,7 +67,7 @@ export async function exportToPptx(state) {
             fontSize: fontSize,
             color: color,
             bold: isHeading,
-            align: 'left',
+            align: role === 'primary-title' ? 'center' : 'left',
             valign: 'top',
             margin: 10
         });
