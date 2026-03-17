@@ -69,7 +69,7 @@ function setupDOM() {
     canvasHeight: 1080,
     columns: 80,
     rows: 45,
-    brand: { id: 'epam', variant: 'dark' }
+    brand: { id: 'accenture', variant: 'dark' }
   });
 
   // Also set it on window for compatibility

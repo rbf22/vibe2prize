@@ -1,4 +1,4 @@
-// Semantic Vocabulary System - Controlled vocabulary for EPAM slide content
+// Semantic Vocabulary System - Controlled vocabulary for slide content
 // Provides consistent classification and mapping of content elements across templates
 
 const ROLE_DEFINITIONS = {
@@ -198,8 +198,8 @@ export const semanticVocabulary = {
     }
   },
 
-  // EPAM-specific content categories
-  epamCategories: {
+  // Brand-agnostic content categories
+  categories: {
     'executive-summary': {
       description: 'High-level overview and recommendations',
       typicalRoles: ['primary-title', 'secondary-title', 'supporting-text', 'key-data']
@@ -236,7 +236,7 @@ export class SemanticNormalizer {
       semantic: this.determineSemanticRole(element),
       importance: this.assessImportance(element),
       relationships: this.identifyRelationships(element),
-      epamCategory: this.determineEPAMCategory(element),
+      category: this.determineCategory(element),
       metadata: {
         contentLength: element.content ? element.content.toString().length : 0,
         wordCount: element.content ? element.content.toString().split(/\s+/).length : 0,
@@ -338,11 +338,11 @@ export class SemanticNormalizer {
     return relationships;
   }
   
-  determineEPAMCategory(element) {
+  determineCategory(element) {
     const content = (element.content || '').toString().toLowerCase();
     
     // Check for category-specific keywords
-    for (const [category, config] of Object.entries(this.vocabulary.epamCategories)) {
+    for (const [category, config] of Object.entries(this.vocabulary.categories)) {
       const keywords = this.getCategoryKeywords(category);
       if (keywords.some(keyword => content.includes(keyword))) {
         return category;

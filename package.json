@@ -1,7 +1,7 @@
 {
   "name": "vibe2prize",
   "version": "1.0.0",
-  "description": "This repository hosts the **Enhanced Vibe-to-Enterprise Framework** deck as a fully themeable [Reveal.js](https://revealjs.com/) presentation. The content lives in `vibe2prize.md`, and `index.html` renders it with custom EPAM styling plus a light/dark toggle.",
+  "description": "This repository hosts the **Enhanced Vibe-to-Enterprise Framework** deck as a fully themeable [Reveal.js](https://revealjs.com/) presentation. The content lives in `vibe2prize.md`, and `index.html` renders it with custom Accenture styling plus a light/dark toggle.",
   "type": "module",
   "main": "index.js",
   "directories": {

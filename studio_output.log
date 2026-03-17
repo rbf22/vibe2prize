@@ -1,0 +1,334 @@
+
+> vibe2prize@1.0.0 studio
+> node scripts/template-studio.js
+
+
+🟣 Template Studio running at http://localhost:4174
+Serving template-studio/ as a standalone static tool.
+Press Ctrl+C to stop.
+
+[StudioConsole] Module script loaded: ./src/main.js
+[StudioConsole] setupApplication called
+[StudioConsole] Checking readiness - Design: false Composer: true
+[StudioConsole] Checking readiness - Design: true Composer: true
+[StudioConsole] TemplateStudio state: { initialized: true, hasHandlers: true }
+[StudioConsole] Application ready, initializing components...
+[StudioConsole] Found guide buttons: 7
+[StudioConsole] Setting up guide button: center
+[StudioConsole] Button state toggled: center true
+[StudioConsole] Button initial state: center true
+[StudioConsole] Setting up guide button: halves
+[StudioConsole] Button state toggled: halves false
+[StudioConsole] Button initial state: halves false
+[StudioConsole] Setting up guide button: thirds
+[StudioConsole] Button state toggled: thirds false
+[StudioConsole] Button initial state: thirds false
+[StudioConsole] Setting up guide button: quarters
+[StudioConsole] Button state toggled: quarters false
+[StudioConsole] Button initial state: quarters false
+[StudioConsole] Setting up guide button: sixths
+[StudioConsole] Button state toggled: sixths false
+[StudioConsole] Button initial state: sixths false
+[StudioConsole] Setting up guide button: eighths
+[StudioConsole] Button state toggled: eighths false
+[StudioConsole] Button initial state: eighths false
+[StudioConsole] Setting up guide button: margin
+[StudioConsole] Button state toggled: margin true
+[StudioConsole] Button initial state: margin true
+[StudioConsole] renderGuides called { guideLayer: true, previewGrid: true }
+[StudioConsole] Current guide settings: {
+  "center": true,
+  "halves": false,
+  "thirds": false,
+  "quarters": false,
+  "sixths": false,
+  "eighths": false,
+  "margin": true
+}
+[StudioConsole] Guide dimensions: { width: 864, height: 486 }
+[StudioConsole] Guide line created: vertical at position: 432 with class: guide-line vertical center
+[StudioConsole] Guide line created: horizontal at position: 243 with class: guide-line horizontal center
+[StudioConsole] Guide render complete. Lines added: 2 children now: 9
+[StudioConsole] Production render: parent panel visibility hidden
+[StudioConsole] Panel is not visible, skipping render
+[StudioConsole] SW registered
+[StudioConsole] 🧪 Resize test functions loaded!
+[StudioConsole] Available commands:
+[StudioConsole]   testResizeFromSmallToBig() - Test resize from small to big
+[StudioConsole]   testResizeObserver() - Test ResizeObserver directly
+[StudioConsole]   checkProductionResizeObserver() - Check resize observer status
+[StudioConsole]   runResizeTests() - Run all tests
+[StudioConsole] 🧪 Running Comprehensive Resize Tests
+
+[StudioConsole] 🧪 Resize tests loaded!
+[StudioConsole] Available commands:
+[StudioConsole]   testResizeBehavior() - Test resize functionality
+[StudioConsole]   testCSSConstraints() - Check for CSS constraints
+[StudioConsole]   testFontScaling() - Test font scaling consistency
+[StudioConsole]   runAllResizeTests() - Run all tests
+[StudioConsole] 🧪 Layout tests loaded!
+[StudioConsole] Run testRenderComparison() to compare preview and production renders
+[StudioConsole] Run testScalingBehavior() to check scaling behavior
+[StudioConsole] 📊 Test 1: Initial State
+[StudioConsole]   Production panel: 864 x 486
+[StudioConsole]   Production inner: 864 x 486
+[StudioConsole]   Preview panel: 864 x 486
+[StudioConsole]   Preview inner: 864 x 486
+[StudioConsole]
+📉 Test 2: Resizing to small (400x300)
+[StudioConsole]   Production content: 400 x 300
+[StudioConsole]   Preview content: 400 x 225
+[StudioConsole]
+📈 Test 3: Resizing to medium (600x450)
+[StudioConsole]   Production content: 600 x 450
+[StudioConsole]   Preview content: 600 x 338
+[StudioConsole]
+📊 Test 4: Resizing to large (900x675)
+[StudioConsole]   Production content: 900 x 675
+[StudioConsole]   Preview content: 900 x 506
+[StudioConsole]
+📋 Test 5: Analysis
+[StudioConsole]   Production width progression: 900 → 900 → 900
+[StudioConsole]   Preview width progression: 0 → 0 → 900
+[StudioConsole]   Production scales up correctly: ❌
+[StudioConsole]   Preview scales up correctly: ❌
+[StudioConsole]   Production scales: 0.469, 0.469, 0.469
+[StudioConsole]   Preview scales: 0.000, 0.000, 0.469
+[StudioConsole]
+🔍 Test 6: ResizeObserver Status
+[StudioConsole]   Production has _resizeObserver: false
+[StudioConsole]   Production has _windowResizeHandler: false
+[StudioConsole]   Production panel has _parentResizeObserver: false
+[StudioConsole]
+🔄 Restoring original size...
+[StudioConsole]
+✅ Tests completed!
+[StudioConsole]
+⚠️  ISSUE: Production renderer is NOT resizing from small to big!
+[StudioConsole]    The content width should increase as the container grows.
+[StudioConsole] Module script loaded: ./src/main.js
+[StudioConsole] setupApplication called
+[StudioConsole] Checking readiness - Design: false Composer: true
+[StudioConsole] SW registered
+[StudioConsole] Checking readiness - Design: true Composer: true
+[StudioConsole] TemplateStudio state: { initialized: true, hasHandlers: true }
+[StudioConsole] Application ready, initializing components...
+[StudioConsole] Found guide buttons: 7
+[StudioConsole] Setting up guide button: center
+[StudioConsole] Button state toggled: center true
+[StudioConsole] Button initial state: center true
+[StudioConsole] Setting up guide button: halves
+[StudioConsole] Button state toggled: halves false
+[StudioConsole] Button initial state: halves false
+[StudioConsole] Setting up guide button: thirds
+[StudioConsole] Button state toggled: thirds false
+[StudioConsole] Button initial state: thirds false
+[StudioConsole] Setting up guide button: quarters
+[StudioConsole] Button state toggled: quarters false
+[StudioConsole] Button initial state: quarters false
+[StudioConsole] Setting up guide button: sixths
+[StudioConsole] Button state toggled: sixths false
+[StudioConsole] Button initial state: sixths false
+[StudioConsole] Setting up guide button: eighths
+[StudioConsole] Button initial state: eighths false
+[StudioConsole] Button state toggled: eighths false
+[StudioConsole] Setting up guide button: margin
+[StudioConsole] Button state toggled: margin true
+[StudioConsole] Button initial state: margin true
+[StudioConsole] renderGuides called { guideLayer: true, previewGrid: true }
+[StudioConsole] Current guide settings: {
+  "center": true,
+  "halves": false,
+  "thirds": false,
+  "quarters": false,
+  "sixths": false,
+  "eighths": false,
+  "margin": true
+}
+[StudioConsole] Guide dimensions: { width: 864, height: 486 }
+[StudioConsole] Guide line created: vertical at position: 432 with class: guide-line vertical center
+[StudioConsole] Guide line created: horizontal at position: 243 with class: guide-line horizontal center
+[StudioConsole] Guide render complete. Lines added: 2 children now: 9
+[StudioConsole] Production render: parent panel visibility hidden
+[StudioConsole] Panel is not visible, skipping render
+[StudioConsole] 🧪 Resize test functions loaded!
+[StudioConsole] Available commands:
+[StudioConsole]   testResizeFromSmallToBig() - Test resize from small to big
+[StudioConsole]   testResizeObserver() - Test ResizeObserver directly
+[StudioConsole]   checkProductionResizeObserver() - Check resize observer status
+[StudioConsole]   runResizeTests() - Run all tests
+[StudioConsole] 🧪 Running Comprehensive Resize Tests
+
+[StudioConsole] 🧪 Layout tests loaded!
+[StudioConsole] Run testRenderComparison() to compare preview and production renders
+[StudioConsole] Run testScalingBehavior() to check scaling behavior
+[StudioConsole] 🧪 Resize tests loaded!
+[StudioConsole] Available commands:
+[StudioConsole]   testResizeBehavior() - Test resize functionality
+[StudioConsole]   testCSSConstraints() - Check for CSS constraints
+[StudioConsole]   testFontScaling() - Test font scaling consistency
+[StudioConsole]   runAllResizeTests() - Run all tests
+[StudioConsole] renderGuides called { guideLayer: true, previewGrid: true }
+[StudioConsole] Current guide settings: {
+  "center": true,
+  "halves": false,
+  "thirds": false,
+  "quarters": false,
+  "sixths": false,
+  "eighths": false,
+  "margin": true
+}
+[StudioConsole] Guide dimensions: { width: 864, height: 486 }
+[StudioConsole] Guide line created: vertical at position: 432 with class: guide-line vertical center
+[StudioConsole] Guide line created: horizontal at position: 253.8 with class: guide-line horizontal center
+[StudioConsole] Guide render complete. Lines added: 2 children now: 9
+[StudioConsole] 📊 Test 1: Initial State
+[StudioConsole]   Production inner: 864 x 486
+[StudioConsole]   Production panel: 864 x 486
+[StudioConsole]   Preview panel: 864 x 486
+[StudioConsole]   Preview inner: 864 x 486
+[StudioConsole]
+📉 Test 2: Resizing to small (400x300)
+[StudioConsole]   Production content: 400 x 300
+[StudioConsole]   Preview content: 400 x 225
+[StudioConsole]
+📈 Test 3: Resizing to medium (600x450)
+[StudioConsole]   Production content: 600 x 450
+[StudioConsole]   Preview content: 600 x 338
+[StudioConsole]
+📊 Test 4: Resizing to large (900x675)
+[StudioConsole]   Production content: 900 x 675
+[StudioConsole]   Preview content: 900 x 506
+[StudioConsole]
+📋 Test 5: Analysis
+[StudioConsole]   Production width progression: 900 → 900 → 900
+[StudioConsole]   Preview width progression: 0 → 0 → 900
+[StudioConsole]   Production scales up correctly: ❌
+[StudioConsole]   Preview scales up correctly: ❌
+[StudioConsole]   Production scales: 0.469, 0.469, 0.469
+[StudioConsole]   Preview scales: 0.000, 0.000, 0.469
+[StudioConsole]
+🔍 Test 6: ResizeObserver Status
+[StudioConsole]   Production has _resizeObserver: false
+[StudioConsole]   Production has _windowResizeHandler: false
+[StudioConsole]   Production panel has _parentResizeObserver: false
+[StudioConsole]
+🔄 Restoring original size...
+[StudioConsole]
+✅ Tests completed!
+[StudioConsole]
+⚠️  ISSUE: Production renderer is NOT resizing from small to big!
+[StudioConsole]    The content width should increase as the container grows.
+[StudioConsole] Module script loaded: ./src/main.js
+[StudioConsole] setupApplication called
+[StudioConsole] Checking readiness - Design: false Composer: true
+[StudioConsole] SW registered
+[StudioConsole] Checking readiness - Design: true Composer: true
+[StudioConsole] TemplateStudio state: { initialized: true, hasHandlers: true }
+[StudioConsole] Application ready, initializing components...
+[StudioConsole] Found guide buttons: 7
+[StudioConsole] Setting up guide button: center
+[StudioConsole] Button state toggled: center true
+[StudioConsole] Button initial state: center true
+[StudioConsole] Setting up guide button: halves
+[StudioConsole] Button state toggled: halves false
+[StudioConsole] Button initial state: halves false
+[StudioConsole] Setting up guide button: thirds
+[StudioConsole] Button state toggled: thirds false
+[StudioConsole] Button initial state: thirds false
+[StudioConsole] Setting up guide button: quarters
+[StudioConsole] Button state toggled: quarters false
+[StudioConsole] Button initial state: quarters false
+[StudioConsole] Setting up guide button: sixths
+[StudioConsole] Button state toggled: sixths false
+[StudioConsole] Button initial state: sixths false
+[StudioConsole] Setting up guide button: eighths
+[StudioConsole] Button state toggled: eighths false
+[StudioConsole] Button initial state: eighths false
+[StudioConsole] Setting up guide button: margin
+[StudioConsole] Button state toggled: margin true
+[StudioConsole] Button initial state: margin true
+[StudioConsole] renderGuides called { guideLayer: true, previewGrid: true }
+[StudioConsole] Current guide settings: {
+  "center": true,
+  "halves": false,
+  "thirds": false,
+  "quarters": false,
+  "sixths": false,
+  "eighths": false,
+  "margin": true
+}
+[StudioConsole] Guide dimensions: { width: 864, height: 486 }
+[StudioConsole] Guide line created: vertical at position: 432 with class: guide-line vertical center
+[StudioConsole] Guide line created: horizontal at position: 243 with class: guide-line horizontal center
+[StudioConsole] Guide render complete. Lines added: 2 children now: 9
+[StudioConsole] Production render: parent panel visibility hidden
+[StudioConsole] Panel is not visible, skipping render
+[StudioConsole] 🧪 Resize test functions loaded!
+[StudioConsole] 🧪 Running Comprehensive Resize Tests
+
+[StudioConsole] Available commands:
+[StudioConsole]   testResizeFromSmallToBig() - Test resize from small to big
+[StudioConsole]   testResizeObserver() - Test ResizeObserver directly
+[StudioConsole]   checkProductionResizeObserver() - Check resize observer status
+[StudioConsole]   runResizeTests() - Run all tests
+[StudioConsole] 🧪 Resize tests loaded!
+[StudioConsole] Available commands:
+[StudioConsole]   testResizeBehavior() - Test resize functionality
+[StudioConsole]   testCSSConstraints() - Check for CSS constraints
+[StudioConsole]   testFontScaling() - Test font scaling consistency
+[StudioConsole]   runAllResizeTests() - Run all tests
+[StudioConsole] 🧪 Layout tests loaded!
+[StudioConsole] Run testRenderComparison() to compare preview and production renders
+[StudioConsole] Run testScalingBehavior() to check scaling behavior
+[StudioConsole] renderGuides called { guideLayer: true, previewGrid: true }
+[StudioConsole] Current guide settings: {
+  "center": true,
+  "halves": false,
+  "thirds": false,
+  "quarters": false,
+  "sixths": false,
+  "eighths": false,
+  "margin": true
+}
+[StudioConsole] Guide dimensions: { width: 864, height: 486 }
+[StudioConsole] Guide line created: vertical at position: 432 with class: guide-line vertical center
+[StudioConsole] Guide line created: horizontal at position: 253.8 with class: guide-line horizontal center
+[StudioConsole] Guide render complete. Lines added: 2 children now: 9
+[StudioConsole] 📊 Test 1: Initial State
+[StudioConsole]   Production panel: 864 x 486
+[StudioConsole]   Production inner: 864 x 486
+[StudioConsole]   Preview panel: 864 x 486
+[StudioConsole]   Preview inner: 864 x 486
+[StudioConsole]
+📉 Test 2: Resizing to small (400x300)
+[StudioConsole]   Production content: 400 x 300
+[StudioConsole]   Preview content: 400 x 225
+[StudioConsole]
+📈 Test 3: Resizing to medium (600x450)
+[StudioConsole]   Production content: 600 x 450
+[StudioConsole]   Preview content: 600 x 338
+[StudioConsole]
+📊 Test 4: Resizing to large (900x675)
+[StudioConsole]   Production content: 900 x 675
+[StudioConsole]   Preview content: 900 x 506
+[StudioConsole]
+📋 Test 5: Analysis
+[StudioConsole]   Production width progression: 900 → 900 → 900
+[StudioConsole]   Preview width progression: 0 → 0 → 900
+[StudioConsole]   Production scales up correctly: ❌
+[StudioConsole]   Preview scales up correctly: ❌
+[StudioConsole]   Production scales: 0.469, 0.469, 0.469
+[StudioConsole]   Preview scales: 0.000, 0.000, 0.469
+[StudioConsole]
+🔍 Test 6: ResizeObserver Status
+[StudioConsole]   Production has _resizeObserver: false
+[StudioConsole]   Production has _windowResizeHandler: false
+[StudioConsole]   Production panel has _parentResizeObserver: false
+[StudioConsole]
+🔄 Restoring original size...
+[StudioConsole]
+✅ Tests completed!
+[StudioConsole]
+⚠️  ISSUE: Production renderer is NOT resizing from small to big!
+[StudioConsole]    The content width should increase as the container grows.

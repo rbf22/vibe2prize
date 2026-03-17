@@ -1,0 +1,99 @@
+{
+  "id": "accenture",
+  "label": "Accenture",
+  "version": 1,
+  "masterTemplate": "templates/mdx/accenture-master.mdx",
+  "typography": {
+    "heading": "Graphik, \"Segoe UI\", Roboto, Arial, sans-serif",
+    "body": "Graphik, \"Segoe UI\", Roboto, Arial, sans-serif",
+    "roles": {
+      "primary-title": { "fontSize": 16, "lineHeight": 20 },
+      "secondary-title": { "fontSize": 10, "lineHeight": 12 },
+      "section-title": { "fontSize": 10, "lineHeight": 12 },
+      "logo": { "fontSize": 6, "lineHeight": 8 },
+      "footer": { "fontSize": 9, "lineHeight": 11 }
+    }
+  },
+  "copy": {
+    "footer": "Copyright © 2026 Accenture. All rights reserved. Accenture Confidential."
+  },
+  "assets": {
+    "logo": {
+      "dark": "templates/accenture/assets/dark/logo.svg",
+      "light": "templates/accenture/assets/light/logo.svg"
+    }
+  },
+  "editorialThemes": [
+    "Strategy & Consulting",
+    "Technology",
+    "Operations",
+    "Digital Transformation",
+    "Cloud & Infrastructure"
+  ],
+  "defaultTheme": "light",
+  "variants": {
+    "dark": {
+      "label": "Deep Violet",
+      "cssVars": {
+        "--bg": "linear-gradient(120deg, #000000 0%, #1a0033 100%)",
+        "--panel": "rgba(26, 0, 51, 0.85)",
+        "--panel-border": "rgba(161, 0, 255, 0.2)",
+        "--primary": "#A100FF",
+        "--accent": "#00DCFF",
+        "--muted": "rgba(255, 255, 255, 0.7)",
+        "--text-primary": "#FFFFFF",
+        "--text-muted": "rgba(255, 255, 255, 0.72)",
+        "--grid-line": "rgba(161, 0, 255, 0.2)",
+        "--indicator": "#A100FF",
+        "--indicator-soft": "rgba(161, 0, 255, 0.35)",
+        "--guide-line": "rgba(161, 0, 255, 0.35)",
+        "--guide-accent": "#00DCFF",
+        "--guide-label": "rgba(26, 0, 51, 0.7)",
+        "--font-heading": "Graphik, \"Segoe UI\", Roboto, Arial, sans-serif",
+        "--font-body": "Graphik, \"Segoe UI\", Roboto, Arial, sans-serif"
+      },
+      "tokens": {
+        "palette": {
+          "violet": "#A100FF",
+          "neonBlue": "#00DCFF",
+          "black": "#000000",
+          "white": "#FFFFFF",
+          "deepPurple": "#1a0033"
+        }
+      },
+      "assets": {
+        "backgroundNoise": "radial-gradient(circle at 20% 20%, rgba(161, 0, 255, 0.08), transparent 55%)"
+      }
+    },
+    "light": {
+      "label": "Digital White",
+      "cssVars": {
+        "--bg": "linear-gradient(120deg, #FFFFFF 0%, #F8F4FF 100%)",
+        "--panel": "rgba(255, 255, 255, 0.92)",
+        "--panel-border": "rgba(161, 0, 255, 0.1)",
+        "--primary": "#A100FF",
+        "--accent": "#00DCFF",
+        "--muted": "rgba(0, 0, 0, 0.65)",
+        "--text-primary": "#000000",
+        "--text-muted": "rgba(0, 0, 0, 0.7)",
+        "--grid-line": "rgba(161, 0, 255, 0.15)",
+        "--indicator": "#A100FF",
+        "--indicator-soft": "rgba(161, 0, 255, 0.2)",
+        "--guide-line": "rgba(161, 0, 255, 0.2)",
+        "--guide-accent": "#A100FF",
+        "--guide-label": "rgba(255, 255, 255, 0.9)",
+        "--font-heading": "Graphik, \"Segoe UI\", Roboto, Arial, sans-serif",
+        "--font-body": "Graphik, \"Segoe UI\", Roboto, Arial, sans-serif"
+      },
+      "tokens": {
+        "palette": {
+          "violet": "#A100FF",
+          "neonBlue": "#00DCFF",
+          "black": "#000000",
+          "white": "#FFFFFF",
+          "softPurple": "#F8F4FF"
+        }
+      }
+    }
+  }
+}

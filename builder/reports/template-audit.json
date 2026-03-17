@@ -38,7 +38,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-card-grid-services.mdx",
+    "file": "templates/mdx/accenture-card-grid-services.mdx",
     "title": "Service Portfolio: Comprehensive Solutions",
     "layoutTemplate": "card-grid",
     "componentShape": "string-array",
@@ -79,7 +79,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-case-study.mdx",
+    "file": "templates/mdx/accenture-case-study.mdx",
     "title": "Case Study: Healthcare Digital Transformation",
     "layoutTemplate": "matrix-2x2",
     "componentShape": "string-array",
@@ -118,7 +118,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-circular-process.mdx",
+    "file": "templates/mdx/accenture-circular-process.mdx",
     "title": "Continuous Improvement: Circular Process Framework",
     "layoutTemplate": "circular-process",
     "componentShape": "string-array",
@@ -162,7 +162,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-client-testimonial.mdx",
+    "file": "templates/mdx/accenture-client-testimonial.mdx",
     "title": "Client Success: Financial Services Transformation",
     "layoutTemplate": "dual-panel",
     "componentShape": "string-array",
@@ -201,7 +201,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-comparison-before-after.mdx",
+    "file": "templates/mdx/accenture-comparison-before-after.mdx",
     "title": "Digital Transformation: Before vs After",
     "layoutTemplate": "comparison-layout",
     "componentShape": "string-array",
@@ -239,7 +239,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-dashboard-overview.mdx",
+    "file": "templates/mdx/accenture-dashboard-overview.mdx",
     "title": "Executive Dashboard: Performance Overview",
     "layoutTemplate": "dashboard",
     "componentShape": "string-array",
@@ -278,7 +278,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-data-viz-performance.mdx",
+    "file": "templates/mdx/accenture-data-viz-performance.mdx",
     "title": "Performance Analytics: Data-Driven Insights",
     "layoutTemplate": "data-viz",
     "componentShape": "string-array",
@@ -317,7 +317,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-executive-summary.mdx",
+    "file": "templates/mdx/accenture-executive-summary.mdx",
     "title": "Executive Summary: Digital Transformation Strategy",
     "layoutTemplate": "presentation-grid",
     "componentShape": "string-array",
@@ -355,7 +355,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-faq-digital-transformation.mdx",
+    "file": "templates/mdx/accenture-faq-digital-transformation.mdx",
     "title": "Digital Transformation FAQ",
     "layoutTemplate": "faq-layout",
     "componentShape": "string-array",
@@ -393,7 +393,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-feature-showcase-ai.mdx",
+    "file": "templates/mdx/accenture-feature-showcase-ai.mdx",
     "title": "AI Platform: Intelligent Automation",
     "layoutTemplate": "feature-showcase",
     "componentShape": "string-array",
@@ -431,7 +431,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-flexible-circle-3-items.mdx",
+    "file": "templates/mdx/accenture-flexible-circle-3-items.mdx",
     "title": "Strategic Pillars: 3 Core Focus Areas",
     "layoutTemplate": "flexible-circle",
     "componentShape": "string-array",
@@ -470,7 +470,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-flexible-circle-5-items.mdx",
+    "file": "templates/mdx/accenture-flexible-circle-5-items.mdx",
     "title": "Digital Transformation: 5 Key Stages",
     "layoutTemplate": "flexible-circle",
     "componentShape": "string-array",
@@ -511,7 +511,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-flexible-circle-8-items.mdx",
+    "file": "templates/mdx/accenture-flexible-circle-8-items.mdx",
     "title": "Enterprise Excellence: 8 Critical Dimensions",
     "layoutTemplate": "flexible-circle",
     "componentShape": "string-array",
@@ -555,7 +555,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-innovation-cycle.mdx",
+    "file": "templates/mdx/accenture-innovation-cycle.mdx",
     "title": "Innovation Lifecycle: From Idea to Impact",
     "layoutTemplate": "circular-process",
     "componentShape": "string-array",
@@ -599,7 +599,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-innovation-showcase.mdx",
+    "file": "templates/mdx/accenture-innovation-showcase.mdx",
     "title": "Innovation Showcase: Emerging Technologies",
     "layoutTemplate": "matrix-3x3",
     "componentShape": "string-array",
@@ -643,7 +643,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-innovation-timeline.mdx",
+    "file": "templates/mdx/accenture-innovation-timeline.mdx",
     "title": "Innovation Timeline: Technology Evolution",
     "layoutTemplate": "flexible-timeline",
     "componentShape": "string-array",
@@ -691,7 +691,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-magazine-feature.mdx",
+    "file": "templates/mdx/accenture-magazine-feature.mdx",
     "title": "Innovation Spotlight: AI-Powered Engineering",
     "layoutTemplate": "dual-panel",
     "componentShape": "string-array",
@@ -730,7 +730,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-metrics-dashboard.mdx",
+    "file": "templates/mdx/accenture-metrics-dashboard.mdx",
     "title": "Performance Metrics: Q4 2023 Dashboard",
     "layoutTemplate": "scorecard-layout",
     "componentShape": "string-array",
@@ -769,8 +769,8 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-milestone-timeline.mdx",
-    "title": "Company Milestones: EPAM Growth Journey",
+    "file": "templates/mdx/accenture-milestone-timeline.mdx",
+    "title": "Company Milestones: Accenture Growth Journey",
     "layoutTemplate": "flexible-timeline",
     "componentShape": "string-array",
     "componentCount": 3,
@@ -821,7 +821,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-pricing-services.mdx",
+    "file": "templates/mdx/accenture-pricing-services.mdx",
     "title": "Service Pricing: Flexible Solutions",
     "layoutTemplate": "pricing-table",
     "componentShape": "string-array",
@@ -861,7 +861,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-process-flow-agile.mdx",
+    "file": "templates/mdx/accenture-process-flow-agile.mdx",
     "title": "Agile Development Process: 5-Step Workflow",
     "layoutTemplate": "process-flow",
     "componentShape": "string-array",
@@ -902,7 +902,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-process-workflow.mdx",
+    "file": "templates/mdx/accenture-process-workflow.mdx",
     "title": "Process Innovation: Agile Delivery Framework",
     "layoutTemplate": "triple-panel",
     "componentShape": "string-array",
@@ -940,7 +940,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-project-timeline.mdx",
+    "file": "templates/mdx/accenture-project-timeline.mdx",
     "title": "Project Timeline: Digital Transformation Journey",
     "layoutTemplate": "flexible-timeline",
     "componentShape": "string-array",
@@ -984,7 +984,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-quote-leadership.mdx",
+    "file": "templates/mdx/accenture-quote-leadership.mdx",
     "title": "Leadership Vision: Future-Forward Innovation",
     "layoutTemplate": "quote-layout",
     "componentShape": "string-array",
@@ -1023,7 +1023,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-research-findings.mdx",
+    "file": "templates/mdx/accenture-research-findings.mdx",
     "title": "Research Insights: Future of Work Study",
     "layoutTemplate": "presentation-grid",
     "componentShape": "string-array",
@@ -1061,7 +1061,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-slide-title-executive.mdx",
+    "file": "templates/mdx/accenture-slide-title-executive.mdx",
     "title": "Executive Summit 2024: Innovation & Growth",
     "layoutTemplate": "slide-title",
     "componentShape": "string-array",
@@ -1098,7 +1098,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-slide-title-main.mdx",
+    "file": "templates/mdx/accenture-slide-title-main.mdx",
     "title": "Digital Transformation: The Future of Business",
     "layoutTemplate": "slide-title",
     "componentShape": "string-array",
@@ -1136,7 +1136,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-slide-title-workshop.mdx",
+    "file": "templates/mdx/accenture-slide-title-workshop.mdx",
     "title": "AI Workshop: Practical Implementation Strategies",
     "layoutTemplate": "slide-title",
     "componentShape": "string-array",
@@ -1174,7 +1174,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-split-screen-solutions.mdx",
+    "file": "templates/mdx/accenture-split-screen-solutions.mdx",
     "title": "Technology Solutions: Cloud vs On-Premise",
     "layoutTemplate": "split-screen",
     "componentShape": "string-array",
@@ -1213,7 +1213,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-strategic-roadmap.mdx",
+    "file": "templates/mdx/accenture-strategic-roadmap.mdx",
     "title": "Strategic Roadmap: 2024-2026 Vision",
     "layoutTemplate": "presentation-grid",
     "componentShape": "string-array",
@@ -1251,7 +1251,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-tabbed-content-platforms.mdx",
+    "file": "templates/mdx/accenture-tabbed-content-platforms.mdx",
     "title": "Platform Solutions: Multi-Service Integration",
     "layoutTemplate": "tabbed-content",
     "componentShape": "string-array",
@@ -1291,7 +1291,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-team-leadership.mdx",
+    "file": "templates/mdx/accenture-team-leadership.mdx",
     "title": "Leadership Team: Expertise & Vision",
     "layoutTemplate": "team-layout",
     "componentShape": "string-array",
@@ -1330,7 +1330,7 @@
     ]
   },
   {
-    "file": "templates/mdx/epam-technical-insights.mdx",
+    "file": "templates/mdx/accenture-technical-insights.mdx",
     "title": "Technical Insights: Cloud Architecture Evolution",
     "layoutTemplate": "template-sidebar",
     "componentShape": "string-array",

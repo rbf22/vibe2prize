@@ -88,9 +88,9 @@ function buildRegionCopyMap() {
     ['headline', 'Invent the future by disrupting yourself first'],
     [
       'narrative',
-      'EPAM helps enterprises challenge habits, discover non-obvious leverage, and move faster than the market. We deliver multidisciplinary squads, engineered platforms, and AI copilots that translate intent into measurable value across every customer and employee touchpoint.'
+      'Accenture helps enterprises challenge habits, discover non-obvious leverage, and move faster than the market. We deliver multidisciplinary squads, engineered platforms, and AI copilots that translate intent into measurable value across every customer and employee touchpoint.'
     ],
-    ['footer', 'Internal / EPAM Continuum']
+    ['footer', 'Internal / Accenture Confidential']
   ];
   return new Map(copyEntries);
 }

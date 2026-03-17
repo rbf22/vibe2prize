@@ -453,7 +453,7 @@ export class LLMGridPlacer {
     const semanticAreas = getTemplateSemanticAreas(targetTemplate);
     
     return `
-You are a slide layout expert for EPAM presentations.
+You are a slide layout expert for professional presentations.
 
 TASK: Analyze the slide content and suggest optimal grid placement.
 

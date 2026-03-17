@@ -1,6 +1,6 @@
 # Vibe2Prize Slide System
 
-This repo contains the EPAM "Vibe-to-Enterprise" deck plus the tools used to design grids, lint content, and generate static presentation bundles. The project has been reorganized into four focused areas:
+This repo contains the Accenture "Vibe-to-Enterprise" deck plus the tools used to design grids, lint content, and generate static presentation bundles. The project has been reorganized into four focused areas:
 
 | Directory | Purpose |
 |-----------|---------|
@@ -20,7 +20,7 @@ npm run lint:slides    # Validate slide configs and MDX frontmatter/content
 npm run analyze:content# Generate semantic/content analysis reports
 ```
 
-Single-slide linting is now supported: `bun run lint:slides -- --file=mdx/epam-quote-leadership.mdx`. You can pass the flag multiple times or provide comma-separated values; paths are resolved relative to `templates/`.
+Single-slide linting is now supported: `bun run lint:slides -- --file=mdx/accenture-quote-leadership.mdx`. You can pass the flag multiple times or provide comma-separated values; paths are resolved relative to `templates/`.
 
 The linter now surfaces the same semantic/visual overflow diagnostics as Template Studio. Pass `--visual-overflow` (or the short `--visual`) to enable approximate pixel-overflow checks from Node, mirroring the preview badges.
 

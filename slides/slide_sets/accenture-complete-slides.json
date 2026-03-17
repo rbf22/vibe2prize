@@ -1,112 +1,112 @@
 {
   "slides": [
     {
-      "file": "mdx/epam-slide-title-main.mdx",
-      "title": "EPAM Digital Transformation Showcase",
+      "file": "mdx/accenture-slide-title-main.mdx",
+      "title": "Accenture Digital Transformation Showcase",
       "maxWords": 150
     },
     {
-      "file": "mdx/epam-executive-summary.mdx",
+      "file": "mdx/accenture-executive-summary.mdx",
       "title": "Executive Summary",
       "maxWords": 300
     },
     {
-      "file": "mdx/epam-innovation-showcase.mdx",
+      "file": "mdx/accenture-innovation-showcase.mdx",
       "title": "Innovation Showcase",
       "maxWords": 400
     },
     {
-      "file": "mdx/epam-strategic-roadmap.mdx",
+      "file": "mdx/accenture-strategic-roadmap.mdx",
       "title": "Strategic Roadmap",
       "maxWords": 350
     },
     {
-      "file": "mdx/epam-milestone-timeline.mdx",
+      "file": "mdx/accenture-milestone-timeline.mdx",
       "title": "Project Milestones",
       "maxWords": 400
     },
     {
-      "file": "mdx/epam-card-grid-services.mdx",
+      "file": "mdx/accenture-card-grid-services.mdx",
       "title": "Service Portfolio",
       "maxWords": 350
     },
     {
-      "file": "mdx/epam-feature-showcase-ai.mdx",
+      "file": "mdx/accenture-feature-showcase-ai.mdx",
       "title": "AI & Advanced Analytics",
       "maxWords": 300
     },
     {
-      "file": "mdx/epam-tabbed-content-platforms.mdx",
+      "file": "mdx/accenture-tabbed-content-platforms.mdx",
       "title": "Technology Platforms",
       "maxWords": 400
     },
     {
-      "file": "mdx/epam-process-workflow.mdx",
+      "file": "mdx/accenture-process-workflow.mdx",
       "title": "Implementation Workflow",
       "maxWords": 350
     },
     {
-      "file": "mdx/epam-circular-process.mdx",
+      "file": "mdx/accenture-circular-process.mdx",
       "title": "Continuous Improvement Cycle",
       "maxWords": 350
     },
     {
-      "file": "mdx/epam-dashboard-overview.mdx",
+      "file": "mdx/accenture-dashboard-overview.mdx",
       "title": "Performance Dashboard",
       "maxWords": 300
     },
     {
-      "file": "mdx/epam-metrics-dashboard.mdx",
+      "file": "mdx/accenture-metrics-dashboard.mdx",
       "title": "Key Metrics & KPIs",
       "maxWords": 350
     },
     {
-      "file": "mdx/epam-data-viz-performance.mdx",
+      "file": "mdx/accenture-data-viz-performance.mdx",
       "title": "Performance Analytics",
       "maxWords": 300
     },
     {
-      "file": "mdx/epam-case-study.mdx",
+      "file": "mdx/accenture-case-study.mdx",
       "title": "Success Case Study",
       "maxWords": 400
     },
     {
-      "file": "mdx/epam-client-testimonial.mdx",
+      "file": "mdx/accenture-client-testimonial.mdx",
       "title": "Client Success Stories",
       "maxWords": 300
     },
     {
-      "file": "mdx/epam-team-leadership.mdx",
+      "file": "mdx/accenture-team-leadership.mdx",
       "title": "Leadership Team",
       "maxWords": 250
     },
     {
-      "file": "mdx/epam-technical-insights.mdx",
+      "file": "mdx/accenture-technical-insights.mdx",
       "title": "Technical Architecture",
       "maxWords": 350
     },
     {
-      "file": "mdx/epam-pricing-services.mdx",
+      "file": "mdx/accenture-pricing-services.mdx",
       "title": "Investment & ROI",
       "maxWords": 300
     },
     {
-      "file": "mdx/epam-comparison-before-after.mdx",
+      "file": "mdx/accenture-comparison-before-after.mdx",
       "title": "Transformation Results",
       "maxWords": 300
     },
     {
-      "file": "mdx/epam-faq-digital-transformation.mdx",
+      "file": "mdx/accenture-faq-digital-transformation.mdx",
       "title": "Frequently Asked Questions",
       "maxWords": 400
     },
     {
-      "file": "mdx/epam-quote-leadership.mdx",
+      "file": "mdx/accenture-quote-leadership.mdx",
       "title": "Leadership Vision",
       "maxWords": 200
     },
     {
-      "file": "mdx/epam-slide-title-executive.mdx",
+      "file": "mdx/accenture-slide-title-executive.mdx",
       "title": "Next Steps & Partnership",
       "maxWords": 150
     }

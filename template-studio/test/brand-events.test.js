@@ -17,7 +17,7 @@ describe('emitBrandStateChanged', () => {
   });
 
   it('dispatches CustomEvent with brand detail when available', async () => {
-    const brandState = { id: 'epam', variant: 'dark' };
+    const brandState = { id: 'accenture', variant: 'dark' };
     const detail = await new Promise((resolve) => {
       document.addEventListener('brandStateChanged', (event) => {
         resolve(event.detail);
@@ -32,7 +32,7 @@ describe('emitBrandStateChanged', () => {
     global.window.CustomEvent = undefined;
     global.CustomEvent = undefined;
 
-    const brandState = { id: 'epam', variant: 'light' };
+    const brandState = { id: 'accenture', variant: 'light' };
     const detail = await new Promise((resolve) => {
       document.addEventListener('brandStateChanged', (event) => {
         resolve(event.detail);

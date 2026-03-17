@@ -25,7 +25,7 @@ const ROLE_COPY = {
   'context-info': 'Event or context summary.',
   'logo': '',
   'page-number': '',
-  'footer': 'EPAM Continuum Proprietary and Confidential',
+  'footer': 'Copyright © 2026 Accenture. All rights reserved. Accenture Confidential.',
   'section-title': 'Section heading',
   'data-table': '',
   'visual-aid': 'Placeholder description',

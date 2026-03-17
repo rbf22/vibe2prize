@@ -360,16 +360,16 @@ export const GridPanel = ({
   area, 
   className = '', 
   children,
-  epamVariant = 'neutral',
+  variant = 'neutral',
   ...props 
 }) =>
   React.createElement(
     'div', 
     { 
-      className: `panel grid-panel epam-${epamVariant} ${className}`.trim(),
+      className: `panel grid-panel brand-${variant} ${className}`.trim(),
       style: area ? { gridArea: area } : {},
       'data-area': area,
-      'data-epam-variant': epamVariant,
+      'data-variant': variant,
       ...props
     },
     eyebrow ? React.createElement('div', { className: 'eyebrow' }, eyebrow) : null,
@@ -417,22 +417,22 @@ function isGridAreaElement(node) {
   return React.isValidElement(node) && node.type && node.type[GRID_AREA_SIGNATURE];
 }
 
-// EPAM Grid Element - Styled content region with EPAM branding
-export const EPAMGridElement = ({ 
+// Branded Grid Element - Styled content region
+export const BrandedGridElement = ({
   variant = 'neutral',
   contentType = 'supporting-text',
   className = '',
   children,
   ...props 
 }) => {
-  const variantClass = `epam-${variant}`;
+  const variantClass = `brand-${variant}`;
   const contentTypeClass = `grid-${contentType.replace('-', '')}`;
   
   return React.createElement(
     'div',
     {
       className: `grid-region ${variantClass} ${contentTypeClass} ${className}`.trim(),
-      'data-epam-variant': variant,
+      'data-variant': variant,
       'data-content-type': contentType,
       ...props
     },

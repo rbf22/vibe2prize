@@ -113,7 +113,7 @@ Client understands this is:
 
 ### Attendees:
 - Client: [Names, Roles]
-- EPAM: [Names, Roles]
+- Accenture: [Names, Roles]
 
 ### Demonstrated Flows:
 1. [Flow name] - [Accepted/Rejected/Modified]
@@ -601,7 +601,7 @@ Total Effort = Base Development + (Technical Debt Remediation × Complexity Fact
 
 ### Option A: Fixed Price
 - Based on estimated hours + margin
-- Risk: EPAM absorbs overruns
+- Risk: Accenture absorbs overruns
 - Appropriate when: Requirements are clear (prototype validated)
 
 ### Option B: Time & Materials with Cap
@@ -631,7 +631,7 @@ From validated prototype: X × 0.4-0.6 (40-60% of traditional)
 ## SOW Section: Deliverables from Vibe-Coded Prototype
 
 ### Background
-EPAM developed a functional prototype during the pre-sales engagement 
+Accenture developed a functional prototype during the pre-sales engagement
 that has been validated by [Client] stakeholders. This SOW covers 
 the productionization of that prototype.
 

@@ -184,7 +184,7 @@ describe('MDX Exporter', () => {
       columnSize: '1fr',
       rowSize: '1fr',
       gap: '1rem',
-      brand: { id: 'epam', variant: 'light' },
+      brand: { id: 'accenture', variant: 'light' },
       boxes: [
         {
           id: 'box-1',
@@ -204,8 +204,8 @@ describe('MDX Exporter', () => {
     };
 
     const result = buildMdxSource(state);
-    assert.deepStrictEqual(result.frontmatter.brand, { id: 'epam', variant: 'light' });
-    assert(result.source.includes('brand:\n  id: "epam"\n  variant: "light"'));
+    assert.deepStrictEqual(result.frontmatter.brand, { id: 'accenture', variant: 'light' });
+    assert(result.source.includes('brand:\n  id: "accenture"\n  variant: "light"'));
   });
 
   it('should validate generated frontmatter against shared schema', () => {

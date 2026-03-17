@@ -360,7 +360,7 @@ Options:
 
 Examples:
   # Analyze single slide
-  node builder/content-analyzer.js --file templates/mdx/epam-executive-summary.mdx
+  node builder/content-analyzer.js --file templates/mdx/accenture-executive-summary.mdx
 
   # Analyze all slides with template suggestions
   node builder/content-analyzer.js --directory templates/mdx --template dual-panel

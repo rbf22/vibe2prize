@@ -8,7 +8,7 @@ import { validateFrontmatter } from '../core/mdx/schema.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const REPO_ROOT = path.resolve(__dirname, '..');
-const BASELINE_PATH = path.resolve(REPO_ROOT, 'EPAM Template.mdx');
+const BASELINE_PATH = path.resolve(REPO_ROOT, 'Accenture Template.mdx');
 const TEMPLATES_DIR = path.resolve(REPO_ROOT, 'templates/mdx');
 const REPORT_DIR = path.resolve(REPO_ROOT, 'builder', 'reports');
 const REPORT_PATH = path.join(REPORT_DIR, 'template-audit.json');

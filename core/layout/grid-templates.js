@@ -1,5 +1,5 @@
 // Grid Template Registry - Generated layouts using CSS Grid Designer patterns
-// Each template maintains EPAM styling while providing structured grid layouts
+// Each template maintains Accenture styling while providing structured grid layouts
 // Enhanced with semantic area mappings and content constraints
 
 import { semanticVocabulary } from './semantic-vocabulary.js';

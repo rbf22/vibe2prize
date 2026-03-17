@@ -276,7 +276,7 @@ regions:
     area: header
     role: hero
 brand:
-  id: epam
+  id: accenture
   variant: dark
 ---
 
@@ -286,7 +286,7 @@ brand:
     const result = await importMDXContent(mdxContent);
     assert(result.success);
     applyFrontmatterToState(result.frontmatter);
-    assert.deepStrictEqual(state.brand, { id: 'epam', variant: 'dark' });
+    assert.deepStrictEqual(state.brand, { id: 'accenture', variant: 'dark' });
   });
 
   it('should apply pagination and preview flags when DOM inputs exist', async () => {

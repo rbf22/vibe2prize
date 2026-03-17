@@ -1,5 +1,5 @@
 ---
-title: "Grid Blueprint: Narrative Slide"
+title: "Cssgrid Template"
 maxWords: 280
 phase: "draft"
 templateSettings:
@@ -12,32 +12,30 @@ templateSettings:
   gap: "0.5rem"
 layout:
   type: "grid-designer"
-  template: "Grid Blueprint: Narrative Slide"
+  template: "Cssgrid Template"
   components:
     - type: "GridArea"
-      id: "section-label"
+      id: "box-1772058884696-pi8duifqp"
       role: "section-title"
-      area: "section-label"
+      area: "section-title"
     - type: "GridArea"
-      id: "hero-title"
+      id: "box-1772071011383-yo94o8r0s"
       role: "primary-title"
-      area: "hero-title"
-      maxWords: 18
+      area: "primary-title"
     - type: "GridArea"
-      id: "hero-subtitle"
+      id: "box-1772071044516-yyezx4cfz"
       role: "secondary-title"
-      area: "hero-subtitle"
-      maxWords: 28
+      area: "secondary-title"
     - type: "GridArea"
-      id: "brand-logo"
+      id: "box-1772071056583-97wzq0wkd"
       role: "logo"
       area: "logo"
     - type: "GridArea"
-      id: "page-number"
+      id: "box-1772071064983-v9d1n2zdx"
       role: "page-number"
       area: "page-number"
     - type: "GridArea"
-      id: "footer"
+      id: "box-1772071078466-swm6wtm18"
       role: "footer"
       area: "footer"
   rows: 45
@@ -49,54 +47,52 @@ exclusions:
   left: 1
   right: 1
 brand:
-  id: "epam"
+  id: "accenture"
   variant: "dark"
 regions:
-  - id: "section-label"
-    area: "section-label"
+  - id: "box-1772058884696-pi8duifqp"
+    area: "section-title"
     role: "section-title"
     required: false
     inputType: "text"
     type: "section-title"
     fieldTypes:
       - "section-title"
-    llmHint: "Eyebrow or track name anchoring the narrative."
+    llmHint: "Heading that introduces a new section or content block within the slide Key traits: transitional, organizational, informative."
     grid:
       x: 1
       y: 1
-      width: 26
+      width: 39
       height: 1
-  - id: "hero-title"
-    area: "hero-title"
+  - id: "box-1772071011383-yo94o8r0s"
+    area: "primary-title"
     role: "primary-title"
     required: true
     inputType: "text"
     type: "primary-title"
     fieldTypes:
       - "primary-title"
-    maxWords: 18
-    llmHint: "Primary narrative headline."
+    llmHint: "Main heading of the slide, most important text element Key traits: short, impactful, top-level."
     grid:
       x: 1
       y: 2
       width: 52
       height: 2
-  - id: "hero-subtitle"
-    area: "hero-subtitle"
+  - id: "box-1772071044516-yyezx4cfz"
+    area: "secondary-title"
     role: "secondary-title"
     required: false
     inputType: "text"
     type: "secondary-title"
     fieldTypes:
       - "secondary-title"
-    maxWords: 28
-    llmHint: "Subtitle that frames the story."
+    llmHint: "Secondary heading that provides context or elaboration Key traits: descriptive, supporting, contextual."
     grid:
       x: 1
       y: 4
       width: 52
       height: 1
-  - id: "brand-logo"
+  - id: "box-1772071056583-97wzq0wkd"
     area: "logo"
     role: "logo"
     required: true
@@ -104,13 +100,13 @@ regions:
     type: "logo"
     fieldTypes:
       - "logo"
-    llmHint: "Brand identifier or watermark."
+    llmHint: "Represents a company or product identity element displayed on the slide Key traits: brand, visual, compact."
     grid:
-      x: 3
-      y: 43
-      width: 10
-      height: 1
-  - id: "page-number"
+      x: 1
+      y: 42
+      width: 8
+      height: 2
+  - id: "box-1772071064983-v9d1n2zdx"
     area: "page-number"
     role: "page-number"
     required: true
@@ -118,13 +114,13 @@ regions:
     type: "page-number"
     fieldTypes:
       - "page-number"
-    llmHint: "Slide number indicator."
+    llmHint: "Numeric indicator showing the slide position in the deck Key traits: utility, compact, consistent."
     grid:
-      x: 68
-      y: 43
-      width: 9
-      height: 1
-  - id: "footer"
+      x: 71
+      y: 42
+      width: 8
+      height: 2
+  - id: "box-1772071078466-swm6wtm18"
     area: "footer"
     role: "footer"
     required: true
@@ -132,24 +128,24 @@ regions:
     type: "footer"
     fieldTypes:
       - "footer"
-    llmHint: "Legal copy or confidentiality notice."
+    llmHint: "Bottom strip of the slide containing navigational or legal info Key traits: persistent, structural, low-contrast."
     grid:
-      x: 22
+      x: 27
       y: 43
-      width: 32
+      width: 26
       height: 1
 ---
 
 import { GridDesigner, GridArea, ContentRenderer } from "../../core/layout/components.js";
 
-<GridDesigner template="Grid Blueprint: Narrative Slide">
-  <GridArea area="section-label" contentType="section-title" importance="supporting">
+<GridDesigner template="Cssgrid Template">
+  <GridArea area="section-title" contentType="section-title" importance="supporting">
     <ContentRenderer type="section-title" content={""} />
   </GridArea>
-  <GridArea area="hero-title" contentType="primary-title" importance="critical">
+  <GridArea area="primary-title" contentType="primary-title" importance="critical">
     <ContentRenderer type="primary-title" content={""} />
   </GridArea>
-  <GridArea area="hero-subtitle" contentType="secondary-title" importance="supporting">
+  <GridArea area="secondary-title" contentType="secondary-title" importance="supporting">
     <ContentRenderer type="secondary-title" content={""} />
   </GridArea>
   <GridArea area="logo" contentType="logo" importance="critical">

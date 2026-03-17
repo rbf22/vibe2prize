@@ -1,41 +1,41 @@
-# EPAM Slide Templates Collection
+# Accenture Slide Templates Collection
 
 ## Overview
 
-This collection contains 10 professionally designed EPAM slide templates using the CSS Grid Designer system. Each template follows book/magazine style layouts with narrative text blocks and is optimized for different presentation contexts.
+This collection contains 10 professionally designed Accenture slide templates using the CSS Grid Designer system. Each template follows book/magazine style layouts with narrative text blocks and is optimized for different presentation contexts.
 
 ## Template Categories
 
 ### 🏢 **Executive & Strategic**
-- **`epam-executive-summary.mdx`** - Executive overview with key metrics
-- **`epam-strategic-roadmap.mdx`** - Strategic vision and planning timeline
+- **`accenture-executive-summary.mdx`** - Executive overview with key metrics
+- **`accenture-strategic-roadmap.mdx`** - Strategic vision and planning timeline
 
 ### 📰 **Magazine & Feature**
-- **`epam-magazine-feature.mdx`** - Magazine-style feature story layout
-- **`epam-research-findings.mdx`** - Research insights presentation
+- **`accenture-magazine-feature.mdx`** - Magazine-style feature story layout
+- **`accenture-research-findings.mdx`** - Research insights presentation
 
 ### 📊 **Case Studies & Results**
-- **`epam-case-study.mdx`** - 2x2 matrix case study format
-- **`epam-client-testimonial.mdx`** - Client success story with quotes
-- **`epam-metrics-dashboard.mdx`** - Performance metrics dashboard
+- **`accenture-case-study.mdx`** - 2x2 matrix case study format
+- **`accenture-client-testimonial.mdx`** - Client success story with quotes
+- **`accenture-metrics-dashboard.mdx`** - Performance metrics dashboard
 
 ### 🔧 **Technical & Process**
-- **`epam-technical-insights.mdx`** - Technical deep-dive with sidebar
-- **`epam-process-workflow.mdx`** - Three-panel process explanation
+- **`accenture-technical-insights.mdx`** - Technical deep-dive with sidebar
+- **`accenture-process-workflow.mdx`** - Three-panel process explanation
 
 ### 🚀 **Innovation Showcase**
-- **`epam-innovation-showcase.mdx`** - 3x3 grid technology showcase
+- **`accenture-innovation-showcase.mdx`** - 3x3 grid technology showcase
 
 ## Key Features
 
 ### ✅ **Book/Magazine Style Elements**
 - **Narrative Text Blocks**: Each template includes substantial narrative content (150-200+ words)
-- **Professional Typography**: EPAM brand fonts and hierarchy
+- **Professional Typography**: Accenture brand fonts and hierarchy
 - **Balanced Layouts**: Magazine-style content distribution
 - **Visual Storytelling**: Strategic use of data and lists alongside narrative
 
 ### 🎨 **Design Consistency**
-- **EPAM Branding**: Consistent color schemes and logo placement
+- **Accenture Branding**: Consistent color schemes and logo placement
 - **Responsive Design**: Optimized for desktop, tablet, and mobile
 - **Semantic Structure**: Proper content classification for AI optimization
 - **Accessibility**: WCAG compliant color contrasts and structure
@@ -51,7 +51,7 @@ This collection contains 10 professionally designed EPAM slide templates using t
 ### **Quick Start**
 ```bash
 # Copy a template into the repo templates collection
-cp templates/mdx/epam-executive-summary.mdx templates/mdx/my-new-slide.mdx
+cp templates/mdx/accenture-executive-summary.mdx templates/mdx/my-new-slide.mdx
 
 # Edit the content while maintaining the structure
 # Build and test
@@ -87,7 +87,7 @@ tags: ["relevant", "tags"]
 - **Minimum**: 150 words of narrative content
 - **Style**: Professional, engaging, magazine-quality writing
 - **Structure**: Clear paragraphs with logical flow
-- **Tone**: EPAM brand voice - professional, innovative, confident
+- **Tone**: Accenture brand voice - professional, innovative, confident
 
 #### **Content Types**
 - **`primary-title`**: Main heading (critical importance)
@@ -119,7 +119,7 @@ node builder/content-analyzer.js --file templates/mdx/my-slide.mdx --migrate-fro
 ```
 
 ### **Brand Customization**
-- **Colors**: Modify EPAM color variants in style.css
+- **Colors**: Modify Accenture color variants in style.css
 - **Typography**: Update font families in the design system
 - **Logo**: Update logo paths in frontmatter
 - **Spacing**: Adjust grid gaps and padding
@@ -139,7 +139,7 @@ node builder/content-analyzer.js --directory templates/mdx --template dual-panel
 - **Narrative Quality**: All templates include substantial narrative content
 - **Semantic Accuracy**: Content properly classified for AI optimization
 - **Layout Efficiency**: Optimized for readability and visual hierarchy
-- **Brand Consistency**: EPAM design system compliance
+- **Brand Consistency**: Accenture design system compliance
 
 ## Best Practices
 
@@ -166,12 +166,12 @@ node builder/content-analyzer.js --directory templates/mdx --template dual-panel
 ```
 templates/
 ├── mdx/
-│   ├── epam-executive-summary.mdx
-│   ├── epam-magazine-feature.mdx
+│   ├── accenture-executive-summary.mdx
+│   ├── accenture-magazine-feature.mdx
 │   ├── ...
 │   └── README-templates.md
 └── slide_sets/
-    └── epam-complete-slides.json
+    └── accenture-complete-slides.json
 ```
 
 ## Integration with Main System
@@ -179,7 +179,7 @@ templates/
 ### **Adding to Main Presentation**
 ```bash
 # Copy template and register in slide set
-cp templates/mdx/epam-executive-summary.mdx templates/mdx/
+cp templates/mdx/accenture-executive-summary.mdx templates/mdx/
 
 # Update slide order in templates/slide_sets/*.json
 # Rebuild presentation
@@ -199,7 +199,7 @@ node test-grid-system.js
 
 ### **Regular Updates**
 - **Content Refresh**: Update narrative content quarterly
-- **Brand Alignment**: Ensure EPAM brand compliance
+- **Brand Alignment**: Ensure Accenture brand compliance
 - **Performance Testing**: Validate build and rendering performance
 - **Template Testing**: Verify all templates work with system updates
 
@@ -223,4 +223,4 @@ node test-grid-system.js
 - **Collaborative Editing**: Multi-user template customization
 - **Version Control**: Template versioning and rollback capabilities
 
-This template collection provides a comprehensive foundation for creating professional, engaging presentations that maintain EPAM's high standards while leveraging the power of the CSS Grid Designer system.
+This template collection provides a comprehensive foundation for creating professional, engaging presentations that maintain Accenture's high standards while leveraging the power of the CSS Grid Designer system.

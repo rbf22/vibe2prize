@@ -90,9 +90,9 @@ describe('Brand typography tokens', () => {
     applyBrandTheme('default', 'dark');
     assert.strictEqual(root.style.getPropertyValue('--role-section-title-font-size').trim(), '9px');
 
-    applyBrandTheme('epam', 'dark');
+    applyBrandTheme('accenture', 'dark');
 
-    assert.strictEqual(root.dataset.brand, 'epam');
+    assert.strictEqual(root.dataset.brand, 'accenture');
     assert.strictEqual(root.style.getPropertyValue('--role-section-title-font-size').trim(), '10px');
     assert.strictEqual(root.style.getPropertyValue('--role-section-title-line-height').trim(), '12px');
     assert.strictEqual(root.style.getPropertyValue('--role-logo-font-size').trim(), '6px');
