@@ -32,8 +32,8 @@
     </header>
 
     <nav class="app-nav">
-      <button id="designTab" class="nav-btn active" data-tab="design">Design</button>
-      <button id="composeTab" class="nav-btn" data-tab="composer">Composer</button>
+      <button id="designTab" class="nav-btn active" data-tab="design" onclick="this.parentElement.nextElementSibling.style.display='flex'; document.getElementById('composerView').style.display='none'; this.classList.add('active'); document.getElementById('composeTab').classList.remove('active');">Design</button>
+      <button id="composeTab" class="nav-btn" data-tab="composer" onclick="document.getElementById('designView').style.display='none'; document.getElementById('composerView').style.display='grid'; this.classList.add('active'); document.getElementById('designTab').classList.remove('active');">Composer</button>
     </nav>
 
     <main class="app-grid" id="designView">
@@ -357,17 +357,60 @@
         }
 
         function setupApplication() {
+          console.log('setupApplication called');
+          const designTab = document.getElementById('designTab');
+          const composeTab = document.getElementById('composeTab');
+          const designView = document.getElementById('designView');
+          const composerView = document.getElementById('composerView');
+
+          const switchTab = (tab) => {
+            console.log('Switching to tab:', tab);
+            if (tab === 'design') {
+              designTab.classList.add('active');
+              composeTab.classList.remove('active');
+              designView.style.display = 'flex'; // Changed from grid to flex for better overall container support
+              composerView.style.display = 'none';
+            } else {
+              designTab.classList.remove('active');
+              composeTab.classList.add('active');
+              designView.style.display = 'none';
+              composerView.style.display = 'grid';
+            }
+          };
+
+          designTab.addEventListener('click', (e) => {
+            console.log('Design tab clicked');
+            switchTab('design');
+          });
+          composeTab.addEventListener('click', (e) => {
+            console.log('Composer tab clicked');
+            switchTab('composer');
+          });
+
           const ensureReady = () => {
             // Check for BOTH TemplateStudio (Design) and Composer
-            const isDesignReady = window.TemplateStudio && window.TemplateStudio.attachControlHandlers;
+            const isDesignReady = !!(window.TemplateStudio && window.TemplateStudio.attachControlHandlers);
             const isComposerReady = typeof window.initComposer === 'function';
 
+            console.log('Checking readiness - Design:', isDesignReady, 'Composer:', isComposerReady);
+            if (window.TemplateStudio) {
+              console.log('TemplateStudio state:', {
+                initialized: window.TemplateStudio.__initialized,
+                hasHandlers: !!window.TemplateStudio.attachControlHandlers
+              });
+            }
+
             if (!isDesignReady || !isComposerReady) {
-              requestAnimationFrame(ensureReady);
+              setTimeout(ensureReady, 100);
               return;
             }
-            initializeDom();
-            window.initComposer();
+            console.log('Application ready, initializing components...');
+            try {
+              initializeDom();
+              window.initComposer();
+            } catch (err) {
+              console.error('Initialization error:', err);
+            }
           };
           ensureReady();
         }
@@ -382,29 +425,6 @@
           const previewToggleButtons = Array.from(document.querySelectorAll('.preview-toggle-btn'));
           const diagnosticsBody = document.getElementById('diagnosticsBody');
           const diagnosticsSummary = document.getElementById('diagnosticSummary');
-
-          // Tab switching
-          const designTab = document.getElementById('designTab');
-          const composeTab = document.getElementById('composeTab');
-          const designView = document.getElementById('designView');
-          const composerView = document.getElementById('composerView');
-
-          const switchTab = (tab) => {
-            if (tab === 'design') {
-              designTab.classList.add('active');
-              composeTab.classList.remove('active');
-              designView.style.display = 'grid';
-              composerView.style.display = 'none';
-            } else {
-              designTab.classList.remove('active');
-              composeTab.classList.add('active');
-              designView.style.display = 'none';
-              composerView.style.display = 'grid';
-            }
-          };
-
-          designTab.addEventListener('click', () => switchTab('design'));
-          composeTab.addEventListener('click', () => switchTab('composer'));
 
           const renderCanvas = () => {
             TemplateStudio.renderPreview(previewGrid);
@@ -581,17 +601,25 @@
           // Touch support for iPad
           previewGrid.addEventListener('touchstart', (e) => {
               if (TemplateStudio.isEditableTarget(e)) return;
+              console.log('Touch start');
               handlePointerDown(e);
+              if (TemplateStudio.state.isDrawing || TemplateStudio.state.isDragging || TemplateStudio.state.isResizing) {
+                  e.preventDefault();
+              }
           }, { passive: false });
 
           previewGrid.addEventListener('touchmove', (e) => {
+              console.log('Touch move - drawing:', TemplateStudio.state.isDrawing);
+              handlePointerMove(e);
               if (TemplateStudio.state.isDrawing || TemplateStudio.state.isDragging || TemplateStudio.state.isResizing) {
                   e.preventDefault(); // Prevent scrolling while drawing/dragging
               }
-              handlePointerMove(e);
           }, { passive: false });
 
-          document.addEventListener('touchend', handlePointerUp);
+          document.addEventListener('touchend', (e) => {
+              console.log('Touch end');
+              handlePointerUp(e);
+          });
 
           previewToggleButtons.forEach((btn) => {
             btn.addEventListener('click', () => {
@@ -720,8 +748,11 @@
         const moduleScript = document.createElement('script');
         moduleScript.type = 'module';
         moduleScript.src = moduleSrc;
-        moduleScript.onload = setupApplication;
-        moduleScript.onerror = () => console.error('Failed to load Template Studio module');
+        moduleScript.onload = () => {
+          console.log('Module script loaded:', moduleSrc);
+          setupApplication();
+        };
+        moduleScript.onerror = () => console.error('Failed to load Template Studio module:', moduleSrc);
         document.head.appendChild(moduleScript);
       })();
     </script>

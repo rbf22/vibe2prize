@@ -186,21 +186,11 @@ export {
 
 // Entry point for Template Studio when loaded as an ESM
 export function init() {
-  // Capture initial state so the first undo has a baseline
-  pushHistory();
-  applyBrandTheme(state.brand?.id, state.brand?.variant);
-  const masterTemplateReady = hydrateMasterTemplate();
-  masterTemplateReady
-    .then((result) => {
-      if (!result?.applied) {
-        seedFallbackLayout();
-      }
-    })
-    .catch(() => {
-      seedFallbackLayout();
-    });
+  if (typeof window === 'undefined') return;
+  window.initComposer = initComposer;
+  if (window.TemplateStudio && window.TemplateStudio.__initialized) return;
 
-  // Set up global references
+  // Set up global references IMMEDIATELY
   window.TemplateStudio = {
     state,
     renderPreview,
@@ -243,9 +233,25 @@ export function init() {
     listBrandThemeOptions,
     getBrandSnapshot,
     hydrateMasterTemplate,
-    masterTemplateReady,
     seedFallbackLayout
   };
+
+  // Capture initial state so the first undo has a baseline
+  pushHistory();
+  applyBrandTheme(state.brand?.id, state.brand?.variant);
+
+  const masterTemplateReady = hydrateMasterTemplate();
+  window.TemplateStudio.masterTemplateReady = masterTemplateReady;
+
+  masterTemplateReady
+    .then((result) => {
+      if (!result?.applied) {
+        seedFallbackLayout();
+      }
+    })
+    .catch(() => {
+      seedFallbackLayout();
+    });
 
   if (typeof document !== 'undefined') {
     document.addEventListener('masterTemplateHydrated', () => {
@@ -261,7 +267,5 @@ export function init() {
 
 // Auto-initialize if this module is loaded directly (guarded so it only happens once)
 if (typeof window !== 'undefined') {
-  if (!window.TemplateStudio || !window.TemplateStudio.__initialized) {
-    init();
-  }
+  init();
 }

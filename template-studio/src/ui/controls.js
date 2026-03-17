@@ -252,17 +252,39 @@ export function attachControlHandlers(controls, renderPreview, renderSnippet, re
   });
 
   controls.columnCount.addEventListener('input', (e) => {
+    const val = Number(e.target.value);
+    if (!isNaN(val) && val > 0) {
+      state.columns = Math.max(1, Math.min(100, val));
+      renderPreview();
+      renderSnippet();
+      renderRegionsTable();
+    }
+  });
+
+  controls.columnCount.addEventListener('change', (e) => {
     state.columns = Math.max(1, Math.min(100, Number(e.target.value) || 80));
     e.target.value = state.columns;
     renderPreview();
     renderSnippet();
+    renderRegionsTable();
   });
 
   controls.rowCount.addEventListener('input', (e) => {
+    const val = Number(e.target.value);
+    if (!isNaN(val) && val > 0) {
+      state.rows = Math.max(1, Math.min(60, val));
+      renderPreview();
+      renderSnippet();
+      renderRegionsTable();
+    }
+  });
+
+  controls.rowCount.addEventListener('change', (e) => {
     state.rows = Math.max(1, Math.min(60, Number(e.target.value) || 45));
     e.target.value = state.rows;
     renderPreview();
     renderSnippet();
+    renderRegionsTable();
   });
 
   controls.columnSize.addEventListener('input', (e) => {
