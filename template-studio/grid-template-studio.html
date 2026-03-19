@@ -21,7 +21,7 @@
     {
       "imports": {
         "pptxgenjs": "https://esm.sh/pptxgenjs@4.0.1",
-        "@mlc-ai/web-llm": "https://esm.sh/@mlc-ai/web-llm@0.2.82"
+        "@mlc-ai/web-llm": "https://esm.run/@mlc-ai/web-llm@0.2.82"
       }
     }
     </script>
@@ -342,11 +342,9 @@
 
     <script>
       (function() {
-        const isDevelopment = window.location.hostname === 'localhost' || 
-          window.location.hostname === '127.0.0.1' ||
-          window.location.protocol === 'file:';
+        const isDevelopment = false; // Force dist
 
-        const moduleSrc = isDevelopment ? './src/main.js' : './dist/main.js';
+        const moduleSrc = './dist/main.js';
 
         // Register Service Worker
         if ('serviceWorker' in navigator) {

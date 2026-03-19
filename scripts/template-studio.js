@@ -77,7 +77,12 @@ function sendNotFound(res) {
 function serveFile(filePath, res) {
   const stream = fs.createReadStream(filePath);
   stream.on('open', () => {
-    res.writeHead(200, { 'Content-Type': getMimeType(filePath) });
+    res.writeHead(200, { 
+      'Content-Type': getMimeType(filePath),
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
     stream.pipe(res);
   });
 

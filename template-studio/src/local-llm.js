@@ -4,7 +4,7 @@ export async function initLLM(onStatus) {
   try {
     onStatus('Initializing AI...');
 
-    const selectedModel = "SmolLM-135M-Instruct-v0.2-q4f16_1-MLC";
+    const selectedModel = "SmolLM2-135M-Instruct-q0f16-MLC";
 
     // We'll create the engine using a web worker
     // The worker script will need to be correctly bundled or served
@@ -39,10 +39,13 @@ Keep the content professional and relevant to the user's brief.`;
               ...options.messages
             ];
 
+            console.log('[WebLLM] Executing chat.completions.create for SmolLM2. Payload:', fullMessages);
             const response = await engine.chat.completions.create({
               messages: fullMessages,
-              response_format: { type: 'json_object' }
+              max_tokens: 200,
+              temperature: 0.7
             });
+            console.log('[WebLLM] Execution completed.', response);
 
             return response;
           }

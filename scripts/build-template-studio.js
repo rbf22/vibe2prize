@@ -49,7 +49,8 @@ async function buildStudio() {
         'stream',
         'constants',
         'jsdom',
-        '@mlc-ai/web-llm'
+        'url',
+        'perf_hooks'
       ], // Don't bundle MDX files or Node-only deps used by shared loader / lint tooling
       define: {
         'process.env.NODE_ENV': '"production"'

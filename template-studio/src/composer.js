@@ -77,12 +77,31 @@ export function initComposer() {
     addMessage(brief, false);
     aiBrief.value = '';
 
-    const response = await engine.chat.completions.create({
-      messages: [{ role: 'user', content: brief }]
-    });
+    let response;
+    try {
+      response = await engine.chat.completions.create({
+        messages: [{ role: 'user', content: brief }]
+      });
+    } catch (createErr) {
+      console.error("LLM Generation Error:", createErr);
+      addMessage(`[Generation Error]: ${createErr.message}`, true);
+      return;
+    }
 
-    const content = JSON.parse(response.choices[0].message.content);
-    addMessage(`Generated content for "${content.title}"`, true);
+    let content;
+    try {
+      let jsonString = response.choices[0].message.content;
+      const jsonMatch = jsonString.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+         jsonString = jsonMatch[0];
+      }
+      content = JSON.parse(jsonString);
+      addMessage(`Generated content for "${content.title}"`, true);
+    } catch (err) {
+      console.warn('Failed to parse LLM JSON output. Raw output:', response.choices[0].message.content);
+      addMessage(`[Raw Output]: ${response.choices[0].message.content}`, true);
+      return;
+    }
 
     // Update current slide regions with generated content
     if (currentSlide.regions.length > 0) {
