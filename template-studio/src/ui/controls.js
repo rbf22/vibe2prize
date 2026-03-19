@@ -42,8 +42,10 @@ export function applyReferenceOverlay(controls) {
 export function updateSelectionControls(controls) {
   if (!controls) return;
   
+  console.log('updateSelectionControls called, selectedBoxId:', state.selectedBoxId);
   if (controls.deleteSelectedBtn) {
     controls.deleteSelectedBtn.disabled = !state.selectedBoxId;
+    console.log('deleteSelectedBtn.disabled set to:', controls.deleteSelectedBtn.disabled);
   }
 
   if (controls.presetButtons) {
@@ -381,7 +383,33 @@ export function attachControlHandlers(controls, renderPreview, renderSnippet, re
 
   if (controls.deleteSelectedBtn) {
     controls.deleteSelectedBtn.addEventListener('click', () => {
-      // This will be handled by the interactions module
+      window.TemplateStudio.deleteSelectedRegion();
+      renderPreview();
+      renderRegionsTable();
+      renderSnippet();
+      updateSelectionControls(controls);
+    });
+  }
+
+  if (controls.clearAllBtn) {
+    controls.clearAllBtn.addEventListener('click', () => {
+      console.log('clearAllBtn clicked');
+      window.TemplateStudio.clearAllRegions();
+      renderPreview();
+      renderRegionsTable();
+      renderSnippet();
+      updateSelectionControls(controls);
+    });
+  }
+
+  if (controls.addRegionBtn) {
+    controls.addRegionBtn.addEventListener('click', () => {
+      console.log('addRegionBtn clicked');
+      window.TemplateStudio.addNewRegion();
+      renderPreview();
+      renderRegionsTable();
+      renderSnippet();
+      updateSelectionControls(controls);
     });
   }
 

@@ -77,10 +77,59 @@ export function initComposer() {
     addMessage(brief, false);
     aiBrief.value = '';
 
+    // Build context from current slide
+    const { buildMdxSource } = await import('./persistence/mdx.js');
+    const { parseMDXFrontmatter } = await import('./persistence/importer.js');
+
+    const mockState = {
+      templateName: currentSlide.name,
+      canvasWidth: 1920,
+      canvasHeight: 1080,
+      columns: 80,
+      rows: 45,
+      boxes: currentSlide.regions.map((r, i) => ({
+        id: r.id || `region-${i}`,
+        name: r.name,
+        gridX: r.x,
+        gridY: r.y,
+        gridWidth: r.w,
+        gridHeight: r.h,
+        metadata: {
+           role: r.role || 'supporting-text',
+           llmHint: r.llmHint || ''
+        }
+      })),
+      content: {}
+    };
+
+    const mdxContext = buildMdxSource(mockState).source;
+    
+    const systemPrompt = `You are a professional presentation assistant.
+Given the following MDX slide structure and a user brief, generate content for the slide.
+Return ONLY an MDX file structure with frontmatter and a body.
+The frontmatter MUST include a "content" object mapping the region "area" names to the generated text.
+
+Current Slide Structure (MDX):
+\`\`\`mdx
+${mdxContext}
+\`\`\`
+
+Example Output:
+---
+title: "Generated Slide Title"
+content:
+  "Title": "The Generated Title"
+  "Left": "Generated bullet points for left column"
+---
+<GridDesigner template="...">
+  ...
+</GridDesigner>`;
+
     let response;
     try {
       response = await engine.chat.completions.create({
-        messages: [{ role: 'user', content: brief }]
+        messages: [{ role: 'user', content: brief }],
+        systemPrompt
       });
     } catch (createErr) {
       console.error("LLM Generation Error:", createErr);
@@ -88,27 +137,33 @@ export function initComposer() {
       return;
     }
 
-    let content;
-    try {
-      let jsonString = response.choices[0].message.content;
-      const jsonMatch = jsonString.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-         jsonString = jsonMatch[0];
-      }
-      content = JSON.parse(jsonString);
-      addMessage(`Generated content for "${content.title}"`, true);
-    } catch (err) {
-      console.warn('Failed to parse LLM JSON output. Raw output:', response.choices[0].message.content);
-      addMessage(`[Raw Output]: ${response.choices[0].message.content}`, true);
+    const rawContent = response.choices[0].message.content;
+    const parsed = parseMDXFrontmatter(rawContent);
+
+    if (!parsed.success || !parsed.frontmatter?.content) {
+      console.warn('Failed to parse LLM MDX output. Raw output:', rawContent);
+      addMessage(`[Parsing Error]: Could not extract content from AI response.`, true);
       return;
     }
 
+    const generatedContent = parsed.frontmatter.content;
+    addMessage(`Generated content for "${parsed.frontmatter.title || 'Slide'}"`, true);
+
     // Update current slide regions with generated content
-    if (currentSlide.regions.length > 0) {
-      currentSlide.regions[0].content = content.title;
-      if (currentSlide.regions.length > 1) {
-        currentSlide.regions[1].content = content.points.join('\n');
+    currentSlide.regions.forEach(region => {
+      if (generatedContent[region.name]) {
+        region.content = generatedContent[region.name];
+      } else if (generatedContent[region.id]) {
+        region.content = generatedContent[region.id];
       }
+    });
+
+    // Also update global studio state content for proper rendering
+    if (window.TemplateStudio && window.TemplateStudio.state) {
+        currentSlide.regions.forEach((r, i) => {
+            const id = r.id || `region-${i}`;
+            window.TemplateStudio.state.content[id] = r.content;
+        });
     }
 
     renderComposerPreview();

@@ -69,6 +69,8 @@ export function renderPreview(previewGrid, renderGuides) {
   // Set CSS variables for grid background to match actual cell size
   grid.style.setProperty('--cell-width', `${cellPixelSizeX}px`);
   grid.style.setProperty('--cell-height', `${cellPixelSizeY}px`);
+  grid.style.setProperty('--grid-columns', columns);
+  grid.style.setProperty('--grid-rows', rows);
   
   const areas = boxesToAreaMatrix();
   const templateAreas = areas.map((row) => `"${row.join(' ')}"`).join(' ');
@@ -135,6 +137,10 @@ export function renderPreview(previewGrid, renderGuides) {
         
         // Re-render to show selection
         renderPreview(previewGrid, renderGuides);
+        
+        // Dispatch event for UI updates
+        document.dispatchEvent(new CustomEvent('selectionChanged', { detail: { boxId: box.id } }));
+        
         e.stopPropagation();
       });
     }

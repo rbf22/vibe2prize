@@ -1,0 +1,1457 @@
+🚀 Starting Comprehensive Button Verification...
+BROWSER LOG: Module script loaded: ./dist/main.js
+BROWSER LOG: setupApplication called
+BROWSER LOG: Checking readiness - Design: false Composer: false
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to hydrate master template Error: Failed to fetch master template from "templates/default/default-master.mdx": 404 Not Found
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER LOG: Checking readiness - Design: true Composer: true
+BROWSER LOG: TemplateStudio state: [object Object]
+BROWSER LOG: Application ready, initializing components...
+BROWSER LOG: Found guide buttons: 7
+BROWSER LOG: Setting up guide button: center
+BROWSER LOG: Button state toggled: center true
+BROWSER LOG: Button initial state: center true
+BROWSER LOG: Setting up guide button: halves
+BROWSER LOG: Button state toggled: halves false
+BROWSER LOG: Button initial state: halves false
+BROWSER LOG: Setting up guide button: thirds
+BROWSER LOG: Button state toggled: thirds false
+BROWSER LOG: Button initial state: thirds false
+BROWSER LOG: Setting up guide button: quarters
+BROWSER LOG: Button state toggled: quarters false
+BROWSER LOG: Button initial state: quarters false
+BROWSER LOG: Setting up guide button: sixths
+BROWSER LOG: Button state toggled: sixths false
+BROWSER LOG: Button initial state: sixths false
+BROWSER LOG: Setting up guide button: eighths
+BROWSER LOG: Button state toggled: eighths false
+BROWSER LOG: Button initial state: eighths false
+BROWSER LOG: Setting up guide button: margin
+BROWSER LOG: Button state toggled: margin true
+BROWSER LOG: Button initial state: margin true
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": true,
+  "halves": false,
+  "thirds": false,
+  "quarters": false,
+  "sixths": false,
+  "eighths": false,
+  "margin": true
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical center
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal center
+BROWSER LOG: Guide render complete. Lines added: 2 children now: 5
+BROWSER LOG: updateSelectionControls called, selectedBoxId: 
+BROWSER LOG: deleteSelectedBtn.disabled set to: true
+BROWSER LOG: Production render: parent panel visibility hidden
+BROWSER LOG: Panel is not visible, skipping render
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER LOG: SW registered
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+
+--- Testing Navigation Tabs ---
+  Clicking #composeTab...
+BROWSER LOG: Composer tab clicked
+BROWSER LOG: Switching to tab: composer
+  Clicked #composeTab, waiting 500ms...
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+✅ Composer tab works
+  Clicking #designTab...
+BROWSER LOG: Design tab clicked
+BROWSER LOG: Switching to tab: design
+  Clicked #designTab, waiting 500ms...
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+✅ Design tab works
+
+--- Testing Guide Buttons ---
+Found 7 guide buttons.
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER LOG: updateSelectionControls called, selectedBoxId: 
+BROWSER LOG: deleteSelectedBtn.disabled set to: true
+BROWSER LOG: Guide button clicked: center before: true
+BROWSER LOG: Guide button clicked: center after: false
+BROWSER LOG: Button state toggled: center false
+BROWSER LOG: Calling renderPreview callback
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": false,
+  "thirds": false,
+  "quarters": false,
+  "sixths": false,
+  "eighths": false,
+  "margin": true
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide render complete. Lines added: 0 children now: 1
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+  - Guide [CENTER]: Inactive
+BROWSER LOG: updateSelectionControls called, selectedBoxId: 
+BROWSER LOG: deleteSelectedBtn.disabled set to: true
+BROWSER LOG: Guide button clicked: halves before: false
+BROWSER LOG: Guide button clicked: halves after: true
+BROWSER LOG: Button state toggled: halves true
+BROWSER LOG: Calling renderPreview callback
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": false,
+  "quarters": false,
+  "sixths": false,
+  "eighths": false,
+  "margin": true
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 2 children now: 3
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+  - Guide [HALVES]: Active
+BROWSER LOG: updateSelectionControls called, selectedBoxId: 
+BROWSER LOG: deleteSelectedBtn.disabled set to: true
+BROWSER LOG: Guide button clicked: thirds before: false
+BROWSER LOG: Guide button clicked: thirds after: true
+BROWSER LOG: Button state toggled: thirds true
+BROWSER LOG: Calling renderPreview callback
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": false,
+  "sixths": false,
+  "eighths": false,
+  "margin": true
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 6 children now: 7
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+  - Guide [THIRDS]: Active
+BROWSER LOG: updateSelectionControls called, selectedBoxId: 
+BROWSER LOG: deleteSelectedBtn.disabled set to: true
+BROWSER LOG: Guide button clicked: quarters before: false
+BROWSER LOG: Guide button clicked: quarters after: true
+BROWSER LOG: Button state toggled: quarters true
+BROWSER LOG: Calling renderPreview callback
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": true,
+  "sixths": false,
+  "eighths": false,
+  "margin": true
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 12 children now: 13
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+  - Guide [QUARTERS]: Active
+BROWSER LOG: updateSelectionControls called, selectedBoxId: 
+BROWSER LOG: deleteSelectedBtn.disabled set to: true
+BROWSER LOG: Guide button clicked: sixths before: false
+BROWSER LOG: Guide button clicked: sixths after: true
+BROWSER LOG: Button state toggled: sixths true
+BROWSER LOG: Calling renderPreview callback
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": true,
+  "sixths": true,
+  "eighths": false,
+  "margin": true
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 144 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 81 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 720 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 405 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 22 children now: 23
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+  - Guide [SIXTHS]: Active
+BROWSER LOG: updateSelectionControls called, selectedBoxId: 
+BROWSER LOG: deleteSelectedBtn.disabled set to: true
+BROWSER LOG: Guide button clicked: eighths before: false
+BROWSER LOG: Guide button clicked: eighths after: true
+BROWSER LOG: Button state toggled: eighths true
+BROWSER LOG: Calling renderPreview callback
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": true,
+  "sixths": true,
+  "eighths": true,
+  "margin": true
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 144 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 81 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 720 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 405 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 108 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 60.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 324 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 182.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 540 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 303.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 756 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 425.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 36 children now: 37
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+  - Guide [EIGHTHS]: Active
+BROWSER LOG: updateSelectionControls called, selectedBoxId: 
+BROWSER LOG: deleteSelectedBtn.disabled set to: true
+BROWSER LOG: Guide button clicked: margin before: true
+BROWSER LOG: Guide button clicked: margin after: false
+BROWSER LOG: Button state toggled: margin false
+BROWSER LOG: Calling renderPreview callback
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": true,
+  "sixths": true,
+  "eighths": true,
+  "margin": false
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 144 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 81 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 720 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 405 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 108 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 60.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 324 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 182.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 540 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 303.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 756 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 425.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 36 children now: 36
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+  - Guide [MARGIN 1-GRID]: Inactive
+
+--- Testing Region Presets ---
+Found 8 preset buttons.
+  - Preset [Header]: Boxes count = 3
+  - Preset [Footer]: Boxes count = 3
+  - Preset [Left Sidebar]: Boxes count = 3
+  - Preset [Right Sidebar]: Boxes count = 3
+  - Preset [Hero]: Boxes count = 3
+  - Preset [Content]: Boxes count = 3
+  - Preset [Caption]: Boxes count = 3
+
+--- Testing Guide Buttons ---
+Found 0 guide buttons.
+
+--- Testing Preview Toggles ---
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": true,
+  "sixths": true,
+  "eighths": true,
+  "margin": false
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 144 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 81 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 720 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 405 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 108 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 60.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 324 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 182.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 540 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 303.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 756 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 425.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 36 children now: 36
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+  - Toggle [Grid Canvas]: Active=true, View=canvas
+  - Toggle [Rendered Slide]: Active=true, View=slide
+  - Toggle [Production Render]: Active=true, View=production
+  - Toggle [PRODUCTION RENDER]: Active=true, View=production
+
+--- Testing Grid Actions ---
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": true,
+  "sixths": true,
+  "eighths": true,
+  "margin": false
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 144 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 81 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 720 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 405 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 108 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 60.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 324 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 182.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 540 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 303.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 756 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 425.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 36 children now: 36
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER LOG: Production render: Using container element dimensions: [object Object]
+BROWSER LOG: Production render: boxes count: 3
+BROWSER LOG: Production render: state reference: [object Object]
+BROWSER LOG: Production render: state.boxes reference: [array Array]
+BROWSER LOG: Production render: first box: [object Object]
+BROWSER LOG: Production render: container dimensions: [object Object]
+BROWSER LOG: Production render: canvas dimensions: [object Object]
+BROWSER LOG: Production render: Setting up ResizeObserver
+BROWSER LOG: Production render: Observing element: production-preview-panel productionPreviewPanel
+BROWSER LOG: Production render: React loaded successfully
+BROWSER LOG: Production React component scale calculation: [object Object]
+BROWSER LOG: Production render: element tree created
+BROWSER LOG: Production render: slideElement type: object
+BROWSER LOG: Production render: slideElement: [object Object]
+BROWSER LOG: Production render: new React root created
+BROWSER LOG: Production render: about to render to React root
+BROWSER LOG: Production render: React render completed without errors
+BROWSER LOG: Production ResizeObserver detected: [object Object]
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER LOG: Production render: rendered element styles: [object Object]
+BROWSER LOG: Production render: rendered element styles: [object Object]
+BROWSER LOG: Production render: parent panel visibility hidden
+BROWSER LOG: Panel is not visible, skipping render
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+  Clearing all regions to start fresh...
+BROWSER LOG: clearAllBtn clicked
+BROWSER LOG: clearAllRegions called
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": true,
+  "sixths": true,
+  "eighths": true,
+  "margin": false
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 144 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 81 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 720 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 405 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 108 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 60.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 324 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 182.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 540 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 303.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 756 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 425.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 36 children now: 36
+BROWSER LOG: updateSelectionControls called, selectedBoxId: 
+BROWSER LOG: deleteSelectedBtn.disabled set to: true
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": true,
+  "sixths": true,
+  "eighths": true,
+  "margin": false
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 144 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 81 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 720 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 405 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 108 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 60.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 324 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 182.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 540 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 303.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 756 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 425.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 36 children now: 36
+BROWSER LOG: updateSelectionControls called, selectedBoxId: 
+BROWSER LOG: deleteSelectedBtn.disabled set to: true
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+  Adding a new region...
+BROWSER LOG: addRegionBtn clicked
+BROWSER LOG: addNewRegion called
+BROWSER LOG: createBoxFromGrid: grid(0,0) size(10x5) id=box-1773933677877-tu8susbus
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": true,
+  "sixths": true,
+  "eighths": true,
+  "margin": false
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 144 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 81 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 720 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 405 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 108 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 60.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 324 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 182.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 540 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 303.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 756 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 425.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 36 children now: 36
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": true,
+  "sixths": true,
+  "eighths": true,
+  "margin": false
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 144 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 81 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 720 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 405 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 108 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 60.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 324 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 182.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 540 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 303.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 756 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 425.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 36 children now: 36
+BROWSER LOG: updateSelectionControls called, selectedBoxId: box-1773933677877-tu8susbus
+BROWSER LOG: deleteSelectedBtn.disabled set to: false
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+  - Boxes count = 1
+  Testing Delete Selected...
+  Clicking block at (581.984375, 540.0859375) BoundingBox: {"x":528,"y":513.09375,"height":53.984375,"width":107.96875}
+BROWSER LOG: BLOCK MOUSEDOWN: box-1773933677877-tu8susbus
+BROWSER LOG: Selection changed event received
+BROWSER LOG: updateSelectionControls called, selectedBoxId: box-1773933677877-tu8susbus
+BROWSER LOG: deleteSelectedBtn.disabled set to: false
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": true,
+  "sixths": true,
+  "eighths": true,
+  "margin": false
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 144 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 81 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 720 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 405 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 108 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 60.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 324 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 182.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 540 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 303.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 756 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 425.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 36 children now: 36
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": true,
+  "sixths": true,
+  "eighths": true,
+  "margin": false
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 144 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 81 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 720 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 405 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 108 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 60.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 324 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 182.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 540 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 303.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 756 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 425.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 36 children now: 36
+BROWSER LOG: updateSelectionControls called, selectedBoxId: box-1773933677877-tu8susbus
+BROWSER LOG: deleteSelectedBtn.disabled set to: false
+  Waiting for delete button to enable...
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER LOG: renderGuides called [object Object]
+BROWSER LOG: Current guide settings: {
+  "center": false,
+  "halves": true,
+  "thirds": true,
+  "quarters": true,
+  "sixths": true,
+  "eighths": true,
+  "margin": false
+}
+BROWSER LOG: Guide dimensions: [object Object]
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 144 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 81 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 288 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 162 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 576 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 324 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 720 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 405 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 108 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 60.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 216 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 121.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 324 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 182.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 432 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 243 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 540 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 303.75 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 648 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 364.5 with class: guide-line horizontal accent
+BROWSER LOG: Guide line created: vertical at position: 756 with class: guide-line vertical accent
+BROWSER LOG: Guide line created: horizontal at position: 425.25 with class: guide-line horizontal accent
+BROWSER LOG: Guide render complete. Lines added: 36 children now: 36
+BROWSER LOG: updateSelectionControls called, selectedBoxId: 
+BROWSER LOG: deleteSelectedBtn.disabled set to: true
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+BROWSER ERROR: Failed to load resource: the server responded with a status of 404 (Not Found)
+  - After Delete: Boxes count = 0
+
+--- Checking Export Buttons ---
+Checking Reset Names (#resetNames)...
+Checking Copy Snippet (#copySnippet)...
+Checking Save to MDX (#saveMdx)...
+Checking Download PPTX (#downloadPptx)...
+
+✅ All button checks complete!

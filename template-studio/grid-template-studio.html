@@ -208,7 +208,7 @@
           <button type="button" class="preset-btn" data-preset="hero">Hero</button>
           <button type="button" class="preset-btn" data-preset="content">Content</button>
           <button type="button" class="preset-btn" data-preset="caption">Caption</button>
-          <button type="button" class="preset-btn" data-preset="clear">Clear All</button>
+          <button type="button" id="clearAllBtn" class="preset-btn" data-preset="clear">Clear All</button>
         </div>
         <p class="preset-helper" id="presetStatus">Select a region, then choose a semantic role to auto-fill metadata.</p>
         <div class="preview-toggle-row">
@@ -479,6 +479,8 @@
             importMdxBtn: document.getElementById('importMdxBtn'),
             mdxFileInput: document.getElementById('mdxFileInput'),
             deleteSelectedBtn: document.getElementById('deleteSelectedBtn'),
+            clearAllBtn: document.getElementById('clearAllBtn'),
+            addRegionBtn: document.getElementById('addRegionBtn'),
             brandSelect: document.getElementById('brandSelect'),
             brandThemeSelect: document.getElementById('brandThemeSelect'),
             brandLogo: document.getElementById('brandLogo'),
@@ -524,6 +526,11 @@
           TemplateStudio.renderSnippet();
           TemplateStudio.updateSelectionControls(controls);
 
+          document.addEventListener('selectionChanged', () => {
+            console.log('Selection changed event received');
+            TemplateStudio.updateSelectionControls(controls);
+          });
+
           const handlePointerDown = (e) => {
             if (TemplateStudio.isEditableTarget(e)) return;
             if (e.target.classList.contains('grid-block') || e.target.closest('.grid-block')) {
@@ -540,7 +547,10 @@
             const mouseGridX = Math.floor((clientX - rect.left) / cellPixelSizeX);
             const mouseGridY = Math.floor((clientY - rect.top) / cellPixelSizeY);
 
+            console.log(`PointerDown: client(${clientX},${clientY}) grid(${mouseGridX},${mouseGridY}) rect(${rect.left},${rect.top},${rect.width},${rect.height})`);
+
             const box = TemplateStudio.getBoxAtGrid(mouseGridX, mouseGridY);
+            console.log(`Box at grid: ${box ? box.id : 'none'}`);
             if (box) {
               TemplateStudio.state.selectedBoxId = box.id;
               TemplateStudio.updateSelectionControls(controls);
@@ -720,6 +730,7 @@
           TemplateStudio.renderSlidePreview(slidePreview);
           TemplateStudio.renderProductionSlide(productionPreview);
         
+          /* 
           // Load layout test helpers in development
           if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             const testScript = document.createElement('script');
@@ -742,6 +753,7 @@
             comprehensiveTestScript.src = './test/comprehensive-resize-test.js';
             document.head.appendChild(comprehensiveTestScript);
           }
+          */
         }
 
         const moduleScript = document.createElement('script');

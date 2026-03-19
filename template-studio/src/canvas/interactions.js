@@ -77,6 +77,7 @@ export function createBox(x, y, width, height, name = null, previewGrid) {
   };
   state.boxes.push(box);
   state.metadata[id] = box.metadata;
+  state._boxesInitialized = true;
   
   return box;
 }
@@ -84,6 +85,7 @@ export function createBox(x, y, width, height, name = null, previewGrid) {
 export function deleteBox(id) {
   state.boxes = state.boxes.filter(box => box.id !== id);
   delete state.metadata[id];
+  state._boxesInitialized = true;
   if (state.selectedBoxId === id) {
     state.selectedBoxId = null;
   }
@@ -127,7 +129,7 @@ export function createBoxFromGrid(gridX, gridY, gridWidth, gridHeight, name = nu
 
   const id = `box-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   const box = {
-    id,
+    id: id,
     name: name || `region-${state.boxes.length + 1}`,
     gridX: gridX,
     gridY: gridY,
@@ -141,8 +143,10 @@ export function createBoxFromGrid(gridX, gridY, gridWidth, gridHeight, name = nu
       type: ''
     }
   };
+  console.log(`createBoxFromGrid: grid(${gridX},${gridY}) size(${gridWidth}x${gridHeight}) id=${id}`);
   state.boxes.push(box);
   state.metadata[id] = box.metadata;
+  state._boxesInitialized = true;
   
   return box;
 }
