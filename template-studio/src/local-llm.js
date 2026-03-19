@@ -26,23 +26,33 @@ export async function initLLM(onStatus) {
           create: async (options) => {
             const userPrompt = options.messages[options.messages.length - 1].content;
 
-            const systemPrompt = `You are a professional presentation assistant.
-Return ONLY a JSON object with the following structure:
-{
-  "title": "A concise title for the slide",
-  "points": ["Bullet point 1", "Bullet point 2", "Bullet point 3"]
-}
+            const systemPrompt = options.systemPrompt || `You are a professional presentation assistant.
+Given a slide template structure and a user brief, generate content for the slide.
+Return ONLY an MDX file structure with frontmatter and a body.
+The frontmatter MUST include a "content" object mapping the region "area" names to the generated text.
+
+Example Output:
+---
+title: "Slide Title"
+content:
+  "area-name-1": "Generated text for first area"
+  "area-name-2": "Generated text for second area"
+---
+<GridDesigner template="...">
+  ...
+</GridDesigner>
+
 Keep the content professional and relevant to the user's brief.`;
 
             const fullMessages = [
               { role: 'system', content: systemPrompt },
-              ...options.messages
+              ...options.messages.filter(m => m.role !== 'system')
             ];
 
             console.log('[WebLLM] Executing chat.completions.create for SmolLM2. Payload:', fullMessages);
             const response = await engine.chat.completions.create({
               messages: fullMessages,
-              max_tokens: 200,
+              max_tokens: 1000,
               temperature: 0.7
             });
             console.log('[WebLLM] Execution completed.', response);
