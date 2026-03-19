@@ -177,9 +177,10 @@ export function renderRegionsTable() {
 }
 
 export function addNewRegion() {
-  // Find empty space for new region
-  for (let y = 0; y < state.rows; y++) {
-    for (let x = 0; x < state.columns; x++) {
+  console.log('addNewRegion called');
+  // Find empty space for new region (start from top-left)
+  for (let y = 0; y <= state.rows - 5; y++) {
+    for (let x = 0; x <= state.columns - 10; x++) {
       const testBox = {
         gridX: x,
         gridY: y,
@@ -191,34 +192,43 @@ export function addNewRegion() {
         const newBox = createBoxFromGrid(x, y, 10, 5);
         if (newBox) {
           pushHistory();
-          state.boxes.push(newBox);
-          state.metadata[newBox.id] = newBox.metadata;
+          state._boxesInitialized = true;
           renderRegionsTable();
           // Trigger re-renders
           const event = new CustomEvent('regionAdded', { detail: { box: newBox } });
           document.dispatchEvent(event);
+          
+          // Also trigger selection change update if possible
+          if (window.TemplateStudio?.updateSelectionControls) {
+             // We don't necessarily select it, but we should update button states
+             // But let's actually select the new box for Better UX
+             state.selectedBoxId = newBox.id;
+             // The caller should handle the rest, but we can be proactive
+          }
+          
           return newBox;
         }
       }
     }
   }
   
-  alert('No empty space available for new region');
+  console.warn('No empty space available for new region');
   return null;
 }
 
 export function clearAllRegions() {
-  if (confirm('Are you sure you want to clear all regions?')) {
-    pushHistory();
-    state.boxes = [];
-    state.metadata = {};
-    state.content = {};
-    state.selectedBoxId = null;
-    renderRegionsTable();
-    // Trigger re-renders
-    const event = new CustomEvent('allRegionsCleared');
-    document.dispatchEvent(event);
-  }
+  console.log('clearAllRegions called');
+  // Removed confirm() for better automation and fluid experience
+  pushHistory();
+  state.boxes = [];
+  state.metadata = {};
+  state.content = {};
+  state.selectedBoxId = null;
+  state._boxesInitialized = true;
+  renderRegionsTable();
+  // Trigger re-renders
+  const event = new CustomEvent('allRegionsCleared');
+  document.dispatchEvent(event);
 }
 
 // Import needed functions
