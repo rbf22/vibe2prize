@@ -5,6 +5,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { spawn } from 'node:child_process';
 import { promisify } from 'node:util';
+import { syncPublicTemplates } from './utils/public-templates.js';
 
 const readdir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
@@ -20,6 +21,15 @@ const port = Number(process.env.STUDIO_PORT || process.env.PORT) || DEFAULT_PORT
 if (!fs.existsSync(ENTRY_FILE)) {
   console.error('❌ template-studio/grid-template-studio.html not found.');
   process.exit(1);
+}
+
+if (!process.env.STUDIO_SKIP_TEMPLATE_SYNC) {
+  try {
+    await syncPublicTemplates({ silent: true });
+    console.log('📦 Public templates synchronized for dev server');
+  } catch (error) {
+    console.warn('⚠️  Failed to synchronize public templates:', error.message);
+  }
 }
 
 const MIME_TYPES = {
@@ -70,6 +80,11 @@ function resolveRequestPath(urlPath) {
   // Allow loading brand assets/configs directly from templates/
   if (relative.startsWith('templates/')) {
     return safeJoin(ROOT, relative);
+  }
+
+  if (relative.startsWith('template-studio/templates/')) {
+    const nested = relative.replace(/^template-studio\//, '');
+    return safeJoin(STUDIO_DIR, nested);
   }
 
   return safeJoin(STUDIO_DIR, relative);

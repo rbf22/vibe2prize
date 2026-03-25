@@ -3,6 +3,7 @@
 import { build } from 'esbuild';
 import path from 'node:path';
 import fs from 'node:fs';
+import { syncPublicTemplates } from './utils/public-templates.js';
 
 const ROOT = process.cwd();
 const STUDIO_DIR = path.join(ROOT, 'template-studio');
@@ -24,6 +25,9 @@ if (!fs.existsSync(entryPoint)) {
 
 async function buildStudio() {
   try {
+    await syncPublicTemplates();
+    console.log('📦 Public templates synchronized');
+
     // Build main application
     const result = await build({
       entryPoints: [entryPoint],

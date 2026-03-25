@@ -44,14 +44,33 @@ export async function initComposer() {
   let currentSlide = { regions: [] };
   let deck = [];
 
+  const shouldUseApi = typeof window !== 'undefined' && /^localhost|^127\.0\.0\.1/.test(window.location.hostname);
+
   let templates = [];
-  try {
-    const res = await fetch('/api/templates');
-    if (res.ok) {
-      templates = await res.json();
+
+  if (shouldUseApi) {
+    try {
+      const res = await fetch('/api/templates');
+      if (res.ok) {
+        templates = await res.json();
+      }
+    } catch (err) {
+      console.warn('Failed to load templates from local API', err);
     }
-  } catch (err) {
-    console.warn('Failed to load templates from local API', err);
+  }
+
+  if (!templates.length) {
+    try {
+      const manifestUrl = new URL('./templates/templates-manifest.json', window.location.href);
+      const res = await fetch(manifestUrl, { cache: 'no-store' });
+      if (res.ok) {
+        templates = await res.json();
+      } else {
+        console.warn('Static template manifest unavailable:', res.status, res.statusText);
+      }
+    } catch (err) {
+      console.warn('Failed to load static template manifest', err);
+    }
   }
 
   if (templates.length === 0) {

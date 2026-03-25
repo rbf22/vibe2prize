@@ -36,16 +36,19 @@ const getBrowserRoot = () => {
 };
 
 const ROOT = isBrowser ? getBrowserRoot() : pathModule.resolve(process.cwd());
+const STUDIO_BASE = isBrowser
+  ? (ROOT === '/' ? '/template-studio' : `${ROOT}/template-studio`)
+  : (ROOT.includes('template-studio') ? ROOT : pathModule.join(ROOT, 'template-studio'));
 
-const TEMPLATES_DIR = isBrowser ?
-  (ROOT === '/' ? '/templates' : `${ROOT}/templates`) :
-  (ROOT.includes('template-studio') ? 
-    pathModule.join(ROOT, '..', 'templates') :
-    pathModule.join(ROOT, 'templates'));
+const TEMPLATES_DIR = isBrowser
+  ? `${STUDIO_BASE}/templates`
+  : (ROOT.includes('template-studio')
+      ? pathModule.join(ROOT, 'templates')
+      : pathModule.join(ROOT, 'templates'));
 
-const BRAND_INDEX_PATH = isBrowser ?
-  `${TEMPLATES_DIR}/brands.json` :
-  pathModule.join(TEMPLATES_DIR, 'brands.json');
+const BRAND_INDEX_PATH = isBrowser
+  ? `${TEMPLATES_DIR}/brands.json`
+  : pathModule.join(TEMPLATES_DIR, 'brands.json');
 
 const BRAND_SCHEMA_PATH = isBrowser ?
   (ROOT === '/' ? '/core/brand/brand-schema.json' : `${ROOT}/core/brand/brand-schema.json`) :
