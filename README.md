@@ -36,10 +36,11 @@ The linter now surfaces the same semantic/visual overflow diagnostics as Templat
 2. Deploy `index.html`, `style.css`, assets, and the `dist/` folder to any static host (S3, Vercel, GitHub Pages, etc.).
 3. Serve `index.html` as the entry point; it fetches `dist/slides.html` at runtime.
 
-## Template Studio
+## Template Studio & Local AI Composer
 - Run `npm run studio` to start a lightweight static server (defaults to `http://localhost:4174`) that auto-opens the Studio UI.
 - Alternatively, open `template-studio/grid-template-studio.html` directly in a browser for an offline experience.
 - Designed regions can be exported as JSON/MDX and moved into `core/layout/grid-templates.js` & `templates/mdx/`.
+- **NEW**: The Studio now includes a **Composer** tab that leverages a **Local LLM** (`@mlc-ai/web-llm`) running in a Web Worker to auto-generate slide content based on your selected layout. This local web app infrastructure ensures completely private, on-device content generation without external API calls. Simply provide a brief, and the AI will figure out how to structure your ideas into the predefined visual regions!
 
 ## Slide Authoring Flow
 1. Duplicate an MDX template from `templates/mdx/` and update frontmatter (title, phase, layout, regions, etc.).

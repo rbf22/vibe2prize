@@ -16,11 +16,31 @@ export function initComposer() {
   let currentSlide = { regions: [] };
   let deck = [];
 
-  // MOCK TEMPLATES
   const templates = [
-    { name: 'Comparison Layout', regions: [{name: 'Title', x: 2, y: 2, w: 76, h: 5, role: 'header'}, {name: 'Left', x: 2, y: 10, w: 37, h: 30, role: 'content'}, {name: 'Right', x: 41, y: 10, w: 37, h: 30, role: 'content'}] },
-    { name: 'Split Screen', regions: [{name: 'Visual', x: 0, y: 0, w: 40, h: 45, role: 'content'}, {name: 'Text', x: 45, y: 10, w: 30, h: 25, role: 'content'}] },
-    { name: 'Card Grid', regions: [{name: 'Card 1', x: 5, y: 5, w: 20, h: 15}, {name: 'Card 2', x: 30, y: 5, w: 20, h: 15}, {name: 'Card 3', x: 55, y: 5, w: 20, h: 15}] }
+    {
+      name: 'Title Slide',
+      regions: [
+        {name: 'Title', role: 'primary-title', x: 10, y: 15, w: 60, h: 8, llmHint: 'Main presentation title'},
+        {name: 'Subtitle', role: 'secondary-title', x: 10, y: 25, w: 60, h: 4, llmHint: 'Subtitle or tagline'},
+        {name: 'Presenter', role: 'supporting-text', x: 10, y: 35, w: 40, h: 6, llmHint: 'Presenter name and title'}
+      ]
+    },
+    { 
+      name: 'Comparison Layout', 
+      regions: [
+        {name: 'Title', role: 'primary-title', x: 2, y: 2, w: 76, h: 6, llmHint: 'Slide title comparing two subjects'}, 
+        {name: 'Option A', role: 'supporting-text', x: 2, y: 10, w: 36, h: 28, llmHint: 'Details for the first option'}, 
+        {name: 'Option B', role: 'supporting-text', x: 42, y: 10, w: 36, h: 28, llmHint: 'Details for the second option'}
+      ] 
+    },
+    { 
+      name: 'Dashboard Summary', 
+      regions: [
+        {name: 'Header', role: 'primary-title', x: 2, y: 2, w: 76, h: 6, llmHint: 'Summary dashboard title'}, 
+        {name: 'Key Metrics', role: 'key-data', x: 2, y: 10, w: 20, h: 30, llmHint: 'Bullet points of high level metrics'}, 
+        {name: 'Analysis', role: 'supporting-text', x: 25, y: 10, w: 53, h: 30, llmHint: 'In-depth analysis and findings'}
+      ] 
+    }
   ];
 
   function renderGallery() {
@@ -73,6 +93,12 @@ export function initComposer() {
         aiStatus.textContent = status;
       });
     }
+
+    // Set loading state
+    const originalBtnText = generateBtn.textContent;
+    generateBtn.disabled = true;
+    generateBtn.textContent = 'Generating...';
+    aiChat.style.opacity = '0.7';
 
     addMessage(brief, false);
     aiBrief.value = '';
@@ -134,6 +160,9 @@ content:
     } catch (createErr) {
       console.error("LLM Generation Error:", createErr);
       addMessage(`[Generation Error]: ${createErr.message}`, true);
+      generateBtn.disabled = false;
+      generateBtn.textContent = originalBtnText;
+      aiChat.style.opacity = '1';
       return;
     }
 
@@ -143,6 +172,9 @@ content:
     if (!parsed.success || !parsed.frontmatter?.content) {
       console.warn('Failed to parse LLM MDX output. Raw output:', rawContent);
       addMessage(`[Parsing Error]: Could not extract content from AI response.`, true);
+      generateBtn.disabled = false;
+      generateBtn.textContent = originalBtnText;
+      aiChat.style.opacity = '1';
       return;
     }
 
@@ -167,6 +199,11 @@ content:
     }
 
     renderComposerPreview();
+    
+    // Restore button state
+    generateBtn.disabled = false;
+    generateBtn.textContent = originalBtnText;
+    aiChat.style.opacity = '1';
   });
 
   addToDeckBtn.addEventListener('click', () => {

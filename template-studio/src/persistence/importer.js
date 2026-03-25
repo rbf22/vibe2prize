@@ -181,8 +181,11 @@ export function parseMDXFrontmatter(content) {
     return { success: false, errors: ['Content must be a non-empty string'], frontmatter: null, body: null };
   }
 
-  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
-  const match = content.match(frontmatterRegex);
+  // Strip markdown code block wrappers if any (e.g. from LLM output)
+  const normalizedContent = content.trim().replace(/^```[a-z]*\n/, '').replace(/\n```$/, '').trim();
+
+  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---(?:\s*\n([\s\S]*))?$/;
+  const match = normalizedContent.match(frontmatterRegex);
 
   if (!match) {
     return { success: false, errors: ['Missing MDX frontmatter'], frontmatter: null, body: null };
