@@ -197,6 +197,10 @@ Example Output:
       attempts++;
       let response;
       try {
+        console.log(`[Composer] === Generation Attempt ${attempts}/${maxAttempts} ===`);
+        console.log(`[Composer] System Prompt:\n`, systemPrompt);
+        console.log(`[Composer] User Messages:\n`, JSON.stringify(currentMessages, null, 2));
+
         response = await engine.chat.completions.create({
           messages: currentMessages,
           systemPrompt
@@ -211,6 +215,7 @@ Example Output:
       }
 
       const rawContent = response.choices[0].message.content;
+      console.log(`[Composer] LLM Raw Response:\n`, rawContent);
 
       try {
         const jsonStr = rawContent.replace(/```[a-z]*\n/g, '').replace(/```$/g, '').trim();
