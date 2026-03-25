@@ -4,6 +4,12 @@ import http from 'node:http';
 import path from 'node:path';
 import fs from 'node:fs';
 import { spawn } from 'node:child_process';
+import { promisify } from 'node:util';
+
+const readdir = promisify(fs.readdir);
+const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
+const mkdir = promisify(fs.mkdir);
 
 const ROOT = path.resolve(process.cwd());
 const STUDIO_DIR = path.join(ROOT, 'template-studio');
@@ -124,6 +130,133 @@ const server = http.createServer((req, res) => {
     });
     req.on('error', () => {
       res.writeHead(500).end();
+    });
+    return;
+  }
+
+  if (req.url === '/api/templates' && req.method === 'GET') {
+    (async () => {
+      try {
+        const mdxDir = path.join(ROOT, 'templates', 'mdx');
+        if (!fs.existsSync(mdxDir)) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          return res.end(JSON.stringify([]));
+        }
+
+        const files = await readdir(mdxDir);
+        const mdxFiles = files.filter(f => f.endsWith('.mdx'));
+        const templates = [];
+
+        for (const file of mdxFiles) {
+          const content = await readFile(path.join(mdxDir, file), 'utf8');
+          // simple frontmatter parsing since we don't have gray-matter here
+          const match = content.match(/^---\s*\n([\s\S]*?)\n---/);
+          if (match) {
+            let title = file;
+            let regions = [];
+            // Parse title
+            const titleMatch = match[1].match(/title:\s*["']([^"']+)["']/);
+            if (titleMatch) title = titleMatch[1];
+            
+            // basic yaml parsing for regions
+            const regionsMatch = match[1].split('\\n');
+            let inRegions = false;
+            let currentRegion = null;
+            for(const line of regionsMatch) {
+                if (line.trim().startsWith('regions:')) { inRegions = true; continue; }
+                if (inRegions && line.trim().startsWith('- id:')) {
+                    if (currentRegion) regions.push(currentRegion);
+                    currentRegion = { id: line.split(':')[1].trim() };
+                } else if (inRegions && currentRegion && line.trim().startsWith('name:')) {
+                    currentRegion.name = line.split(':')[1].trim();
+                } else if (inRegions && currentRegion && line.trim().startsWith('area:')) {
+                    currentRegion.name = line.split(':')[1].trim();
+                } else if (inRegions && currentRegion && line.trim().startsWith('role:')) {
+                    currentRegion.role = line.split(':')[1].trim();
+                } else if (inRegions && !line.startsWith(' ')) {
+                    inRegions = false; // exit regions array
+                }
+            }
+            if (currentRegion) regions.push(currentRegion);
+
+            templates.push({
+              name: title,
+              file: file,
+              regions: regions.length ? regions : [
+                {name: 'Title', role: 'primary-title', x: 2, y: 2, w: 76, h: 6},
+                {name: 'Content', role: 'supporting-text', x: 2, y: 10, w: 76, h: 30}
+              ] // fallback
+            });
+          }
+        }
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(templates));
+      } catch (err) {
+        console.error(err);
+        res.writeHead(500).end('Failed to list templates');
+      }
+    })();
+    return;
+  }
+
+  if (req.url === '/api/save-template' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const payload = JSON.parse(body);
+        const mdxDir = path.join(ROOT, 'templates', 'mdx');
+        await mkdir(mdxDir, { recursive: true });
+        
+        let filename = payload.name.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.mdx';
+        await writeFile(path.join(mdxDir, filename), payload.content, 'utf8');
+        
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, file: filename }));
+      } catch (e) {
+        res.writeHead(500).end(e.message);
+      }
+    });
+    return;
+  }
+
+  if (req.url === '/api/save-deck' && req.method === 'POST') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const payload = JSON.parse(body); // { name: "my-deck", slides: [...] }
+        const deckName = payload.name || 'presentation';
+        const deckDir = path.join(ROOT, 'decks', deckName);
+        await mkdir(deckDir, { recursive: true });
+
+        const manifestSlides = [];
+        for (let i = 0; i < payload.slides.length; i++) {
+          const slide = payload.slides[i];
+          const filename = `slide-${String(i+1).padStart(2, '0')}.mdx`;
+          await writeFile(path.join(deckDir, filename), slide.mdxContent, 'utf8');
+          
+          manifestSlides.push({
+            file: `../decks/${deckName}/${filename}`, // Relative to templates/ slide_sets/
+            title: slide.name || `Slide ${i+1}`
+          });
+        }
+
+        // Save manifest to templates/slide_sets/
+        const slideSetsDir = path.join(ROOT, 'templates', 'slide_sets');
+        await mkdir(slideSetsDir, { recursive: true });
+        const manifestData = { slides: manifestSlides };
+        await writeFile(
+            path.join(slideSetsDir, `${deckName}.json`), 
+            JSON.stringify(manifestData, null, 2), 
+            'utf8'
+        );
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true }));
+      } catch (e) {
+        res.writeHead(500).end(e.message);
+      }
     });
     return;
   }

@@ -1,7 +1,7 @@
 import { initLLM } from './local-llm.js';
 import { mapPptxToGrid } from './pptx-importer.js';
 
-export function initComposer() {
+export async function initComposer() {
   const templateGallery = document.getElementById('templateGallery');
   const composerPreview = document.getElementById('composerPreview');
   const aiChat = document.getElementById('aiChat');
@@ -11,37 +11,77 @@ export function initComposer() {
   const deckStrip = document.getElementById('deckStrip');
   const addToDeckBtn = document.getElementById('addToDeckBtn');
   const downloadDeckBtn = document.getElementById('downloadDeckBtn');
+  const importPptxBtn = document.getElementById('importPptxBtn');
+  const pptxFileInput = document.getElementById('pptxFileInput');
+
+  importPptxBtn.addEventListener('click', () => pptxFileInput.click());
+  pptxFileInput.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+        importPptxBtn.textContent = 'Importing...';
+        const { parsePptx } = await import('./pptx-importer.js');
+        const extractedSlides = await parsePptx(file);
+        
+        if (extractedSlides && extractedSlides.length > 0) {
+            // Just load the first slide as an example for now
+            currentSlide = extractedSlides[0];
+            renderComposerPreview();
+            alert(`Successfully extracted layout from PowerPoint!`);
+        } else {
+            alert('No shapes found in PPTX.');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Error parsing PPTX: ' + err.message);
+    } finally {
+        importPptxBtn.textContent = 'Import PPTX';
+        e.target.value = ''; // Reset input
+    }
+  });
 
   let engine = null;
   let currentSlide = { regions: [] };
   let deck = [];
 
-  const templates = [
-    {
-      name: 'Title Slide',
-      regions: [
-        {name: 'Title', role: 'primary-title', x: 10, y: 15, w: 60, h: 8, llmHint: 'Main presentation title'},
-        {name: 'Subtitle', role: 'secondary-title', x: 10, y: 25, w: 60, h: 4, llmHint: 'Subtitle or tagline'},
-        {name: 'Presenter', role: 'supporting-text', x: 10, y: 35, w: 40, h: 6, llmHint: 'Presenter name and title'}
-      ]
-    },
-    { 
-      name: 'Comparison Layout', 
-      regions: [
-        {name: 'Title', role: 'primary-title', x: 2, y: 2, w: 76, h: 6, llmHint: 'Slide title comparing two subjects'}, 
-        {name: 'Option A', role: 'supporting-text', x: 2, y: 10, w: 36, h: 28, llmHint: 'Details for the first option'}, 
-        {name: 'Option B', role: 'supporting-text', x: 42, y: 10, w: 36, h: 28, llmHint: 'Details for the second option'}
-      ] 
-    },
-    { 
-      name: 'Dashboard Summary', 
-      regions: [
-        {name: 'Header', role: 'primary-title', x: 2, y: 2, w: 76, h: 6, llmHint: 'Summary dashboard title'}, 
-        {name: 'Key Metrics', role: 'key-data', x: 2, y: 10, w: 20, h: 30, llmHint: 'Bullet points of high level metrics'}, 
-        {name: 'Analysis', role: 'supporting-text', x: 25, y: 10, w: 53, h: 30, llmHint: 'In-depth analysis and findings'}
-      ] 
+  let templates = [];
+  try {
+    const res = await fetch('/api/templates');
+    if (res.ok) {
+      templates = await res.json();
     }
-  ];
+  } catch (err) {
+    console.warn('Failed to load templates from local API', err);
+  }
+
+  if (templates.length === 0) {
+    templates = [
+      {
+        name: 'Title Slide',
+        regions: [
+          {name: 'Title', role: 'primary-title', x: 10, y: 15, w: 60, h: 8, llmHint: 'Main presentation title'},
+          {name: 'Subtitle', role: 'secondary-title', x: 10, y: 25, w: 60, h: 4, llmHint: 'Subtitle or tagline'},
+          {name: 'Presenter', role: 'supporting-text', x: 10, y: 35, w: 40, h: 6, llmHint: 'Presenter name and title'}
+        ]
+      },
+      { 
+        name: 'Comparison Layout', 
+        regions: [
+          {name: 'Title', role: 'primary-title', x: 2, y: 2, w: 76, h: 6, llmHint: 'Slide title comparing two subjects'}, 
+          {name: 'Option A', role: 'supporting-text', x: 2, y: 10, w: 36, h: 28, llmHint: 'Details for the first option'}, 
+          {name: 'Option B', role: 'supporting-text', x: 42, y: 10, w: 36, h: 28, llmHint: 'Details for the second option'}
+        ] 
+      },
+      { 
+        name: 'Dashboard Summary', 
+        regions: [
+          {name: 'Header', role: 'primary-title', x: 2, y: 2, w: 76, h: 6, llmHint: 'Summary dashboard title'}, 
+          {name: 'Key Metrics', role: 'key-data', x: 2, y: 10, w: 20, h: 30, llmHint: 'Bullet points of high level metrics'}, 
+          {name: 'Analysis', role: 'supporting-text', x: 25, y: 10, w: 53, h: 30, llmHint: 'In-depth analysis and findings'}
+        ] 
+      }
+    ];
+  }
 
   function renderGallery() {
     templateGallery.innerHTML = templates.map((t, i) => `
@@ -224,12 +264,57 @@ content:
           alert("Add some slides to the deck first!");
           return;
       }
-      // Use the existing PPTX exporter (needs enhancement for multi-slide)
-      const { exportToPptx } = await import('./persistence/pptx.js');
-      exportToPptx({
-          templateName: "Full Deck",
-          regions: deck.flatMap(s => s.regions) // Simplified for now
+      
+      const deckName = prompt("Enter presentation name:", "my-presentation");
+      if (!deckName) return;
+
+      const { buildMdxSource } = await import('./persistence/mdx.js');
+      
+      const slidesPayload = deck.map((slide, i) => {
+          const mockState = {
+              templateName: slide.name,
+              canvasWidth: 1920,
+              canvasHeight: 1080,
+              columns: 80,
+              rows: 45,
+              boxes: slide.regions.map((r, idx) => ({
+                  id: r.id || `region-${idx}`,
+                  name: r.name,
+                  gridX: r.x,
+                  gridY: r.y,
+                  gridWidth: r.w,
+                  gridHeight: r.h,
+                  metadata: { role: r.role || 'supporting-text', llmHint: r.llmHint || '' }
+              })),
+              content: slide.regions.reduce((acc, r, idx) => {
+                  acc[r.id || `region-${idx}`] = r.content || '';
+                  return acc;
+              }, {})
+          };
+          
+          return {
+              name: slide.name,
+              mdxContent: buildMdxSource(mockState).source
+          };
       });
+
+      try {
+          const res = await fetch('/api/save-deck', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name: deckName, slides: slidesPayload })
+          });
+          if (res.ok) {
+              alert(`Deck successfully saved to decks/${deckName}/ and templates/slide_sets/${deckName}.json`);
+              deck = [];
+              renderDeckStrip();
+          } else {
+              alert('Failed to save deck');
+          }
+      } catch (err) {
+          console.error(err);
+          alert('Error saving deck');
+      }
   });
 
   renderGallery();

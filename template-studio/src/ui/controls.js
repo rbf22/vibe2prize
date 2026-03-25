@@ -374,10 +374,26 @@ export function attachControlHandlers(controls, renderPreview, renderSnippet, re
 
   async function triggerDownload() {
     try {
-      await downloadMdxFile(state);
+      const { buildMdxSource } = await import('../persistence/mdx.js');
+      const mdxSource = buildMdxSource(state).source;
+      const res = await fetch('/api/save-template', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: state.templateName || 'template', content: mdxSource })
+      });
+      if (res.ok) {
+          alert('Template successfully saved to workspace (templates/mdx/)');
+      } else {
+          throw new Error('API failed');
+      }
     } catch (error) {
-      console.error('Failed to export MDX', error);
-      alert('Failed to export MDX. Please check your template metadata.');
+      console.warn('Failed to export MDX to local workspace, falling back to download', error);
+      try {
+        await downloadMdxFile(state);
+      } catch (innerErr) {
+        console.error('Failed to download MDX', innerErr);
+        alert('Failed to export MDX. Please check your template metadata.');
+      }
     }
   }
 
