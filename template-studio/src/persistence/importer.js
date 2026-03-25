@@ -184,7 +184,9 @@ export function parseMDXFrontmatter(content) {
   // Strip markdown code block wrappers if any (e.g. from LLM output)
   const normalizedContent = content.trim().replace(/^```[a-z]*\n/, '').replace(/\n```$/, '').trim();
 
-  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---(?:\s*\n([\s\S]*))?$/;
+  const originalFrontmatterRegex = /---\s*\n([\s\S]*?)\n---(?:\s*\n([\s\S]*))?$/;
+  // Use a regex that allows preceding characters to handle LLM conversational chatter
+  const frontmatterRegex = /---\s*\n([\s\S]*?)\n---([\s\S]*)$/;
   const match = normalizedContent.match(frontmatterRegex);
 
   if (!match) {

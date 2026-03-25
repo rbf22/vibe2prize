@@ -145,7 +145,6 @@ export async function initComposer() {
 
     // Build context from current slide
     const { buildMdxSource } = await import('./persistence/mdx.js');
-    const { parseMDXFrontmatter } = await import('./persistence/importer.js');
 
     const mockState = {
       templateName: currentSlide.name,
@@ -171,9 +170,8 @@ export async function initComposer() {
     const mdxContext = buildMdxSource(mockState).source;
     
     const systemPrompt = `You are a professional presentation assistant.
-Given the following MDX slide structure and a user brief, generate content for the slide.
-Return ONLY an MDX file structure with frontmatter and a body.
-The frontmatter MUST include a "content" object mapping the region "area" names to the generated text.
+Given the following slide structure and a user brief, generate content for the slide.
+Respond ONLY with a valid JSON object matching the requested structure. Do not use MDX.
 
 Current Slide Structure (MDX):
 \`\`\`mdx
@@ -181,45 +179,72 @@ ${mdxContext}
 \`\`\`
 
 Example Output:
----
-title: "Generated Slide Title"
-content:
-  "Title": "The Generated Title"
-  "Left": "Generated bullet points for left column"
----
-<GridDesigner template="...">
-  ...
-</GridDesigner>`;
+{
+  "message": "Sure! Here is the slide you requested.",
+  "title": "Generated Slide Title",
+  "content": {
+    "Title": "The Generated Title",
+    "Left": "Generated bullet points for left column"
+  }
+}`;
 
-    let response;
-    try {
-      response = await engine.chat.completions.create({
-        messages: [{ role: 'user', content: brief }],
-        systemPrompt
-      });
-    } catch (createErr) {
-      console.error("LLM Generation Error:", createErr);
-      addMessage(`[Generation Error]: ${createErr.message}`, true);
-      generateBtn.disabled = false;
-      generateBtn.textContent = originalBtnText;
-      aiChat.style.opacity = '1';
-      return;
+    let parsedOut = null;
+    let attempts = 0;
+    const maxAttempts = 3;
+    let currentMessages = [{ role: 'user', content: brief }];
+
+    while (attempts < maxAttempts) {
+      attempts++;
+      let response;
+      try {
+        response = await engine.chat.completions.create({
+          messages: currentMessages,
+          systemPrompt
+        });
+      } catch (createErr) {
+        console.error("LLM Generation Error:", createErr);
+        addMessage(`[Generation Error]: ${createErr.message}`, true);
+        generateBtn.disabled = false;
+        generateBtn.textContent = originalBtnText;
+        aiChat.style.opacity = '1';
+        return;
+      }
+
+      const rawContent = response.choices[0].message.content;
+
+      try {
+        const jsonStr = rawContent.replace(/```[a-z]*\n/g, '').replace(/```$/g, '').trim();
+        const match = jsonStr.match(/\{[\s\S]*\}/);
+        if (!match) throw new Error('No JSON block found');
+        
+        parsedOut = JSON.parse(match[0]);
+        if (!parsedOut.content) throw new Error('Missing "content" object');
+        
+        // Success
+        break;
+      } catch (parseErr) {
+        console.warn(`Attempt ${attempts} failed to parse JSON. Raw output:`, rawContent);
+        if (attempts >= maxAttempts) {
+          addMessage(`[Parsing Error]: Could not extract valid JSON from AI response after ${maxAttempts} attempts.`, true);
+          generateBtn.disabled = false;
+          generateBtn.textContent = originalBtnText;
+          aiChat.style.opacity = '1';
+          return;
+        } else {
+          // Send a note back to the LLM to fix it
+          addMessage(`[Format Retry ${attempts}/${maxAttempts}]: Output was invalid, asking AI to fix...`, true);
+          currentMessages.push({ role: 'assistant', content: rawContent });
+          currentMessages.push({ 
+            role: 'user', 
+            content: 'Your previous response was not valid JSON or was missing the required "content" object. Please provide ONLY a valid JSON object matching the requested structure. NO other text.'
+          });
+        }
+      }
     }
 
-    const rawContent = response.choices[0].message.content;
-    const parsed = parseMDXFrontmatter(rawContent);
-
-    if (!parsed.success || !parsed.frontmatter?.content) {
-      console.warn('Failed to parse LLM MDX output. Raw output:', rawContent);
-      addMessage(`[Parsing Error]: Could not extract content from AI response.`, true);
-      generateBtn.disabled = false;
-      generateBtn.textContent = originalBtnText;
-      aiChat.style.opacity = '1';
-      return;
-    }
-
-    const generatedContent = parsed.frontmatter.content;
-    addMessage(`Generated content for "${parsed.frontmatter.title || 'Slide'}"`, true);
+    const generatedContent = parsedOut.content;
+    const msg = parsedOut.message || `Generated content for "${parsedOut.title || 'Slide'}"`;
+    addMessage(msg, true);
 
     // Update current slide regions with generated content
     currentSlide.regions.forEach(region => {

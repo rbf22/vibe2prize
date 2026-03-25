@@ -28,19 +28,16 @@ export async function initLLM(onStatus) {
 
             const systemPrompt = options.systemPrompt || `You are a professional presentation assistant.
 Given a slide template structure and a user brief, generate content for the slide.
-Return ONLY an MDX file structure with frontmatter and a body.
-The frontmatter MUST include a "content" object mapping the region "area" names to the generated text.
+Respond ONLY with a valid JSON object matching this structure:
 
-Example Output:
----
-title: "Slide Title"
-content:
-  "area-name-1": "Generated text for first area"
-  "area-name-2": "Generated text for second area"
----
-<GridDesigner template="...">
-  ...
-</GridDesigner>
+{
+  "message": "A conversational message explaining what you generated",
+  "title": "Slide Title",
+  "content": {
+    "area-name-1": "Generated text for first area",
+    "area-name-2": "Generated text for second area"
+  }
+}
 
 Keep the content professional and relevant to the user's brief.`;
 
