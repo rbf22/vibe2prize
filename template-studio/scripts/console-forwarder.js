@@ -1,40 +1,62 @@
 (function () {
-  const SUPPORTS_BEACON = typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function';
-  const ENDPOINT = '/__logs';
   const LEVELS = ['log', 'warn', 'error'];
+  const MAX_LOGS = 500;
   const original = {};
+  const store = [];
+  const subscribers = new Set();
 
-  LEVELS.forEach((level) => {
-    if (typeof console[level] !== 'function') {
-      return;
+  const logApi = {
+    getEntries() {
+      return store.slice();
+    },
+    subscribe(fn) {
+      if (typeof fn !== 'function') {
+        return () => {};
+      }
+      subscribers.add(fn);
+      return () => subscribers.delete(fn);
+    },
+    clear() {
+      if (!store.length) return;
+      store.length = 0;
+      notify({ type: 'reset' });
     }
+  };
 
-    original[level] = console[level].bind(console);
-    console[level] = (...args) => {
+  function notify(event) {
+    subscribers.forEach((fn) => {
       try {
-        original[level](...args);
-      } catch (err) {
-        // ignore console errors
+        fn(event);
+      } catch (error) {
+        // ignore subscriber errors
       }
+    });
+  }
 
-      try {
-        const payload = JSON.stringify({ level, args: args.map(serializeArg) });
-        if (SUPPORTS_BEACON) {
-          const blob = new Blob([payload], { type: 'application/json' });
-          navigator.sendBeacon(ENDPOINT, blob);
-        } else {
-          fetch(ENDPOINT, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: payload,
-            keepalive: true
-          }).catch(() => {});
-        }
-      } catch (err) {
-        // Swallow errors so we never break the console
-      }
-    };
-  });
+  function pushEntry(entry) {
+    store.push(entry);
+    if (store.length > MAX_LOGS) {
+      store.shift();
+    }
+    notify({ type: 'append', entry });
+  }
+
+  function formatArg(arg) {
+    if (arg instanceof Error) {
+      return `${arg.name || 'Error'}: ${arg.message}`;
+    }
+    if (typeof arg === 'string') return arg;
+    if (typeof arg === 'number' || typeof arg === 'boolean') {
+      return String(arg);
+    }
+    if (arg === undefined) return 'undefined';
+    if (arg === null) return 'null';
+    try {
+      return JSON.stringify(arg, null, 2);
+    } catch (error) {
+      return String(arg);
+    }
+  }
 
   function serializeArg(arg) {
     try {
@@ -52,5 +74,37 @@
     } catch (error) {
       return String(arg);
     }
+  }
+
+  LEVELS.forEach((level) => {
+    if (typeof console[level] !== 'function') {
+      return;
+    }
+
+    original[level] = console[level].bind(console);
+    console[level] = (...args) => {
+      try {
+        original[level](...args);
+      } catch (err) {
+        // ignore console errors
+      }
+
+      try {
+        const entry = {
+          id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+          level,
+          args: args.map(serializeArg),
+          message: args.map(formatArg).join(' '),
+          timestamp: new Date().toISOString()
+        };
+        pushEntry(entry);
+      } catch (err) {
+        // Swallow errors so we never break the console
+      }
+    };
+  });
+
+  if (typeof window !== 'undefined') {
+    window.TemplateStudioLogs = logApi;
   }
 })();

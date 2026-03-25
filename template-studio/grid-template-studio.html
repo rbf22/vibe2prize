@@ -14,6 +14,7 @@
     />
     <link rel="stylesheet" href="./styles/main.css" />
     <script src="./scripts/console-forwarder.js"></script>
+    <script src="./scripts/log-panel.js"></script>
     <!-- React and ReactDOM for production render -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -35,6 +36,7 @@
     <nav class="app-nav">
       <button id="designTab" class="nav-btn active" data-tab="design">Design</button>
       <button id="composeTab" class="nav-btn" data-tab="composer">Composer</button>
+      <button id="logsTab" class="nav-btn" data-tab="logs">Logs</button>
     </nav>
 
     <main class="app-grid" id="designView">
@@ -292,6 +294,38 @@
       </section>
     </main>
 
+    <main class="logs-grid" id="logsView" style="display: none;">
+      <section class="logs-panel">
+        <div class="logs-panel-header">
+          <div>
+            <h2>Console Logs</h2>
+            <p>Captured output from the studio runtime. Nothing is sent outside your browser.</p>
+          </div>
+          <div class="logs-panel-actions">
+            <label class="logs-filter">
+              Level
+              <select id="logsLevelFilter">
+                <option value="all">All</option>
+                <option value="log">Log</option>
+                <option value="warn">Warnings</option>
+                <option value="error">Errors</option>
+              </select>
+            </label>
+            <label class="logs-toggle">
+              <input type="checkbox" id="logsAutoscrollToggle" checked>
+              <span>Auto-scroll</span>
+            </label>
+            <button type="button" id="copyLogsBtn" class="ghost-btn">Copy Logs</button>
+            <button type="button" id="clearLogsBtn" class="danger-btn">Clear</button>
+          </div>
+        </div>
+
+        <div class="logs-feed" id="logsFeed">
+          <div class="logs-empty-state">Console output will appear here.</div>
+        </div>
+      </section>
+    </main>
+
     <main class="composer-grid" id="composerView" style="display: none;">
       <section class="composer-sidebar">
         <h3>Templates</h3>
@@ -355,25 +389,50 @@
           });
         }
 
+        function initializeLogs() {
+          const feed = document.getElementById('logsFeed');
+          if (window.TemplateStudioLogPanel?.initLogPanel) {
+            window.TemplateStudioLogPanel.initLogPanel({ feedEl: feed });
+            return;
+          }
+          console.warn('Failed to initialize log panel');
+          if (feed) {
+            feed.innerHTML = '<div class="logs-empty-state">Unable to load log viewer.</div>';
+          }
+        }
+
         function setupApplication() {
           console.log('setupApplication called');
           const designTab = document.getElementById('designTab');
           const composeTab = document.getElementById('composeTab');
+          const logsTab = document.getElementById('logsTab');
           const designView = document.getElementById('designView');
           const composerView = document.getElementById('composerView');
+          const logsView = document.getElementById('logsView');
 
           const switchTab = (tab) => {
             console.log('Switching to tab:', tab);
             if (tab === 'design') {
               designTab.classList.add('active');
               composeTab.classList.remove('active');
+              logsTab.classList.remove('active');
               designView.style.display = 'flex'; // Changed from grid to flex for better overall container support
               composerView.style.display = 'none';
+              logsView.style.display = 'none';
             } else {
               designTab.classList.remove('active');
-              composeTab.classList.add('active');
               designView.style.display = 'none';
-              composerView.style.display = 'grid';
+              if (tab === 'composer') {
+                composeTab.classList.add('active');
+                logsTab.classList.remove('active');
+                composerView.style.display = 'grid';
+                logsView.style.display = 'none';
+              } else {
+                composeTab.classList.remove('active');
+                logsTab.classList.add('active');
+                composerView.style.display = 'none';
+                logsView.style.display = 'flex';
+              }
             }
           };
 
@@ -381,15 +440,14 @@
             console.log('Design tab clicked');
             switchTab('design');
           });
-          composeTab.addEventListener('click', (e) => {
-            console.log('Composer tab clicked');
-            switchTab('composer');
-          });
+          composeTab.addEventListener('click', () => switchTab('composer'));
+          logsTab.addEventListener('click', () => switchTab('logs'));
 
           const ensureReady = () => {
             // Check for BOTH TemplateStudio (Design) and Composer
             const isDesignReady = !!(window.TemplateStudio && window.TemplateStudio.attachControlHandlers);
             const isComposerReady = typeof window.initComposer === 'function';
+            const hasLogStore = typeof window.TemplateStudioLogs !== 'undefined';
 
             console.log('Checking readiness - Design:', isDesignReady, 'Composer:', isComposerReady);
             if (window.TemplateStudio) {
@@ -399,7 +457,7 @@
               });
             }
 
-            if (!isDesignReady || !isComposerReady) {
+            if (!isDesignReady || !isComposerReady || !hasLogStore) {
               setTimeout(ensureReady, 100);
               return;
             }
@@ -407,6 +465,7 @@
             try {
               initializeDom();
               window.initComposer();
+              initializeLogs();
             } catch (err) {
               console.error('Initialization error:', err);
             }

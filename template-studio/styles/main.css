@@ -1325,6 +1325,153 @@ button[style*="z-index: 9999"] {
   color: var(--primary);
 }
 
+.logs-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.logs-panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-height: 480px;
+}
+
+.logs-panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.logs-panel-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.logs-panel-header p {
+  margin: 0.25rem 0 0;
+  color: var(--color-text-muted);
+  max-width: 38ch;
+}
+
+.logs-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.logs-panel-actions label {
+  flex: 1 1 140px;
+}
+
+.logs-filter select {
+  width: 100%;
+}
+
+.logs-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.logs-toggle input {
+  accent-color: var(--primary);
+}
+
+.logs-feed {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  padding: 1rem;
+  min-height: 320px;
+  max-height: 520px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.logs-empty-state {
+  width: 100%;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 3rem 0;
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 1rem;
+}
+
+.log-entry {
+  padding: 0.85rem;
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.log-entry--warn {
+  border-color: rgba(255, 198, 92, 0.4);
+  background: rgba(255, 198, 92, 0.08);
+}
+
+.log-entry--error {
+  border-color: rgba(255, 67, 54, 0.4);
+  background: rgba(255, 67, 54, 0.08);
+}
+
+.log-entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.log-level {
+  border-radius: 999px;
+  padding: 0.15rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.log-entry--warn .log-level {
+  border-color: rgba(255, 198, 92, 0.8);
+  color: #ffdd9c;
+}
+
+.log-entry--error .log-level {
+  border-color: rgba(255, 67, 54, 0.8);
+  color: #ff8f86;
+}
+
+.log-message {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 0.8rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
 /* Composer Grid */
 .composer-grid {
   display: grid;
