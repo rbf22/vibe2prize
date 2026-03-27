@@ -1,4 +1,5 @@
 import { validateFrontmatter } from '../../../core/mdx/schema.js';
+import { toCompactFrontmatter } from '../../../core/mdx/compact-format.js';
 
 const DEFAULT_LAYOUT_TYPE = 'grid-designer';
 
@@ -281,7 +282,70 @@ export function buildFrontmatterFromState(state) {
   };
 
   validateFrontmatter(frontmatter);
-  return frontmatter;
+  
+  // Convert to compact format for export
+  return toCompactFrontmatter(frontmatter);
+}
+
+function serializeCompactSettings(settings) {
+  if (!settings || typeof settings !== 'object') return '';
+  const parts = [];
+  
+  if (settings.canvas) parts.push(`canvas: ${quote(settings.canvas)}`);
+  if (settings.grid) parts.push(`grid: ${quote(settings.grid)}`);
+  if (settings.gap) parts.push(`gap: ${quote(settings.gap)}`);
+  if (settings.columnSize) parts.push(`columnSize: ${quote(settings.columnSize)}`);
+  if (settings.rowSize) parts.push(`rowSize: ${quote(settings.rowSize)}`);
+  
+  return parts.length ? `settings:\n  ${parts.join('\n  ')}` : '';
+}
+
+function serializeCompactExclusions(exclusions) {
+  if (!exclusions) return '';
+  if (typeof exclusions === 'string') {
+    return `exclusions: ${exclusions}`;
+  }
+  return `exclusions: "${exclusions.top},${exclusions.bottom},${exclusions.left},${exclusions.right}"`;
+}
+
+function serializeCompactBrand(brand) {
+  if (!brand) return '';
+  if (typeof brand === 'string') {
+    return `brand: ${quote(brand)}`;
+  }
+  return brand.variant ? `brand: ${quote(`${brand.id} ${brand.variant}`)}` : `brand: ${quote(brand.id)}`;
+}
+
+function serializeCompactShapes(shapes) {
+  if (!Array.isArray(shapes) || !shapes.length) return '';
+  
+  const lines = ['shapes:'];
+  shapes.forEach(shape => {
+    if (typeof shape === 'string') {
+      lines.push(`  - ${shape}`);
+    }
+  });
+  return lines.join('\n');
+}
+
+function serializeCompactRegions(regions) {
+  if (!Array.isArray(regions) || !regions.length) return '';
+  
+  const lines = ['regions:'];
+  regions.forEach(region => {
+    const parts = [`- id: ${quote(region.id)}`];
+    
+    if (region.role) parts.push(`  role: ${quote(region.role)}`);
+    if (region.area && region.area !== region.id) parts.push(`  area: ${quote(region.area)}`);
+    if (region.req) parts.push(`  req: ${region.req}`);
+    if (region.type) parts.push(`  type: ${quote(region.type)}`);
+    if (region.maxWords) parts.push(`  maxWords: ${region.maxWords}`);
+    if (region.hint) parts.push(`  hint: ${quote(region.hint)}`);
+    if (region.grid) parts.push(`  grid: ${quote(region.grid)}`);
+    
+    lines.push(parts.join('\n  '));
+  });
+  return lines.join('\n');
 }
 
 function serializeLayout(layout) {
@@ -385,13 +449,31 @@ export function buildMdxSource(state) {
   const frontmatter = buildFrontmatterFromState(state);
   // Attach content to frontmatter for easier hydration later
   frontmatter.content = state.content || {};
-  const layoutYaml = serializeLayout(frontmatter.layout);
-  const regionsYaml = serializeRegions(frontmatter.regions);
-  const templateSettingsYaml = serializeTemplateSettings(frontmatter.templateSettings);
-  const exclusionsYaml = serializeExclusions(frontmatter.exclusions);
-  const brandYaml = serializeBrand(frontmatter.brand);
+  
+  // Use compact serialization if frontmatter is in compact format
+  const isCompact = frontmatter.settings || frontmatter.shapes || 
+    (frontmatter.regions && frontmatter.regions[0] && frontmatter.regions[0].grid);
+  
+  let layoutYaml, regionsYaml, templateSettingsYaml, exclusionsYaml, brandYaml, backgroundShapesYaml;
+  
+  if (isCompact) {
+    layoutYaml = serializeLayout(frontmatter.layout);
+    regionsYaml = serializeCompactRegions(frontmatter.regions);
+    templateSettingsYaml = serializeCompactSettings(frontmatter.settings);
+    exclusionsYaml = serializeCompactExclusions(frontmatter.exclusions);
+    brandYaml = serializeCompactBrand(frontmatter.brand);
+    backgroundShapesYaml = serializeCompactShapes(frontmatter.shapes);
+  } else {
+    layoutYaml = serializeLayout(frontmatter.layout);
+    regionsYaml = serializeRegions(frontmatter.regions);
+    templateSettingsYaml = serializeTemplateSettings(frontmatter.templateSettings);
+    exclusionsYaml = serializeExclusions(frontmatter.exclusions);
+    brandYaml = serializeBrand(frontmatter.brand);
+    backgroundShapesYaml = serializeBackgroundShapes(frontmatter.backgroundShapes);
+  }
+  
   const previewFlagsYaml = serializePreviewFlags(frontmatter.previewFlags);
-  const backgroundShapesYaml = serializeBackgroundShapes(frontmatter.backgroundShapes);
+  
   const frontmatterYaml = [
     '---',
     `title: ${quote(frontmatter.title)}`,

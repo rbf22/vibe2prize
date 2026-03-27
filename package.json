@@ -8,14 +8,9 @@
     "example": "example"
   },
   "scripts": {
-    "build:slides": "node builder/build-slides.js",
-    "dev": "node builder/build-slides.js --watch",
-    "dev:static": "node scripts/dev-static.js",
     "studio": "node scripts/template-studio.js",
-    "build:studio": "node scripts/build-template-studio.js",
     "lint:slides": "node builder/lint-slides.js",
     "analyze:content": "node builder/content-analyzer.js",
-    "build": "npm run build:slides",
     "test": "node --test --import ./template-studio/test/test-setup.js template-studio/test/core-regression.test.js template-studio/test/integration.test.js template-studio/test/visual-regression.test.js template-studio/test/importer.test.js template-studio/test/exporter.test.js template-studio/test/schema-validation.test.js template-studio/test/pptx-importer.test.js",
     "test:mdx": "node --test template-studio/test/importer.test.js template-studio/test/exporter.test.js template-studio/test/schema-validation.test.js",
     "test:regression": "node --test template-studio/test/regression.test.js template-studio/test/integration.test.js template-studio/test/visual-regression.test.js",

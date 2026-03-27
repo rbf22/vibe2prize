@@ -1,6 +1,7 @@
 import { state, pushHistory } from '../state.js';
 import { applyBrandTheme, emitBrandStateChanged } from '../branding/brands.js';
 import { validateFrontmatter } from '../../../core/mdx/schema.js';
+import { expandCompactFrontmatter } from '../../../core/mdx/compact-format.js';
 
 const FRONTMATTER_REGEX = /^---\s*\n([\s\S]*?)\n---/;
 
@@ -172,6 +173,10 @@ function normalizeFrontmatter(frontmatter) {
   if (!frontmatter || typeof frontmatter !== 'object') {
     return frontmatter;
   }
+  
+  // First expand compact format if needed
+  frontmatter = expandCompactFrontmatter(frontmatter);
+  
   normalizeLayoutComponents(frontmatter);
   return frontmatter;
 }

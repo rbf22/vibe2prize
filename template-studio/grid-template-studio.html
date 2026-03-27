@@ -376,9 +376,8 @@
 
     <script>
       (function() {
-        const isDevelopment = false; // Force dist
-
-        const moduleSrc = './dist/main.js';
+        // Use src modules directly for offline usage - no build required
+        const moduleSrc = './src/main.js';
 
         // Register Service Worker
         if ('serviceWorker' in navigator) {

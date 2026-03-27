@@ -58,5 +58,194 @@
         "h": 1
       }
     ]
+  },
+  {
+    "name": "Compact Narrative Slide",
+    "file": "compact-example.mdx",
+    "regions": [
+      {
+        "id": "section-label",
+        "name": "section-title",
+        "role": "section-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "hero-title",
+        "name": "primary-title",
+        "role": "primary-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "hero-subtitle",
+        "name": "secondary-title",
+        "role": "secondary-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "summary-body",
+        "name": "supporting-text",
+        "role": "supporting-text",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "insight-callout",
+        "name": "key-data",
+        "role": "key-data",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "stat-cluster",
+        "name": "data-table",
+        "role": "data-table",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "stat-caption",
+        "name": "context-info",
+        "role": "context-info",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "quote",
+        "name": "supporting-text",
+        "role": "supporting-text",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "brand-logo",
+        "name": "logo",
+        "role": "logo",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "page-number",
+        "name": "page-number",
+        "role": "page-number",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "footer",
+        "name": "footer",
+        "role": "footer",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      }
+    ]
+  },
+  {
+    "name": "Simple Test Slide",
+    "file": "simple-test.mdx",
+    "regions": [
+      {
+        "id": "title",
+        "name": "primary-title",
+        "role": "primary-title",
+        "x": 3,
+        "y": 4,
+        "w": 48,
+        "h": 3
+      },
+      {
+        "id": "content",
+        "name": "supporting-text",
+        "role": "supporting-text",
+        "x": 3,
+        "y": 10,
+        "w": 48,
+        "h": 10
+      }
+    ]
+  },
+  {
+    "name": "Simple Slide",
+    "file": "ultra-compact.mdx",
+    "regions": [
+      {
+        "id": "title",
+        "name": "primary-title",
+        "role": "primary-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "subtitle",
+        "name": "secondary-title",
+        "role": "secondary-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "body",
+        "name": "supporting-text",
+        "role": "supporting-text",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "logo",
+        "name": "logo",
+        "role": "logo",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "page",
+        "name": "page-number",
+        "role": "page-number",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "footer",
+        "name": "footer",
+        "role": "footer",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      }
+    ]
   }
 ]

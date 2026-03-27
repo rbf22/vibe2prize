@@ -60,16 +60,6 @@ python3 -m http.server 8080
 
 Open `http://localhost:4174` in your browser.
 
-### Production Build
-
-```bash
-# Build Template Studio for production
-npm run build:studio
-
-# This creates template-studio/dist/main.js - a bundled, minified version
-# suitable for deployment or inclusion in other projects
-```
-
 ### Testing
 
 ```bash

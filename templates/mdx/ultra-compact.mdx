@@ -1,0 +1,26 @@
+---
+title: "Simple Slide"
+maxWords: 200
+phase: "draft"
+settings: { canvas: "1920x1080", grid: "80x45" }
+exclusions: "4,4,3,3"
+brand: "accenture light"
+regions:
+  - { id: "title", role: "primary-title", req: true, grid: "3,4,48x3", hint: "Main headline" }
+  - { id: "subtitle", role: "secondary-title", grid: "3,7,42x2", hint: "Supporting text" }
+  - { id: "body", role: "supporting-text", req: true, grid: "3,10,46x12", hint: "Main content" }
+  - { id: "logo", role: "logo", type: "image", grid: "3,42,10x2" }
+  - { id: "page", role: "page-number", req: true, grid: "68,42,9x2" }
+  - { id: "footer", role: "footer", req: true, grid: "22,43,32x1" }
+layout: { type: "grid-designer", template: "Simple Slide", rows: 45, columns: 80 }
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../core/layout/components.js";
+
+<GridDesigner template="Simple Slide">
+  {["title", "subtitle", "body", "logo", "page", "footer"].map(id => (
+    <GridArea key={id} area={id} contentType={frontmatter.regions.find(r => r.id === id).role}>
+      <ContentRenderer type={frontmatter.regions.find(r => r.id === id).role} content={""} />
+    </GridArea>
+  ))}
+</GridDesigner>

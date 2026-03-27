@@ -1,0 +1,52 @@
+---
+title: "Simple Test Slide"
+maxWords: 100
+phase: "draft"
+templateSettings:
+  canvasWidth: 1920
+  canvasHeight: 1080
+  columns: 80
+  rows: 45
+  gap: "0.5rem"
+exclusions:
+  top: 4
+  bottom: 4
+  left: 3
+  right: 3
+brand:
+  id: "default"
+  variant: "light"
+regions:
+  - id: "title"
+    role: "primary-title"
+    required: true
+    grid:
+      x: 3
+      y: 4
+      width: 48
+      height: 3
+  - id: "content"
+    role: "supporting-text"
+    grid:
+      x: 3
+      y: 10
+      width: 48
+      height: 10
+layout:
+  type: "grid-designer"
+  template: "Simple Test Slide"
+  rows: 45
+  columns: 80
+  gap: "0.5rem"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../core/layout/components.js";
+
+<GridDesigner template="Simple Test Slide">
+  <GridArea area="title" contentType="primary-title" importance="critical">
+    <ContentRenderer type="primary-title" content="" />
+  </GridArea>
+  <GridArea area="content" contentType="supporting-text" importance="supporting">
+    <ContentRenderer type="supporting-text" content="" />
+  </GridArea>
+</GridDesigner>

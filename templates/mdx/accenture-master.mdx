@@ -10,39 +10,6 @@ templateSettings:
   columnSize: "1fr"
   rowSize: "1fr"
   gap: "0.5rem"
-layout:
-  type: "grid-designer"
-  template: "Accenture Master Template"
-  components:
-    - type: "GridArea"
-      id: "section-label"
-      role: "section-title"
-      area: "section-label"
-    - type: "GridArea"
-      id: "hero-title"
-      role: "primary-title"
-      area: "hero-title"
-      maxWords: 18
-    - type: "GridArea"
-      id: "hero-subtitle"
-      role: "secondary-title"
-      area: "hero-subtitle"
-      maxWords: 28
-    - type: "GridArea"
-      id: "brand-logo"
-      role: "logo"
-      area: "logo"
-    - type: "GridArea"
-      id: "page-number"
-      role: "page-number"
-      area: "page-number"
-    - type: "GridArea"
-      id: "footer"
-      role: "footer"
-      area: "footer"
-  rows: 45
-  columns: 80
-  gap: "0.5rem"
 exclusions:
   top: 5
   bottom: 3
@@ -52,28 +19,24 @@ brand:
   id: "accenture"
   variant: "light"
 regions:
-  - id: "section-label"
+  - &section_label
+    id: "section-label"
     area: "section-label"
     role: "section-title"
     required: false
     inputType: "text"
-    type: "section-title"
-    fieldTypes:
-      - "section-title"
     llmHint: "Eyebrow or track name anchoring the narrative."
     grid:
       x: 1
       y: 1
       width: 26
       height: 1
-  - id: "hero-title"
+  - &hero_title
+    id: "hero-title"
     area: "hero-title"
     role: "primary-title"
     required: true
     inputType: "text"
-    type: "primary-title"
-    fieldTypes:
-      - "primary-title"
     maxWords: 18
     llmHint: "Primary narrative headline."
     grid:
@@ -81,14 +44,12 @@ regions:
       y: 2
       width: 52
       height: 2
-  - id: "hero-subtitle"
+  - &hero_subtitle
+    id: "hero-subtitle"
     area: "hero-subtitle"
     role: "secondary-title"
     required: false
     inputType: "text"
-    type: "secondary-title"
-    fieldTypes:
-      - "secondary-title"
     maxWords: 28
     llmHint: "Subtitle that frames the story."
     grid:
@@ -96,69 +57,85 @@ regions:
       y: 4
       width: 52
       height: 1
-  - id: "brand-logo"
+  - &brand_logo
+    id: "brand-logo"
     area: "logo"
     role: "logo"
     required: true
     inputType: "image"
-    type: "logo"
-    fieldTypes:
-      - "logo"
     llmHint: "Brand identifier or watermark."
     grid:
       x: 3
       y: 43
       width: 10
       height: 1
-  - id: "page-number"
+  - &page_number
+    id: "page-number"
     area: "page-number"
     role: "page-number"
     required: true
     inputType: "text"
-    type: "page-number"
-    fieldTypes:
-      - "page-number"
     llmHint: "Slide number indicator."
     grid:
       x: 68
       y: 43
       width: 9
       height: 1
-  - id: "footer"
+  - &footer_region
+    id: "footer"
     area: "footer"
     role: "footer"
     required: true
     inputType: "text"
-    type: "footer"
-    fieldTypes:
-      - "footer"
     llmHint: "Legal copy or confidentiality notice."
     grid:
       x: 22
       y: 43
       width: 32
       height: 1
+layout:
+  type: "grid-designer"
+  template: "Accenture Master Template"
+  components:
+    - type: "GridArea"
+      <<: *section_label
+    - type: "GridArea"
+      <<: *hero_title
+    - type: "GridArea"
+      <<: *hero_subtitle
+    - type: "GridArea"
+      <<: *brand_logo
+    - type: "GridArea"
+      <<: *page_number
+    - type: "GridArea"
+      <<: *footer_region
+  rows: 45
+  columns: 80
+  gap: "0.5rem"
 ---
 
 import { GridDesigner, GridArea, ContentRenderer } from "../../core/layout/components.js";
 
-<GridDesigner template="Accenture Master Template">
-  <GridArea area="section-label" contentType="section-title" importance="supporting">
-    <ContentRenderer type="section-title" content={""} />
-  </GridArea>
-  <GridArea area="hero-title" contentType="primary-title" importance="critical">
-    <ContentRenderer type="primary-title" content={""} />
-  </GridArea>
-  <GridArea area="hero-subtitle" contentType="secondary-title" importance="supporting">
-    <ContentRenderer type="secondary-title" content={""} />
-  </GridArea>
-  <GridArea area="logo" contentType="logo" importance="critical">
-    <ContentRenderer type="logo" content={""} />
-  </GridArea>
-  <GridArea area="page-number" contentType="page-number" importance="critical">
-    <ContentRenderer type="page-number" content={""} />
-  </GridArea>
-  <GridArea area="footer" contentType="footer" importance="critical">
-    <ContentRenderer type="footer" content={""} />
-  </GridArea>
+const REGION_IMPORTANCE = {
+  "primary-title": "critical",
+  "page-number": "critical",
+  footer: "critical",
+  logo: "supporting",
+};
+
+const regions = frontmatter?.regions ?? [];
+
+const resolveImportance = (role) => REGION_IMPORTANCE[role] || "supporting";
+
+<GridDesigner template={frontmatter?.layout?.template || "Accenture Master Template"}>
+  {regions.map((region) => (
+    <GridArea
+      key={region.id}
+      area={region.area}
+      contentType={region.role}
+      importance={resolveImportance(region.role)}
+    >
+      <ContentRenderer type={region.role} content={""} />
+    </GridArea>
+  ))}
 </GridDesigner>

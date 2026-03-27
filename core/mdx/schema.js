@@ -1,3 +1,5 @@
+import { expandCompactFrontmatter } from './compact-format.js';
+
 export function assert(condition, message) {
   if (!condition) {
     throw new Error(`MDX validation error: ${message}`);
@@ -7,29 +9,32 @@ export function assert(condition, message) {
 export function validateFrontmatter(frontmatter) {
   const errors = [];
   
-  if (!frontmatter || typeof frontmatter !== 'object') {
+  // First expand compact format if needed
+  const expandedFrontmatter = expandCompactFrontmatter(frontmatter);
+  
+  if (!expandedFrontmatter || typeof expandedFrontmatter !== 'object') {
     errors.push('frontmatter must be an object');
     return { valid: false, errors };
   }
 
-  if (typeof frontmatter.title !== 'string' || !frontmatter.title.trim()) {
+  if (typeof expandedFrontmatter.title !== 'string' || !expandedFrontmatter.title.trim()) {
     errors.push('title is required and must be a non-empty string');
   }
   
-  if (typeof frontmatter.phase !== 'string' || !frontmatter.phase.trim()) {
+  if (typeof expandedFrontmatter.phase !== 'string' || !expandedFrontmatter.phase.trim()) {
     errors.push('phase is required and must be a non-empty string');
   } else {
     const allowedPhases = ['concept', 'design', 'development', 'production', 'draft'];
-    if (!allowedPhases.includes(frontmatter.phase.toLowerCase())) {
+    if (!allowedPhases.includes(expandedFrontmatter.phase.toLowerCase())) {
       errors.push(`phase must be one of: ${allowedPhases.join(', ')}`);
     }
   }
   
-  if (typeof frontmatter.maxWords !== 'number' || !Number.isFinite(frontmatter.maxWords) || frontmatter.maxWords <= 0) {
+  if (typeof expandedFrontmatter.maxWords !== 'number' || !Number.isFinite(expandedFrontmatter.maxWords) || expandedFrontmatter.maxWords <= 0) {
     errors.push('maxWords must be a positive finite number');
   }
 
-  const layout = frontmatter.layout;
+  const layout = expandedFrontmatter.layout;
   if (!layout || typeof layout !== 'object') {
     errors.push('layout must be provided and must be an object');
   } else {
@@ -73,7 +78,7 @@ export function validateFrontmatter(frontmatter) {
     }
   }
 
-  const regions = frontmatter.regions;
+  const regions = expandedFrontmatter.regions;
   if (!Array.isArray(regions) || regions.length === 0) {
     errors.push('regions must be a non-empty array');
   } else {
@@ -113,11 +118,11 @@ export function validateFrontmatter(frontmatter) {
     }
   }
 
-  if ('tags' in frontmatter) {
-    if (!Array.isArray(frontmatter.tags)) {
+  if ('tags' in expandedFrontmatter) {
+    if (!Array.isArray(expandedFrontmatter.tags)) {
       errors.push('tags must be an array');
     } else {
-      frontmatter.tags.forEach((tag, index) => {
+      expandedFrontmatter.tags.forEach((tag, index) => {
         if (typeof tag !== 'string') {
           errors.push(`tags[${index}] must be a string`);
         }
