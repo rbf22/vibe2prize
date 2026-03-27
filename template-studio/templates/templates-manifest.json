@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Accenture Master Template",
+    "file": "accenture-master.mdx",
+    "regions": [
+      {
+        "id": "section-label",
+        "name": "section-title",
+        "role": "section-title",
+        "x": 1,
+        "y": 1,
+        "w": 26,
+        "h": 1
+      },
+      {
+        "id": "hero-title",
+        "name": "primary-title",
+        "role": "primary-title",
+        "x": 1,
+        "y": 2,
+        "w": 52,
+        "h": 2
+      },
+      {
+        "id": "hero-subtitle",
+        "name": "secondary-title",
+        "role": "secondary-title",
+        "x": 1,
+        "y": 4,
+        "w": 52,
+        "h": 1
+      },
+      {
+        "id": "brand-logo",
+        "name": "logo",
+        "role": "logo",
+        "x": 3,
+        "y": 43,
+        "w": 10,
+        "h": 1
+      },
+      {
+        "id": "page-number",
+        "name": "page-number",
+        "role": "page-number",
+        "x": 68,
+        "y": 43,
+        "w": 9,
+        "h": 1
+      },
+      {
+        "id": "footer",
+        "name": "footer",
+        "role": "footer",
+        "x": 22,
+        "y": 43,
+        "w": 32,
+        "h": 1
+      }
+    ]
+  }
+]

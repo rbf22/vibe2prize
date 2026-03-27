@@ -1,5 +1,6 @@
 import { initLLM } from './local-llm.js';
 import { mapPptxToGrid } from './pptx-importer.js';
+import { parseMDXFrontmatter } from './persistence/importer.js';
 
 export async function initComposer() {
   const templateGallery = document.getElementById('templateGallery');
@@ -190,20 +191,34 @@ export async function initComposer() {
     
     const systemPrompt = `You are a professional presentation assistant.
 Given the following slide structure and a user brief, generate content for the slide.
-Respond ONLY with a valid JSON object matching the requested structure. Do not use MDX.
+Respond ONLY with valid JSON matching this exact schema. Do NOT include prose, code fences, or MDX.
+
+Schema:
+{
+  "message": "Conversational confirmation of what you generated",
+  "title": "Slide Title",
+  "content": {
+    "Region Name or ID": "Generated text for that region"
+  }
+}
+
+Notes:
+- Content keys must match the provided region names or IDs.
+- All values must be strings.
+- Do not wrap the JSON in markdown fences.
 
 Current Slide Structure (MDX):
-\`\`\`mdx
+\`\`\`
 ${mdxContext}
 \`\`\`
 
 Example Output:
 {
-  "message": "Sure! Here is the slide you requested.",
-  "title": "Generated Slide Title",
+  "message": "Here is a refreshed narrative for your slide.",
+  "title": "Grid Blueprint: Narrative Slide",
   "content": {
-    "Title": "The Generated Title",
-    "Left": "Generated bullet points for left column"
+    "Title": "Re-aligning the organization around AI adoption",
+    "Content": "Generated copy for the main narrative area."
   }
 }`;
 
@@ -248,6 +263,22 @@ Example Output:
         break;
       } catch (parseErr) {
         console.warn(`Attempt ${attempts} failed to parse JSON. Raw output:`, rawContent);
+
+        // Fallback: try to parse MDX frontmatter if the model ignored instructions
+        if (!parsedOut) {
+          const mdxResult = parseMDXFrontmatter(rawContent);
+          if (mdxResult.success && mdxResult.frontmatter?.content) {
+            parsedOut = {
+              message: mdxResult.frontmatter.title
+                ? `Imported MDX for "${mdxResult.frontmatter.title}"`
+                : 'Imported MDX response',
+              title: mdxResult.frontmatter.title || 'Generated Slide',
+              content: mdxResult.frontmatter.content
+            };
+            break;
+          }
+        }
+
         if (attempts >= maxAttempts) {
           addMessage(`[Parsing Error]: Could not extract valid JSON from AI response after ${maxAttempts} attempts.`, true);
           generateBtn.disabled = false;

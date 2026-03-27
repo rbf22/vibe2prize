@@ -117,6 +117,34 @@
 
   function attachCopyHandler(button) {
     if (!button) return;
+
+    async function copyToClipboard(text) {
+      if (!text) {
+        throw new Error('No content to copy');
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return;
+        } catch (error) {
+          console.warn('navigator.clipboard.writeText failed, falling back to execCommand copy', error);
+        }
+      }
+
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'absolute';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      const succeeded = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      if (!succeeded) {
+        throw new Error('execCommand copy failed');
+      }
+    }
+
     const handler = async () => {
       const entries = panelState.store?.getEntries?.() || [];
       const filtered = entries.filter(matchesFilter);
@@ -126,16 +154,24 @@
         return;
       }
       const payload = filtered
-        .map((entry) => `[${entry.timestamp}] ${entry.level.toUpperCase()} ${entry.message}`)
-        .join('\n');
+        .map((entry) => {
+          const argsText = Array.isArray(entry.args) && entry.args.length > 1
+            ? `\n${entry.args.map(stringifyArg).join('\n')}`
+            : '';
+          return `[${entry.timestamp}] ${entry.level.toUpperCase()} ${entry.message}${argsText}`;
+        })
+        .join('\n\n');
       try {
-        await navigator.clipboard.writeText(payload);
+        button.disabled = true;
+        await copyToClipboard(payload);
         button.textContent = 'Copied!';
         setTimeout(() => { button.textContent = 'Copy Logs'; }, 1500);
       } catch (error) {
         console.warn('Failed to copy logs', error);
         button.textContent = 'Copy Failed';
         setTimeout(() => { button.textContent = 'Copy Logs'; }, 1500);
+      } finally {
+        button.disabled = false;
       }
     };
     button.addEventListener('click', handler);
