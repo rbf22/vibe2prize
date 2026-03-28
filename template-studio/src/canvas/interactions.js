@@ -143,7 +143,7 @@ export function createBoxFromGrid(gridX, gridY, gridWidth, gridHeight, name = nu
       type: ''
     }
   };
-  console.log(`createBoxFromGrid: grid(${gridX},${gridY}) size(${gridWidth}x${gridHeight}) id=${id}`);
+  
   state.boxes.push(box);
   state.metadata[id] = box.metadata;
   state._boxesInitialized = true;
@@ -154,6 +154,7 @@ export function createBoxFromGrid(gridX, gridY, gridWidth, gridHeight, name = nu
 export function startDrag(e, box) {
   isDragging = true;
   draggedBox = box;
+  state._isInteracting = true;
   const rect = previewGrid.getBoundingClientRect();
   const cellWidth = rect.width / state.columns;
   const cellHeight = rect.height / state.rows;
@@ -174,6 +175,7 @@ export function startDrag(e, box) {
 export function startResize(e, box, handle) {
   isResizing = true;
   draggedBox = box;
+  state._isInteracting = true;
   resizeHandle = handle;
   originalBoxState = {
     gridX: box.gridX,
@@ -346,6 +348,7 @@ export function handleMouseUp(e, previewGrid, renderPreview, renderRegionsTable,
     draggedBox = null;
     resizeHandle = null;
     originalBoxState = null;
+    state._isInteracting = false;
     resetInteractionHistory();
     renderPreview();
     renderSnippet();

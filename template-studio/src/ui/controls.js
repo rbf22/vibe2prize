@@ -448,35 +448,199 @@ export function attachControlHandlers(controls, renderPreview, renderSnippet, re
     });
   }
 
+  // Synchronize all preview dimensions to match
+  function synchronizePreviewDimensions() {
+    const workbench = document.getElementById('previewWorkbench');
+    if (!workbench) return;
+    
+    const canvasContainer = workbench.querySelector('.canvas-container');
+    const slidePanel = workbench.querySelector('.slide-preview-panel');
+    const productionPanel = workbench.querySelector('.production-preview-panel');
+    
+    // Get the canvas grid as the reference
+    const previewGrid = document.getElementById('previewGrid');
+    if (!previewGrid) return;
+    
+    const canvasRect = previewGrid.getBoundingClientRect();
+    console.log('[synchronizePreviewDimensions] Canvas grid dimensions:', {
+      width: canvasRect.width,
+      height: canvasRect.height
+    });
+    
+    // Apply the same dimensions to slide and production panels
+    [slidePanel, productionPanel].forEach(panel => {
+      if (panel) {
+        const surface = panel.querySelector('.slide-preview-surface, .production-preview-surface');
+        if (surface) {
+          // Force the surface to match canvas dimensions
+          surface.style.width = `${canvasRect.width}px`;
+          surface.style.height = `${canvasRect.height}px`;
+          
+          // Center the surface in the panel
+          surface.style.position = 'absolute';
+          surface.style.left = '50%';
+          surface.style.top = '50%';
+          surface.style.transform = 'translate(-50%, -50%)';
+          
+          console.log(`[synchronizePreviewDimensions] Updated ${panel.className} surface:`, {
+            width: surface.style.width,
+            height: surface.style.height
+          });
+        }
+      }
+    });
+  }
+
+  // Preview toggle buttons
+  const previewToggleButtons = document.querySelectorAll('.preview-toggle-btn');
+  console.log('[attachControlHandlers] Found preview toggle buttons:', previewToggleButtons.length);
+  
+  previewToggleButtons.forEach(btn => {
+    const view = btn.dataset.previewView;
+    if (!view) {
+      console.warn('[attachControlHandlers] Preview toggle button missing data-preview-view:', btn);
+      return;
+    }
+    
+    console.log('[attachControlHandlers] Setting up preview toggle for view:', view);
+    
+    btn.addEventListener('click', (e) => {
+      console.log('[attachControlHandlers] Preview toggle clicked:', { view, button: btn });
+      
+      // For production view, set force render flag BEFORE updating view
+      if (view === 'production') {
+        const productionPreview = document.getElementById('productionPreview');
+        if (productionPreview) {
+          productionPreview._forceRender = true;
+        }
+      }
+      
+      // Update active state
+      previewToggleButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // Update the workbench data-view attribute
+      const workbench = document.getElementById('previewWorkbench');
+      if (workbench) {
+        workbench.setAttribute('data-view', view);
+        console.log('[attachControlHandlers] Updated workbench data-view to:', view);
+        
+        // Synchronize dimensions after switching view
+        setTimeout(() => {
+          synchronizePreviewDimensions();
+        }, 100);
+        
+        // Trigger view-specific actions
+        if (view === 'production') {
+          // Trigger production render when switching to production view
+          const productionPreview = document.getElementById('productionPreview');
+          if (productionPreview && window.TemplateStudio) {
+            console.log('[attachControlHandlers] Triggering production render');
+            // Import and call the production renderer after a short delay to ensure container is visible
+            setTimeout(() => {
+              import('../canvas/production-renderer.js').then(({ renderProductionSlide }) => {
+                renderProductionSlide(productionPreview).then(() => {
+                  // Clear the force flag after render
+                  productionPreview._forceRender = false;
+                  // Synchronize dimensions after render
+                  setTimeout(synchronizePreviewDimensions, 50);
+                }).catch(error => {
+                  console.error('[attachControlHandlers] Failed to render production slide:', error);
+                  productionPreview._forceRender = false;
+                });
+              }).catch(error => {
+                console.error('[attachControlHandlers] Failed to load production renderer:', error);
+                productionPreview._forceRender = false;
+              });
+            }, 50); // Small delay for CSS transition
+          }
+        } else if (view === 'slide') {
+          // Trigger slide preview render when switching to slide view
+          const slidePreview = document.getElementById('slidePreview');
+          if (slidePreview && window.TemplateStudio) {
+            console.log('[attachControlHandlers] Triggering slide render');
+            // Import and call the slide renderer after a short delay to ensure container is visible
+            setTimeout(() => {
+              import('../canvas/rendered-view.js').then(({ renderSlidePreview }) => {
+                renderSlidePreview(slidePreview);
+                // Synchronize dimensions after render
+                setTimeout(synchronizePreviewDimensions, 50);
+              }).catch(error => {
+                console.error('[attachControlHandlers] Failed to load slide renderer:', error);
+              });
+            }, 50); // Small delay for CSS transition
+          }
+        }
+      }
+    });
+    
+    // Initialize active state
+    if (btn.classList.contains('active')) {
+      const workbench = document.getElementById('previewWorkbench');
+      if (workbench && !workbench.getAttribute('data-view')) {
+        workbench.setAttribute('data-view', view);
+        console.log('[attachControlHandlers] Initialized workbench data-view to:', view);
+      }
+    }
+  });
+
   // Guide toggles
   if (typeof document === 'undefined') {
+    console.warn('[attachControlHandlers] Document not available, skipping guide setup');
     return;
   }
 
   const guideButtons = document.querySelectorAll('.guide-btn');
-  console.log('Found guide buttons:', guideButtons.length);
+  console.log('[attachControlHandlers] Found guide buttons:', guideButtons.length, 
+    Array.from(guideButtons).map(b => ({ 
+      element: b, 
+      guide: b.dataset.guide, 
+      hasClickListener: b.onclick !== null 
+    }))
+  );
   
   guideButtons.forEach(btn => {
     const key = btn.dataset.guide;
-    console.log('Setting up guide button:', key);
+    console.log('[attachControlHandlers] Setting up guide button:', { key, button: btn });
+    
+    if (!key) {
+      console.warn('[attachControlHandlers] Guide button missing data-guide attribute:', btn);
+      return;
+    }
+    
     const toggleButtonState = () => {
       const isActive = !!state.guideSettings[key];
       btn.classList.toggle('active', isActive);
-      console.log('Button state toggled:', key, isActive);
+      console.log('[attachControlHandlers] Button state toggled:', { key, isActive, classes: btn.className });
     };
     
-    btn.addEventListener('click', () => {
-      console.log('Guide button clicked:', key, 'before:', state.guideSettings[key]);
+    btn.addEventListener('click', (e) => {
+      console.log('[attachControlHandlers] Guide button clicked:', { 
+        key, 
+        before: state.guideSettings[key],
+        event: e,
+        button: btn
+      });
+      
       state.guideSettings[key] = !state.guideSettings[key];
-      console.log('Guide button clicked:', key, 'after:', state.guideSettings[key]);
+      console.log('[attachControlHandlers] State updated:', { 
+        key, 
+        after: state.guideSettings[key],
+        allSettings: { ...state.guideSettings }
+      });
+      
       toggleButtonState();
-      console.log('Calling renderPreview callback');
+      console.log('[attachControlHandlers] About to call renderPreview');
       renderPreview();
     });
     
     // Initialize button state
     toggleButtonState();
-    console.log('Button initial state:', key, state.guideSettings[key]);
+    console.log('[attachControlHandlers] Button initial state:', { 
+      key, 
+      active: btn.classList.contains('active'),
+      setting: state.guideSettings[key]
+    });
   });
 
   // Preset buttons
@@ -494,6 +658,9 @@ export function attachControlHandlers(controls, renderPreview, renderSnippet, re
       });
     });
   }
+
+  // Return the synchronize function for global access
+  return { synchronizePreviewDimensions };
 
   function initializeBrandControls() {
     if (!controls.brandSelect || !controls.brandThemeSelect) return;
@@ -635,7 +802,6 @@ export function applyPreset(
     renderRegionsTable();
     const renderCanvas = () => {
       TemplateStudio.renderPreview(previewGrid);
-      TemplateStudio.renderGuides(guideLayer, previewGrid);
     };
 
     const renderActivePreview = () => {

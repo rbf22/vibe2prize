@@ -35,7 +35,7 @@
 
     <nav class="app-nav">
       <button id="themesTab" class="nav-btn active" data-tab="themes">Themes</button>
-      <button id="designTab" class="nav-btn" data-tab="design">Template Designer</button>
+      <button id="designTab" class="nav-btn" data-tab="design">Canvas Designer</button>
       <button id="composeTab" class="nav-btn" data-tab="composer">Compose</button>
       <button id="logsTab" class="nav-btn" data-tab="logs">Logs</button>
     </nav>
@@ -130,7 +130,7 @@
               </section>
 
       <section class="canvas-panel">
-        <h2>Template Designer</h2>
+        <h2>Canvas Designer</h2>
         <div class="guide-panel">
           <h3>Guides</h3>
           <div class="guide-button-row">
@@ -414,8 +414,10 @@
       }
     </script>
     <script type="module">
-        import('./src/main.js?v=2').then(module => {
-          console.log('Module script loaded');
+        console.log('Starting module load...');
+        import('./src/main.js').then(module => {
+          console.log('Module script loaded successfully');
+          console.log('Available exports:', Object.keys(module));
           setupApplication();
           
           // Call init directly
@@ -430,6 +432,7 @@
           initializeBrandDropdown();
         }).catch(err => {
           console.error('Failed to load Template Studio module:', err);
+          console.error('Error details:', err.message, err.stack);
         });
     </script>
   </body>

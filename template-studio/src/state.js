@@ -53,7 +53,8 @@ const DEFAULT_STATE = {
   diagnostics: {
     overflow: []
   },
-  _boxesInitialized: false
+  _boxesInitialized: false,
+  _isInteracting: false
 };
 
 const history = {

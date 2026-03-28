@@ -5,6 +5,7 @@ import { renderPreview } from './canvas/renderer.js';
 import { renderSlidePreview } from './canvas/rendered-view.js';
 import { renderProductionSlide, cleanupProductionRender } from './canvas/production-renderer.js';
 import { renderGuides } from './canvas/guides.js';
+import { cleanupAllEventListeners } from './utils/event-cleanup.js';
 import { 
   isEditableTarget, 
   hasOverlap, 
@@ -192,43 +193,197 @@ export function init() {
   window.initComposer = initComposer;
   if (window.TemplateStudio && window.TemplateStudio.__initialized) return;
 
-  // Initialize brand controls
-  const brandSelect = document.getElementById('brandSelect');
-  const themeSelect = document.getElementById('brandThemeSelect');
+  // Add debug functions to window
+  window.debugGuides = {
+    render: () => {
+      const guideLayer = document.getElementById('guideLayer');
+      const previewGrid = document.getElementById('previewGrid');
+      console.log('[debugGuides] Manual render called');
+      if (guideLayer && previewGrid) {
+        renderGuides(guideLayer, previewGrid);
+      }
+    },
+    checkElements: () => {
+      console.log('[debugGuides] Checking elements:', {
+        guideLayer: document.getElementById('guideLayer'),
+        previewGrid: document.getElementById('previewGrid'),
+        guideButtons: document.querySelectorAll('.guide-btn').length,
+        state: window.TemplateStudio?.state?.guideSettings
+      });
+    },
+    toggleGuide: (guide) => {
+      console.log(`[debugGuides] Toggling ${guide}`);
+      if (window.TemplateStudio?.state) {
+        window.TemplateStudio.state.guideSettings[guide] = !window.TemplateStudio.state.guideSettings[guide];
+        window.TemplateStudio.renderPreview(document.getElementById('previewGrid'));
+      }
+    },
+    renderProduction: () => {
+      console.log('[debugGuides] Manual production render');
+      const container = document.getElementById('productionPreview');
+      if (container) {
+        container._forceRender = true;
+        import('./canvas/production-renderer.js').then(({ renderProductionSlide }) => {
+          renderProductionSlide(container).then(() => {
+            container._forceRender = false;
+            console.log('[debugGuides] Production render complete');
+          });
+        });
+      }
+    },
+    renderSlide: () => {
+      console.log('[debugGuides] Manual slide render');
+      const container = document.getElementById('slidePreview');
+      if (container) {
+        import('./canvas/rendered-view.js').then(({ renderSlidePreview }) => {
+          renderSlidePreview(container);
+          console.log('[debugGuides] Slide render complete');
+        });
+      }
+    },
+    synchronizePreviews: () => {
+      console.log('[debugGuides] Manual synchronize previews');
+      if (window.TemplateStudio?.synchronizePreviewDimensions) {
+        window.TemplateStudio.synchronizePreviewDimensions();
+      }
+    }
+  };
+
+  // Cleanup any existing event listeners before re-initializing
+  cleanupAllEventListeners();
+
+  // Gather all control elements
+  const controls = {
+    templateName: document.getElementById('templateName'),
+    canvasWidth: document.getElementById('canvasWidth'),
+    canvasHeight: document.getElementById('canvasHeight'),
+    columnCount: document.getElementById('columnCount'),
+    rowCount: document.getElementById('rowCount'),
+    columnSize: document.getElementById('columnSize'),
+    rowSize: document.getElementById('rowSize'),
+    gridGap: document.getElementById('gridGap'),
+    previewGrid: document.getElementById('previewGrid'),
+    canvasContainer: document.getElementById('canvasContainer'),
+    slidePreviewSurface: document.getElementById('slidePreview'),
+    productionPreviewSurface: document.getElementById('productionPreview'),
+    presetButtons: Array.from(document.querySelectorAll('.preset-btn')),
+    presetStatus: document.getElementById('presetStatus'),
+    snippetOutput: document.getElementById('snippetOutput'),
+    resetNames: document.getElementById('resetNames'),
+    openCssGrid: document.getElementById('openCssGrid'),
+    copySnippet: document.getElementById('copySnippet'),
+    saveMdx: document.getElementById('saveMdx'),
+    downloadPptx: document.getElementById('downloadPptx'),
+    importMdxBtn: document.getElementById('importMdxBtn'),
+    mdxFileInput: document.getElementById('mdxFileInput'),
+    deleteSelectedBtn: document.getElementById('deleteSelectedBtn'),
+    clearAllBtn: document.getElementById('clearAllBtn'),
+    addRegionBtn: document.getElementById('addRegionBtn'),
+    exclusions: {
+      top: document.getElementById('exclusionTop'),
+      bottom: document.getElementById('exclusionBottom'),
+      left: document.getElementById('exclusionLeft'),
+      right: document.getElementById('exclusionRight')
+    },
+    paginationInputs: {
+      pageNumber: document.getElementById('pageNumberInput'),
+      totalSlides: document.getElementById('totalSlidesInput'),
+      pageLabel: document.getElementById('pageLabelInput')
+    },
+    previewToggles: {
+      previewChrome: document.getElementById('previewChromeToggle'),
+      regionOutlines: document.getElementById('regionOutlineToggle'),
+      diagnostics: document.getElementById('diagnosticsToggle'),
+      backgroundShapes: document.getElementById('backgroundShapesToggle')
+    },
+    brandSelect: document.getElementById('brandSelect'),
+    brandThemeSelect: document.getElementById('brandThemeSelect'),
+    brandLabel: document.getElementById('brandLabel'),
+    brandVariantLabel: document.getElementById('brandVariantLabel'),
+    brandLogo: document.getElementById('brandLogo'),
+    brandTokens: document.getElementById('brandTokens'),
+    brandEditorialList: document.getElementById('brandEditorialList')
+  };
+
+  // Re-export for global access - will be set after initialization
+  let synchronizePreviewDimensionsFn = null;
+
+  // Create render functions that close over the controls
+  const renderPreviewFn = () => renderPreview(controls.previewGrid);
+  const renderSnippetFn = () => renderSnippet(controls.snippetOutput, controls);
+  const renderRegionsTableFn = () => renderRegionsTable();
+
+  // Attach all control handlers
+  console.log('[main] About to attach control handlers');
+  const { synchronizePreviewDimensions } = attachControlHandlers(controls, renderPreviewFn, renderSnippetFn, renderRegionsTableFn);
+  console.log('[main] Control handlers attached');
   
+  // Store the function for later use
+  synchronizePreviewDimensionsFn = synchronizePreviewDimensions;
+
+  // Apply canvas dimensions
+  applyCanvasDimensions(controls);
+
+  // Ensure we have a fallback layout before initial render
+  seedFallbackLayout();
+
+  // Initial render - wait for browser layout
+  requestAnimationFrame(() => {
+    console.log('[main] Initial render starting');
+    
+    // Check if guide buttons exist
+    const guideButtons = document.querySelectorAll('.guide-btn');
+    console.log('[main] Guide buttons in DOM:', {
+      count: guideButtons.length,
+      buttons: Array.from(guideButtons).map(b => ({
+        guide: b.dataset.guide,
+        visible: b.offsetParent !== null,
+        rect: b.getBoundingClientRect()
+      }))
+    });
+    
+    renderPreviewFn();
+    renderSnippetFn();
+    console.log('[main] Initial render complete');
+    
+    // Synchronize preview dimensions after initial render
+    setTimeout(() => {
+      if (synchronizePreviewDimensionsFn) {
+        synchronizePreviewDimensionsFn();
+      }
+    }, 200);
+  });
+
+  // Initialize brand controls
   // Initialize brand dropdown
-  if (brandSelect) {
+  if (controls.brandSelect) {
     const brands = listBrandOptions();
-    brandSelect.innerHTML = '';
+    controls.brandSelect.innerHTML = '';
     brands.forEach(brand => {
       const option = document.createElement('option');
       option.value = brand.id;
       option.textContent = brand.label;
-      brandSelect.appendChild(option);
+      controls.brandSelect.appendChild(option);
     });
     
     // Select first brand and trigger update
     if (brands.length > 0) {
-      brandSelect.value = brands[0].id;
-      brandSelect.dispatchEvent(new Event('change'));
+      controls.brandSelect.value = brands[0].id;
+      controls.brandSelect.dispatchEvent(new Event('change'));
       
       // Update brand label directly
-      const brandLabel = document.getElementById('brandLabel');
-      if (brandLabel) {
-        brandLabel.textContent = brands[0].label;
+      if (controls.brandLabel) {
+        controls.brandLabel.textContent = brands[0].label;
       }
     }
   }
   
   // Handle theme dropdown changes
-  const brandThemeSelect = document.getElementById('brandThemeSelect');
-  if (brandThemeSelect) {
-    brandThemeSelect.addEventListener('change', (e) => {
-      const brandSelect = document.getElementById('brandSelect');
-      if (brandSelect && window.TemplateStudio && window.TemplateStudio.applyBrandTheme) {
-        const brand = brandSelect.value;
+  if (controls.brandThemeSelect) {
+    controls.brandThemeSelect.addEventListener('change', (e) => {
+      if (controls.brandSelect && window.TemplateStudio && window.TemplateStudio.applyBrandTheme) {
+        const brand = controls.brandSelect.value;
         const variant = e.target.value;
-        console.log('Theme dropdown changed - Applying brand:', brand, 'variant:', variant);
         
         // Update state first
         state.brand = { id: brand, variant };
@@ -244,24 +399,22 @@ export function init() {
         }));
         
         // Also update brand label directly
-        const brandLabel = document.getElementById('brandLabel');
-        if (brandLabel) {
+        if (controls.brandLabel) {
           if (snapshot) {
-            brandLabel.textContent = snapshot.label || snapshot.id;
+            controls.brandLabel.textContent = snapshot.label || snapshot.id;
           }
         }
         
         // Update logo directly
-        const brandLogo = document.getElementById('brandLogo');
-        if (brandLogo && snapshot) {
+        if (controls.brandLogo && snapshot) {
           const variantKey = variant === 'light' ? 'light' : 'dark';
           const fallbackKey = variantKey === 'light' ? 'dark' : 'light';
           const logoSrc = snapshot.assets?.logo?.[variantKey] || snapshot.assets?.logo?.[fallbackKey] || '';
           if (logoSrc) {
-            brandLogo.src = logoSrc;
-            brandLogo.hidden = false;
+            controls.brandLogo.src = logoSrc;
+            controls.brandLogo.hidden = false;
           } else {
-            brandLogo.hidden = true;
+            controls.brandLogo.hidden = true;
           }
         }
       }
@@ -269,26 +422,24 @@ export function init() {
   }
   
   // Handle brand dropdown changes
-  if (brandSelect && brandThemeSelect) {
-    brandSelect.addEventListener('change', (e) => {
+  if (controls.brandSelect && controls.brandThemeSelect) {
+    controls.brandSelect.addEventListener('change', (e) => {
       const brand = e.target.value;
-      console.log('Brand dropdown changed to:', brand);
       
       // Populate theme variants for the selected brand
       const variants = listBrandThemeOptions(brand);
-      brandThemeSelect.innerHTML = '';
+      controls.brandThemeSelect.innerHTML = '';
       variants.forEach(variant => {
         const option = document.createElement('option');
         option.value = variant.id;
         option.textContent = variant.label;
-        brandThemeSelect.appendChild(option);
+        controls.brandThemeSelect.appendChild(option);
       });
       
       // Apply the first variant
       if (variants.length > 0 && window.TemplateStudio && window.TemplateStudio.applyBrandTheme) {
         const variant = variants[0].id;
-        brandThemeSelect.value = variant;
-        console.log('Applying brand:', brand, 'variant:', variant);
+        controls.brandThemeSelect.value = variant;
         
         // Update state first
         state.brand = { id: brand, variant };
@@ -304,24 +455,22 @@ export function init() {
         }));
         
         // Also update brand label directly
-        const brandLabel = document.getElementById('brandLabel');
-        if (brandLabel) {
+        if (controls.brandLabel) {
           if (snapshot) {
-            brandLabel.textContent = snapshot.label || snapshot.id;
+            controls.brandLabel.textContent = snapshot.label || snapshot.id;
           }
         }
         
         // Update logo directly
-        const brandLogo = document.getElementById('brandLogo');
-        if (brandLogo && snapshot) {
+        if (controls.brandLogo && snapshot) {
           const variantKey = variant === 'light' ? 'light' : 'dark';
           const fallbackKey = variantKey === 'light' ? 'dark' : 'light';
           const logoSrc = snapshot.assets?.logo?.[variantKey] || snapshot.assets?.logo?.[fallbackKey] || '';
           if (logoSrc) {
-            brandLogo.src = logoSrc;
-            brandLogo.hidden = false;
+            controls.brandLogo.src = logoSrc;
+            controls.brandLogo.hidden = false;
           } else {
-            brandLogo.hidden = true;
+            controls.brandLogo.hidden = true;
           }
         }
       }
@@ -336,6 +485,7 @@ export function init() {
     renderProductionSlide,
     cleanupProductionRender,
     renderGuides,
+    synchronizePreviewDimensions: synchronizePreviewDimensionsFn,
     renderRegionsTable,
     renderSnippet,
     initDiagnosticsPanel,
@@ -385,21 +535,32 @@ export function init() {
     .then((result) => {
       if (!result?.applied) {
         seedFallbackLayout();
+        // Trigger render if we just seeded
+        if (window.TemplateStudio?.renderPreview) {
+          window.TemplateStudio.renderPreview();
+        }
       }
     })
     .catch(() => {
       seedFallbackLayout();
+      // Trigger render if we just seeded
+      if (window.TemplateStudio?.renderPreview) {
+        window.TemplateStudio.renderPreview();
+      }
     });
 
   if (typeof document !== 'undefined') {
     document.addEventListener('masterTemplateHydrated', () => {
       if (!state.boxes?.length) {
         seedFallbackLayout();
+        // Trigger re-render if we just seeded the layout
+        if (window.TemplateStudio?.renderPreview) {
+          window.TemplateStudio.renderPreview();
+        }
       }
     });
   }
 
-  seedFallbackLayout();
   window.TemplateStudio.__initialized = true;
   console.log('Template Studio initialized');
 }

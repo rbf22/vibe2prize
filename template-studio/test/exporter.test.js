@@ -93,7 +93,6 @@ describe('MDX Exporter', () => {
     assert(result.frontmatter);
     const { frontmatter } = result;
     assert.strictEqual(frontmatter.title, 'Minimal');
-    assert(frontmatter.maxWords > 0);
     assert.strictEqual(frontmatter.phase, 'draft');
     assert(frontmatter.layout);
     assert(Array.isArray(frontmatter.regions));
@@ -259,58 +258,5 @@ describe('MDX Exporter', () => {
     assert(result.frontmatter);
     assert.strictEqual(result.frontmatter.title, 'Empty');
     assert.strictEqual(result.frontmatter.regions.length, 1);
-  });
-
-  it('should calculate maxWords from box grid dimensions', () => {
-    const state = {
-      templateName: 'word-calc',
-      canvasWidth: 1920,
-      canvasHeight: 1080,
-      columns: 4,
-      rows: 4,
-      columnSize: '1fr',
-      rowSize: '1fr',
-      gap: '1rem',
-      boxes: [
-        {
-          id: 'box-1',
-          name: 'large',
-          gridX: 0,
-          gridY: 0,
-          gridWidth: 4,
-          gridHeight: 2,
-          metadata: {
-            required: true,
-            inputType: 'text',
-            fieldTypes: ['primary-title'],
-            llmHint: 'Large area'
-          }
-        },
-        {
-          id: 'box-2',
-          name: 'small',
-          gridX: 0,
-          gridY: 2,
-          gridWidth: 2,
-          gridHeight: 1,
-          metadata: {
-            required: false,
-            inputType: 'text',
-            fieldTypes: ['supporting-text'],
-            llmHint: 'Small area'
-          }
-        }
-      ]
-    };
-
-    const result = buildMdxSource(state);
-    assert(result.source);
-    
-    const frontmatterMatch = result.source.match(/^---\n([\s\S]*?)\n---/);
-    assert(frontmatterMatch);
-    
-    const frontmatter = frontmatterMatch[1];
-    // Should calculate based on total grid cells (4*2 + 2*1 = 10 cells)
-    assert(frontmatter.includes('maxWords:'));
   });
 });

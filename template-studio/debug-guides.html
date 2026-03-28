@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Guide Debug Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        .debug-panel { 
+            background: #f0f0f0; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px;
+        }
+        button { 
+            padding: 5px 10px; 
+            margin: 5px; 
+            background: #007acc; 
+            color: white; 
+            border: none; 
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover { background: #005a9e; }
+        .log-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guide Debug Console</h1>
+    
+    <div class="debug-panel">
+        <h3>Debug Commands</h3>
+        <button onclick="checkElements()">Check Elements</button>
+        <button onclick="renderGuides()">Render Guides</button>
+        <button onclick="toggleCenter()">Toggle Center</button>
+        <button onclick="toggleHalves()">Toggle Halves</button>
+        <button onclick="renderProduction()">Render Production</button>
+        <button onclick="renderSlide()">Render Slide</button>
+        <button onclick="clearLogs()">Clear Logs</button>
+    </div>
+    
+    <div class="debug-panel">
+        <h3>Console Output</h3>
+        <div id="logOutput" class="log-output">Logs will appear here...</div>
+    </div>
+    
+    <script>
+        // Capture console.log output
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        const logOutput = document.getElementById('logOutput');
+        
+        function appendLog(type, ...args) {
+            const timestamp = new Date().toLocaleTimeString();
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            logOutput.textContent += `[${timestamp}] ${type}: ${message}\n`;
+            logOutput.scrollTop = logOutput.scrollHeight;
+        }
+        
+        console.log = (...args) => {
+            originalLog.apply(console, args);
+            appendLog('LOG', ...args);
+        };
+        
+        console.warn = (...args) => {
+            originalWarn.apply(console, args);
+            appendLog('WARN', ...args);
+        };
+        
+        console.error = (...args) => {
+            originalError.apply(console, args);
+            appendLog('ERROR', ...args);
+        };
+        
+        // Debug functions
+        function checkElements() {
+            if (window.debugGuides) {
+                window.debugGuides.checkElements();
+            } else {
+                console.log('debugGuides not available - make sure Template Studio is loaded');
+            }
+        }
+        
+        function renderGuides() {
+            if (window.debugGuides) {
+                window.debugGuides.render();
+            } else {
+                console.log('debugGuides not available - make sure Template Studio is loaded');
+            }
+        }
+        
+        function toggleCenter() {
+            if (window.debugGuides) {
+                window.debugGuides.toggleGuide('center');
+            } else {
+                console.log('debugGuides not available - make sure Template Studio is loaded');
+            }
+        }
+        
+        function toggleHalves() {
+            if (window.debugGuides) {
+                window.debugGuides.toggleGuide('halves');
+            } else {
+                console.log('debugGuides not available - make sure Template Studio is loaded');
+            }
+        }
+        
+        function renderProduction() {
+            if (window.debugGuides) {
+                window.debugGuides.renderProduction();
+            } else {
+                console.log('debugGuides not available - make sure Template Studio is loaded');
+            }
+        }
+        
+        function renderSlide() {
+            if (window.debugGuides) {
+                window.debugGuides.renderSlide();
+            } else {
+                console.log('debugGuides not available - make sure Template Studio is loaded');
+            }
+        }
+        
+        function clearLogs() {
+            logOutput.textContent = '';
+        }
+        
+        // Check if Template Studio is loaded
+        setTimeout(() => {
+            if (window.TemplateStudio) {
+                console.log('Template Studio is loaded');
+                console.log('Available debug commands:', Object.keys(window.debugGuides || {}));
+            } else {
+                console.log('Template Studio not found - open grid-template-studio.html first');
+            }
+        }, 1000);
+    </script>
+    
+    <p><strong>Instructions:</strong></p>
+    <ol>
+        <li>Open <a href="grid-template-studio.html" target="_blank">grid-template-studio.html</a> in another tab</li>
+        <li>Switch to the Canvas Designer tab</li>
+        <li>Use the buttons above to debug guide rendering</li>
+        <li>Check the browser console (F12) for detailed logs</li>
+    </ol>
+</body>
+</html>

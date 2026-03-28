@@ -31,7 +31,6 @@ describe('MDX Importer', () => {
   it('should parse valid MDX with frontmatter and body', async () => {
     const mdxContent = `---
 title: Test Template
-maxWords: 120
 phase: concept
 layout:
   type: grid
@@ -41,12 +40,10 @@ layout:
       id: header
       role: header
       area: header
-      maxWords: 20
 regions:
   - id: header
     role: header
     area: header
-    maxWords: 20
 ---
 
 # Header content
@@ -57,7 +54,7 @@ Some body content.
     const result = await importMDXContent(mdxContent);
     assert(result.success);
     assert.strictEqual(result.frontmatter.title, 'Test Template');
-    assert.strictEqual(result.frontmatter.maxWords, 120);
+    assert.strictEqual(result.frontmatter.phase, 'concept');
     assert.strictEqual(result.frontmatter.layout.type, 'grid');
     assert.strictEqual(result.frontmatter.regions.length, 1);
     assert.strictEqual(result.body.trim(), '# Header content\n\nSome body content.');
@@ -74,13 +71,12 @@ title: Test Template
     const result = await importMDXContent(mdxContent);
     assert(!result.success);
     assert(result.errors.length > 0);
-    assert(result.errors.some(e => e.includes('maxWords')));
+    assert(result.errors.some(e => e.includes('phase')));
   });
 
   it('should reject MDX with invalid layout components', async () => {
     const mdxContent = `---
 title: Test Template
-maxWords: 120
 phase: concept
 layout:
   type: grid
@@ -92,7 +88,6 @@ regions:
   - id: header
     role: header
     area: header
-    maxWords: 20
 ---
 
 # Content
@@ -123,17 +118,16 @@ No frontmatter here.
   it('should validate frontmatter using shared schema', async () => {
     const validFrontmatter = {
       title: 'Test',
-      maxWords: 100,
       phase: 'concept',
       layout: {
         type: 'grid',
         template: 'cssgrid',
         components: [
-          { type: 'region', id: 'header', role: 'header', area: 'header', maxWords: 20 }
+          { type: 'region', id: 'header', role: 'header', area: 'header' }
         ]
       },
       regions: [
-        { id: 'header', role: 'header', area: 'header', maxWords: 20 }
+        { id: 'header', role: 'header', area: 'header' }
       ]
     };
 

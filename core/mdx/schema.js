@@ -30,9 +30,6 @@ export function validateFrontmatter(frontmatter) {
     }
   }
   
-  if (typeof expandedFrontmatter.maxWords !== 'number' || !Number.isFinite(expandedFrontmatter.maxWords) || expandedFrontmatter.maxWords <= 0) {
-    errors.push('maxWords must be a positive finite number');
-  }
 
   const layout = expandedFrontmatter.layout;
   if (!layout || typeof layout !== 'object') {

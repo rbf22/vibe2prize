@@ -38,7 +38,13 @@ export function boxesToAreaMatrix() {
 }
 
 export function renderPreview(previewGrid) {
+  console.log('[renderPreview] Called with:', { 
+    previewGrid: !!previewGrid, 
+    stack: new Error().stack?.split('\n').slice(1, 4).join('\n')
+  });
+  
   if (!previewGrid) {
+    console.warn('[renderPreview] No previewGrid provided');
     return;
   }
   
@@ -137,7 +143,7 @@ export function renderPreview(previewGrid) {
         }
         
         // Re-render to show selection
-        renderPreview(previewGrid, renderGuides);
+        renderPreview(previewGrid);
         
         // Dispatch event for UI updates
         document.dispatchEvent(new CustomEvent('selectionChanged', { detail: { boxId: box.id } }));
@@ -196,5 +202,20 @@ export function renderPreview(previewGrid) {
     previewBox.style.borderRadius = '0';
     previewBox.style.zIndex = '1000';
     grid.appendChild(previewBox);
+  }
+  
+  // Render guides after rendering the grid
+  const guideLayer = document.getElementById('guideLayer');
+  if (guideLayer) {
+    console.log('[renderPreview] About to render guides');
+    try {
+      renderGuides(guideLayer, previewGrid);
+      console.log('[renderPreview] Guides rendered successfully');
+    } catch (error) {
+      console.error('[renderPreview] Failed to render guides:', error.message, error.stack);
+      // Continue without guides - non-critical error
+    }
+  } else {
+    console.warn('[renderPreview] Guide layer not found');
   }
 }
