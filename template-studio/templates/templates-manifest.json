@@ -1,7 +1,7 @@
 [
   {
     "name": "Accenture Master Template",
-    "file": "accenture-master.mdx",
+    "file": "accenture-master-verbose-backup.mdx",
     "regions": [
       {
         "id": "section-label",
@@ -56,6 +56,66 @@
         "y": 43,
         "w": 32,
         "h": 1
+      }
+    ]
+  },
+  {
+    "name": "Accenture Master Template",
+    "file": "accenture-master.mdx",
+    "regions": [
+      {
+        "id": "section-label",
+        "name": "section-title",
+        "role": "section-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "hero-title",
+        "name": "primary-title",
+        "role": "primary-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "hero-subtitle",
+        "name": "secondary-title",
+        "role": "secondary-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "brand-logo",
+        "name": "logo",
+        "role": "logo",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "page-number",
+        "name": "page-number",
+        "role": "page-number",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "footer",
+        "name": "footer",
+        "role": "footer",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
       }
     ]
   },
@@ -165,8 +225,218 @@
     ]
   },
   {
+    "name": "Grid Blueprint: Narrative Slide",
+    "file": "narrative-slide-compact.mdx",
+    "regions": [
+      {
+        "id": "section-label",
+        "name": "section-title",
+        "role": "section-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "hero-title",
+        "name": "primary-title",
+        "role": "primary-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "hero-subtitle",
+        "name": "secondary-title",
+        "role": "secondary-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "summary",
+        "name": "supporting-text",
+        "role": "supporting-text",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "insight",
+        "name": "key-data",
+        "role": "key-data",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "stat-cluster",
+        "name": "data-table",
+        "role": "data-table",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "stat-caption",
+        "name": "context-info",
+        "role": "context-info",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "quote",
+        "name": "supporting-text",
+        "role": "supporting-text",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "logo",
+        "name": "logo",
+        "role": "logo",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "page-number",
+        "name": "page-number",
+        "role": "page-number",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "footer",
+        "name": "footer",
+        "role": "footer",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      }
+    ]
+  },
+  {
+    "name": "Grid Blueprint: Narrative Slide",
+    "file": "narrative-slide-ultra-compact.mdx",
+    "regions": [
+      {
+        "id": "section-label",
+        "name": "section-title",
+        "role": "section-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "hero-title",
+        "name": "primary-title",
+        "role": "primary-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "hero-subtitle",
+        "name": "secondary-title",
+        "role": "secondary-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "summary",
+        "name": "supporting-text",
+        "role": "supporting-text",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "insight",
+        "name": "key-data",
+        "role": "key-data",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "stat-cluster",
+        "name": "data-table",
+        "role": "data-table",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "stat-caption",
+        "name": "context-info",
+        "role": "context-info",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "quote",
+        "name": "supporting-text",
+        "role": "supporting-text",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "logo",
+        "name": "logo",
+        "role": "logo",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "page-number",
+        "name": "page-number",
+        "role": "page-number",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "footer",
+        "name": "footer",
+        "role": "footer",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      }
+    ]
+  },
+  {
     "name": "Simple Test Slide",
-    "file": "simple-test.mdx",
+    "file": "simple-test-verbose-backup.mdx",
     "regions": [
       {
         "id": "title",
@@ -185,6 +455,30 @@
         "y": 10,
         "w": 48,
         "h": 10
+      }
+    ]
+  },
+  {
+    "name": "Simple Test Slide",
+    "file": "simple-test.mdx",
+    "regions": [
+      {
+        "id": "title",
+        "name": "primary-title",
+        "role": "primary-title",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
+      },
+      {
+        "id": "content",
+        "name": "supporting-text",
+        "role": "supporting-text",
+        "x": 2,
+        "y": 2,
+        "w": 20,
+        "h": 8
       }
     ]
   },

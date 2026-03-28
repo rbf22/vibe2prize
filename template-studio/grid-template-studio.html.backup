@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grid Template Studio</title>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Newsreader:opsz,wght@6..72,600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles/main.css" />
+    <script type="module" src="./src/main.js?v=2"></script>
+    <script type="module" src="./scripts/log-panel.js"></script>
+    <!-- React and ReactDOM for production render -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script type="importmap">
+    {
+      "imports": {
+        "pptxgenjs": "https://esm.sh/pptxgenjs@4.0.1",
+        "@mlc-ai/web-llm": "https://esm.sh/@mlc-ai/web-llm@0.2.82"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>Grid Template Studio</h1>
+      <p class="subtitle">Design grid layouts with metadata for LLM content generation</p>
+    </header>
+
+    <nav class="app-nav">
+      <button id="themesTab" class="nav-btn active" data-tab="themes">Themes</button>
+      <button id="designTab" class="nav-btn" data-tab="design">Template Designer</button>
+      <button id="composeTab" class="nav-btn" data-tab="composer">Compose</button>
+      <button id="logsTab" class="nav-btn" data-tab="logs">Logs</button>
+    </nav>
+
+    <main class="themes-grid" id="themesView">
+      <section class="themes-panel">
+        <div class="brand-panel">
+          <div class="brand-panel-top">
+            <div class="brand-logo-badge">
+              <img id="brandLogo" class="brand-logo" alt="Brand logo" loading="lazy" />
+            </div>
+            <div class="brand-identity-meta">
+              <span class="eyebrow">Organization</span>
+              <strong id="brandLabel">Brand Name</strong>
+              <span id="brandVariantLabel" class="brand-variant">Theme Name</span>
+            </div>
+          </div>
+
+          <div class="brand-panel-controls">
+            <label>
+              Brand
+              <select id="brandSelect"></select>
+            </label>
+
+            <label>
+              Variant
+              <select id="brandThemeSelect"></select>
+            </label>
+          </div>
+
+          <div class="brand-token-list" id="brandTokens"></div>
+
+          <div class="brand-editorial">
+            <span class="eyebrow">Editorial Themes</span>
+            <ul id="brandEditorialList"></ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <main class="app-grid" id="designView" style="display: none;">
+      <section class="settings-panel">
+        <div class="settings-panel-header">
+          <h2>Template Settings</h2>
+        </div>
+
+        <div class="settings-field-grid">
+          <label>
+            Template Name
+            <input id="templateName" type="text" value="cssgrid-template" />
+          </label>
+
+          <div class="dual-input-row">
+            <label>
+              Canvas Width (px)
+              <input id="canvasWidth" type="number" min="320" max="7680" value="1920" />
+            </label>
+            <label>
+              Canvas Height (px)
+              <input id="canvasHeight" type="number" min="240" max="4320" value="1080" />
+            </label>
+          </div>
+
+          <div class="dual-input-row">
+            <label>
+              Grid Rows
+              <input id="rowCount" type="number" min="1" max="60" value="45" />
+            </label>
+            <label>
+              Grid Columns
+              <input id="columnCount" type="number" min="1" max="100" value="80" />
+            </label>
+          </div>
+
+          <div class="dual-input-row">
+            <label>
+              Column Size
+              <input id="columnSize" type="text" value="1fr" />
+            </label>
+            <label>
+              Row Size
+              <input id="rowSize" type="text" value="auto" />
+            </label>
+          </div>
+
+          <label>
+            Gap
+            <input id="gridGap" type="text" value="1.5rem" />
+          </label>
+        </div>
+
+        <div class="preview-behavior-panel">
+          <div class="preview-panel-header">
+            <div>
+              <span class="eyebrow">Theme Preview</span>
+              <strong>Preview with Theme</strong>
+            </div>
+            <p>Select a theme to preview your template</p>
+          </div>
+          
+          <div class="theme-selector">
+            <label>
+              Preview Theme
+              <select id="previewThemeSelect">
+                <option value="default">Default</option>
+                <option value="accenture">Accenture</option>
+                <option value="arc">Arc Theme</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="preview-field-grid">
+            <label>
+              Page Number
+              <input id="pageNumberInput" type="number" min="1" value="1" />
+            </label>
+            <label>
+              Total Slides
+              <input id="totalSlidesInput" type="number" min="1" value="12" />
+            </label>
+            <label>
+              Page Label
+              <input id="pageLabelInput" type="text" value="Page" />
+            </label>
+          </div>
+
+          <div class="preview-flag-grid">
+            <label class="toggle-pill">
+              <input id="previewChromeToggle" type="checkbox" checked />
+              <span>Show Studio Chrome</span>
+            </label>
+            <label class="toggle-pill">
+              <input id="regionOutlineToggle" type="checkbox" checked />
+              <span>Show Region Outlines</span>
+            </label>
+            <label class="toggle-pill">
+              <input id="diagnosticsToggle" type="checkbox" checked />
+              <span>Show Diagnostics</span>
+            </label>
+            <label class="toggle-pill">
+              <input id="backgroundShapesToggle" type="checkbox" checked />
+              <span>Show Background Shapes</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <section class="canvas-panel">
+        <h2>Template Designer</h2>
+        <div class="guide-panel">
+          <h3>Guides</h3>
+          <div class="guide-button-row">
+            <button type="button" class="guide-btn active" data-guide="center">Center</button>
+            <button type="button" class="guide-btn" data-guide="halves">Halves</button>
+            <button type="button" class="guide-btn" data-guide="thirds">Thirds</button>
+            <button type="button" class="guide-btn" data-guide="quarters">Quarters</button>
+            <button type="button" class="guide-btn" data-guide="sixths">Sixths</button>
+            <button type="button" class="guide-btn" data-guide="eighths">Eighths</button>
+            <button type="button" class="guide-btn active" data-guide="margin">Margin 1-grid</button>
+          </div>
+          <div class="exclusion-panel">
+            <h4>Exclusions (grid units)</h4>
+            <div class="exclusion-grid">
+              <div class="exclusion-group">
+                <label for="exclusionTop">Header</label>
+                <input type="number" id="exclusionTop" min="0" value="0" />
+              </div>
+              <div class="exclusion-group">
+                <label for="exclusionBottom">Footer</label>
+                <input type="number" id="exclusionBottom" min="0" value="0" />
+              </div>
+              <div class="exclusion-group">
+                <label for="exclusionLeft">Left</label>
+                <input type="number" id="exclusionLeft" min="0" value="0" />
+              </div>
+              <div class="exclusion-group">
+                <label for="exclusionRight">Right</label>
+                <input type="number" id="exclusionRight" min="0" value="0" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="region-presets">
+          <button type="button" class="preset-btn" data-preset="header">Header</button>
+          <button type="button" class="preset-btn" data-preset="footer">Footer</button>
+          <button type="button" class="preset-btn" data-preset="left-sidebar">Left Sidebar</button>
+          <button type="button" class="preset-btn" data-preset="right-sidebar">Right Sidebar</button>
+          <button type="button" class="preset-btn" data-preset="hero">Hero</button>
+          <button type="button" class="preset-btn" data-preset="content">Content</button>
+          <button type="button" class="preset-btn" data-preset="caption">Caption</button>
+          <button type="button" id="clearAllBtn" class="preset-btn" data-preset="clear">Clear All</button>
+        </div>
+        <p class="preset-helper" id="presetStatus">Select a region, then choose a semantic role to auto-fill metadata.</p>
+        <div class="preview-toggle-row">
+          <div class="preview-toggle" role="group" aria-label="Preview view toggle">
+            <button type="button" class="preview-toggle-btn active" data-preview-view="canvas">Grid Canvas</button>
+            <button type="button" class="preview-toggle-btn" data-preview-view="slide">Rendered Slide</button>
+            <button type="button" class="preview-toggle-btn" data-preview-view="production">Production Render</button>
+          </div>
+          <div class="preview-toggle-actions">
+            <button type="button" class="import-btn" id="importMdxBtn">Import MDX</button>
+            <input type="file" id="mdxFileInput" accept=".mdx" style="display: none;" />
+          </div>
+        </div>
+        <div class="preview-workbench" id="previewWorkbench" data-view="canvas">
+          <div class="canvas-container" id="canvasContainer">
+            <div class="guide-layer" id="guideLayer"></div>
+            <div id="previewGrid" class="preview-grid" data-canvas="1920×1080"></div>
+          </div>
+          <div class="slide-preview-panel" id="slidePreviewPanel">
+            <div id="slidePreview" class="slide-preview-surface"></div>
+          </div>
+          <div class="production-preview-panel" id="productionPreviewPanel">
+            <div id="productionPreview" class="production-preview-surface"></div>
+          </div>
+        </div>
+        <div class="grid-info">Click and drag to draw regions. Click regions to edit metadata.</div>
+        <div class="grid-actions">
+          <button type="button" id="deleteSelectedBtn" class="danger-btn" disabled>Delete Selected</button>
+        </div>
+      </section>
+
+    <section class="regions-table-container" id="regionsTableContainer">
+        <h3>Regions Table</h3>
+        <table class="regions-table" id="regionsTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Position (X,Y)</th>
+              <th>Size (W×H)</th>
+              <th>Required</th>
+              <th>Input Type</th>
+              <th>Field Types</th>
+              <th>Content (Markdown/HTML)</th>
+              <th>LLM Hint</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="regionsTableBody">
+            <!-- Regions will be populated here -->
+          </tbody>
+        </table>
+        <div class="table-actions">
+          <button type="button" id="addRegionBtn">Add Region</button>
+          <button type="button" id="clearAllBtn">Clear All</button>
+        </div>
+      </section>
+
+      <section class="diagnostics-panel" id="diagnosticsPanel">
+        <div class="panel-header">
+          <div>
+            <h3>Overflow Diagnostics</h3>
+            <p class="panel-subtitle">Real-time feedback on regions that exceed their bounding boxes.</p>
+          </div>
+          <span class="diagnostic-summary" id="diagnosticSummary">0 issues</span>
+        </div>
+        <div class="diagnostics-body" id="diagnosticsBody">
+          <p class="diagnostics-empty">No overflow detected. Keep refining your layout.</p>
+        </div>
+      </section>
+
+      <section class="export-panel">
+        <h3>Export Template</h3>
+        <div class="button-row">
+          <button id="resetNames" class="ghost-btn" type="button">Reset Names</button>
+          <button id="openCssGrid" class="ghost-btn" type="button">CSS Grid Guide</button>
+          <button id="copySnippet" class="primary-btn" type="button">Copy MDX</button>
+          <button id="saveMdx" class="primary-btn" type="button">Save to MDX</button>
+          <button id="downloadPptx" class="primary-btn" type="button">Download PPTX</button>
+        </div>
+        <textarea id="snippetOutput" readonly placeholder="MDX template will appear here..."></textarea>
+      </section>
+    </main>
+
+    <main class="logs-grid" id="logsView" style="display: none;">
+      <section class="logs-panel">
+        <div class="logs-panel-header">
+          <div>
+            <h2>Console Logs</h2>
+            <p>Captured output from the studio runtime. Nothing is sent outside your browser.</p>
+          </div>
+          <div class="logs-panel-actions">
+            <label class="logs-filter">
+              Level
+              <select id="logsLevelFilter">
+                <option value="all">All</option>
+                <option value="log">Log</option>
+                <option value="warn">Warnings</option>
+                <option value="error">Errors</option>
+              </select>
+            </label>
+            <label class="logs-toggle">
+              <input type="checkbox" id="logsAutoscrollToggle" checked>
+              <span>Auto-scroll</span>
+            </label>
+            <button type="button" id="copyLogsBtn" class="ghost-btn">Copy Logs</button>
+            <button type="button" id="clearLogsBtn" class="danger-btn">Clear</button>
+          </div>
+        </div>
+
+        <div class="logs-feed" id="logsFeed">
+          <div class="logs-empty-state">Console output will appear here.</div>
+        </div>
+      </section>
+    </main>
+
+    <main class="composer-grid" id="composerView" style="display: none;">
+      <section class="composer-sidebar">
+        <div class="template-selector">
+          <h3>Select Template</h3>
+          <div id="templateGallery" class="template-gallery">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        
+        <div class="theme-selector">
+          <h3>Select Theme</h3>
+          <div id="composerThemeGallery" class="theme-gallery">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <section class="composer-workspace">
+        <div class="workspace-header">
+          <h2 id="currentSlideTitle">Untitled Slide</h2>
+          <div class="workspace-actions">
+            <button id="importPptxBtn" class="secondary-btn">Import PPTX</button>
+            <input type="file" id="pptxFileInput" accept=".pptx" style="display: none;" />
+            <button id="addToDeckBtn" class="primary-btn">Add to Deck</button>
+            <button id="downloadDeckBtn" class="secondary-btn">Save to Workspace</button>
+          </div>
+        </div>
+
+        <div class="composer-preview-container">
+          <div id="composerPreview" class="production-preview-surface"></div>
+        </div>
+
+        <div class="deck-strip-container">
+          <h3>Deck</h3>
+          <div id="deckStrip" class="deck-strip">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </section>
+
+      <section class="composer-ai-panel">
+        <div class="ai-header">
+          <h3>AI Assistant</h3>
+          <span id="aiStatus" class="status-badge">Offline</span>
+        </div>
+        <div id="aiChat" class="ai-chat">
+          <div class="ai-message assistant">
+            Hello! I can help you compose your slides. Try selecting a template and giving me a brief.
+          </div>
+        </div>
+        <div class="ai-input-area">
+          <textarea id="aiBrief" placeholder="Enter slide brief or instructions..."></textarea>
+          <button id="generateBtn" class="primary-btn">Generate Content</button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      function setupApplication() {
+        console.log('setupApplication called');
+        const themesTab = document.getElementById('themesTab');
+        const designTab = document.getElementById('designTab');
+        const composeTab = document.getElementById('composeTab');
+        const logsTab = document.getElementById('logsTab');
+        const themesView = document.getElementById('themesView');
+        const designView = document.getElementById('designView');
+        const composerView = document.getElementById('composerView');
+        const logsView = document.getElementById('logsView');
+
+        const switchTab = (tab) => {
+          console.log('Switching to tab:', tab);
+          // Hide all views
+          themesView.style.display = 'none';
+          designView.style.display = 'none';
+          composerView.style.display = 'none';
+          logsView.style.display = 'none';
+          
+          // Remove active class from all tabs
+          themesTab.classList.remove('active');
+          designTab.classList.remove('active');
+          composeTab.classList.remove('active');
+          logsTab.classList.remove('active');
+          
+          // Show selected view and activate tab
+          if (tab === 'themes') {
+            themesTab.classList.add('active');
+            themesView.style.display = 'grid';
+          } else if (tab === 'design') {
+            designTab.classList.add('active');
+            designView.style.display = 'grid';
+          } else if (tab === 'composer') {
+            composeTab.classList.add('active');
+            composerView.style.display = 'grid';
+          } else if (tab === 'logs') {
+            logsTab.classList.add('active');
+            logsView.style.display = 'block';
+          }
+        };
+
+        // Tab click handlers
+        themesTab.addEventListener('click', () => switchTab('themes'));
+        designTab.addEventListener('click', () => switchTab('design'));
+        composeTab.addEventListener('click', () => switchTab('composer'));
+        logsTab.addEventListener('click', () => switchTab('logs'));
+
+        // Show themes tab by default
+        switchTab('themes');
+      }
+      
+      // Initialize brand dropdown directly
+      async function initializeBrandDropdown() {
+        const brandSelect = document.getElementById('brandSelect');
+        if (!brandSelect) return;
+        
+        try {
+          const { listBrandOptions } = await import('./src/branding/brands.js');
+          const brands = listBrandOptions();
+          
+          brandSelect.innerHTML = '';
+          brands.forEach(brand => {
+            const option = document.createElement('option');
+            option.value = brand.id;
+            option.textContent = brand.label;
+            brandSelect.appendChild(option);
+          });
+          
+          // Select first brand
+          if (brands.length > 0) {
+            brandSelect.value = brands[0].id;
+            brandSelect.dispatchEvent(new Event('change'));
+          }
+        } catch (error) {
+          console.error('Failed to initialize brand dropdown:', error);
+        }
+      }
+    </script>
+    <script type="module">
+        import('./src/main.js?v=2').then(module => {
+          console.log('Module script loaded');
+          setupApplication();
+          
+          // Call init directly
+          if (module.init) {
+            console.log('Calling module.init()');
+            module.init();
+
+          const renderAll = () => {
+            renderCanvas();
+            renderActivePreview();
+          };
+          const controls = {
+            templateName: document.getElementById('templateName'),
+            canvasWidth: document.getElementById('canvasWidth'),
+            canvasHeight: document.getElementById('canvasHeight'),
+            columnCount: document.getElementById('columnCount'),
+            rowCount: document.getElementById('rowCount'),
+            columnSize: document.getElementById('columnSize'),
+            rowSize: document.getElementById('rowSize'),
+            gridGap: document.getElementById('gridGap'),
+            previewStage: document.getElementById('previewWorkbench'),
+            previewGrid: document.getElementById('previewGrid'),
+            canvasContainer: document.getElementById('canvasContainer'),
+            slidePreviewSurface: document.getElementById('slidePreview'),
+            productionPreviewSurface: document.getElementById('productionPreview'),
+            presetButtons: Array.from(document.querySelectorAll('.preset-btn')),
+            presetStatus: document.getElementById('presetStatus'),
+            snippetOutput: document.getElementById('snippetOutput'),
+            resetNames: document.getElementById('resetNames'),
+            openCssGrid: document.getElementById('openCssGrid'),
+            copySnippet: document.getElementById('copySnippet'),
+            saveMdx: document.getElementById('saveMdx'),
+            downloadPptx: document.getElementById('downloadPptx'),
+            importMdxBtn: document.getElementById('importMdxBtn'),
+            mdxFileInput: document.getElementById('mdxFileInput'),
+            deleteSelectedBtn: document.getElementById('deleteSelectedBtn'),
+            clearAllBtn: document.getElementById('clearAllBtn'),
+            addRegionBtn: document.getElementById('addRegionBtn'),
+            brandSelect: document.getElementById('brandSelect'),
+            brandThemeSelect: document.getElementById('brandThemeSelect'),
+            brandLogo: document.getElementById('brandLogo'),
+            brandLabel: document.getElementById('brandLabel'),
+            brandVariantLabel: document.getElementById('brandVariantLabel'),
+            brandTokens: document.getElementById('brandTokens'),
+            brandEditorialList: document.getElementById('brandEditorialList'),
+            exclusions: {
+              top: document.getElementById('exclusionTop'),
+              bottom: document.getElementById('exclusionBottom'),
+              left: document.getElementById('exclusionLeft'),
+              right: document.getElementById('exclusionRight')
+            },
+            paginationInputs: {
+              pageNumber: document.getElementById('pageNumberInput'),
+              totalSlides: document.getElementById('totalSlidesInput'),
+              label: document.getElementById('pageLabelInput')
+            },
+            previewToggles: {
+              previewChrome: document.getElementById('previewChromeToggle'),
+              regionOutlines: document.getElementById('regionOutlineToggle'),
+              diagnostics: document.getElementById('diagnosticsToggle'),
+              backgroundShapes: document.getElementById('backgroundShapesToggle')
+            }
+          };
+
+          const { TemplateStudio } = window;
+
+          TemplateStudio.attachControlHandlers(
+            controls,
+            renderAll,
+            TemplateStudio.renderSnippet,
+            TemplateStudio.renderRegionsTable
+          );
+
+          TemplateStudio.initDiagnosticsPanel({
+            bodyEl: diagnosticsBody,
+            summaryEl: diagnosticsSummary
+          });
+
+          renderAll();
+          TemplateStudio.renderRegionsTable();
+          TemplateStudio.renderSnippet();
+          TemplateStudio.updateSelectionControls(controls);
+
+          document.addEventListener('selectionChanged', () => {
+            console.log('Selection changed event received');
+            TemplateStudio.updateSelectionControls(controls);
+          });
+
+          const handlePointerDown = (e) => {
+            if (TemplateStudio.isEditableTarget(e)) return;
+            if (e.target.classList.contains('grid-block') || e.target.closest('.grid-block')) {
+              return;
+            }
+
+            const rect = previewGrid.getBoundingClientRect();
+            const cellPixelSizeX = rect.width / TemplateStudio.state.columns;
+            const cellPixelSizeY = rect.height / TemplateStudio.state.rows;
+
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+            const mouseGridX = Math.floor((clientX - rect.left) / cellPixelSizeX);
+            const mouseGridY = Math.floor((clientY - rect.top) / cellPixelSizeY);
+
+            console.log(`PointerDown: client(${clientX},${clientY}) grid(${mouseGridX},${mouseGridY}) rect(${rect.left},${rect.top},${rect.width},${rect.height})`);
+
+            const box = TemplateStudio.getBoxAtGrid(mouseGridX, mouseGridY);
+            console.log(`Box at grid: ${box ? box.id : 'none'}`);
+            if (box) {
+              TemplateStudio.state.selectedBoxId = box.id;
+              TemplateStudio.updateSelectionControls(controls);
+              renderAll();
+              TemplateStudio.renderRegionsTable();
+              TemplateStudio.renderSnippet();
+            } else {
+              TemplateStudio.state.selectedBoxId = null;
+              TemplateStudio.updateSelectionControls(controls);
+              TemplateStudio.state.isDrawing = true;
+              TemplateStudio.state.dragStart = {
+                startGridX: mouseGridX,
+                startGridY: mouseGridY,
+                currentGridX: mouseGridX,
+                currentGridY: mouseGridY,
+                startClientX: clientX,
+                startClientY: clientY,
+                hasMoved: false
+              };
+              previewGrid.classList.add('drawing');
+            }
+          };
+
+          const handlePointerMove = (e) => {
+            TemplateStudio.handleMouseMove(
+              e,
+              previewGrid,
+              () => {
+                renderCanvas();
+              }
+            );
+          };
+
+          const handlePointerUp = (e) => {
+            TemplateStudio.handleMouseUp(
+              e,
+              previewGrid,
+              renderCanvas,
+              () => {
+                TemplateStudio.renderRegionsTable();
+                document.dispatchEvent(new CustomEvent('regionsTableChanged'));
+              },
+              () => {
+                TemplateStudio.renderSnippet();
+                document.dispatchEvent(new CustomEvent('snippetChanged'));
+              }
+            );
+
+            TemplateStudio.updateSelectionControls(controls);
+            renderActivePreview({ forceProduction: workbench.dataset.view === 'production' });
+          };
+
+          previewGrid.addEventListener('mousedown', handlePointerDown);
+          previewGrid.addEventListener('mousemove', handlePointerMove);
+          document.addEventListener('mouseup', handlePointerUp);
+
+          // Touch support for iPad
+          previewGrid.addEventListener('touchstart', (e) => {
+              if (TemplateStudio.isEditableTarget(e)) return;
+              console.log('Touch start');
+              handlePointerDown(e);
+              if (TemplateStudio.state.isDrawing || TemplateStudio.state.isDragging || TemplateStudio.state.isResizing) {
+                  e.preventDefault();
+              }
+          }, { passive: false });
+
+          previewGrid.addEventListener('touchmove', (e) => {
+              console.log('Touch move - drawing:', TemplateStudio.state.isDrawing);
+              handlePointerMove(e);
+              if (TemplateStudio.state.isDrawing || TemplateStudio.state.isDragging || TemplateStudio.state.isResizing) {
+                  e.preventDefault(); // Prevent scrolling while drawing/dragging
+              }
+          }, { passive: false });
+
+          document.addEventListener('touchend', (e) => {
+              console.log('Touch end');
+              handlePointerUp(e);
+          });
+
+          previewToggleButtons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const view = btn.dataset.previewView;
+              previewToggleButtons.forEach((button) => button.classList.toggle('active', button === btn));
+              workbench.dataset.view = view;
+              if (view === 'canvas') {
+                renderCanvas();
+              } else {
+                renderActivePreview({ forceProduction: view === 'production' });
+              }
+            });
+          });
+
+
+          document.addEventListener('keydown', (e) => {
+            if (TemplateStudio.isEditableTarget(e)) return;
+            if ((e.key === 'Delete' || e.key === 'Backspace') && TemplateStudio.state.selectedBoxId) {
+              e.preventDefault();
+              TemplateStudio.deleteSelectedRegion();
+              TemplateStudio.renderRegionsTable();
+              renderCanvas();
+              TemplateStudio.renderSnippet();
+              TemplateStudio.updateSelectionControls(controls);
+              TemplateStudio.renderSlidePreview(slidePreview);
+              TemplateStudio.renderProductionSlide(productionPreview);
+            }
+          });
+
+          document.addEventListener('keydown', (e) => {
+            if (TemplateStudio.isEditableTarget(e)) return;
+            if ((e.metaKey || e.ctrlKey) && !e.altKey) {
+              const key = e.key.toLowerCase();
+              if (key === 'z') {
+                e.preventDefault();
+                TemplateStudio.handleUndo();
+              } else if (key === 'y') {
+                e.preventDefault();
+                TemplateStudio.handleRedo();
+              } else if (key === 's') {
+                e.preventDefault();
+                if (controls.saveMdx) {
+                  controls.saveMdx.click();
+                } else {
+                  try {
+                    TemplateStudio.downloadMdxFile(TemplateStudio.state);
+                  } catch (error) {
+                    console.error('Failed to export MDX', error);
+                    alert('Failed to export MDX. Please check your template metadata.');
+                  }
+                }
+              }
+            }
+          });
+
+          document.addEventListener('diagnosticRegionFocus', (event) => {
+            const boxId = event?.detail?.boxId;
+            if (!boxId) return;
+            TemplateStudio.state.selectedBoxId = boxId;
+            TemplateStudio.renderRegionsTable();
+            TemplateStudio.updateSelectionControls(controls);
+            renderCanvas();
+            TemplateStudio.renderSlidePreview(slidePreview);
+            TemplateStudio.renderProductionSlide(productionPreview);
+            TemplateStudio.renderSnippet();
+          });
+
+          document.addEventListener('regionsTableChanged', () => {
+            renderAll();
+            TemplateStudio.renderSnippet();
+          });
+
+          document.addEventListener('regionDeleted', () => {
+            renderAll();
+            TemplateStudio.renderSnippet();
+            TemplateStudio.updateSelectionControls(controls);
+          });
+
+          document.addEventListener('regionAdded', () => {
+            renderAll();
+            TemplateStudio.renderSnippet();
+          });
+
+          document.addEventListener('allRegionsCleared', () => {
+            renderAll();
+            TemplateStudio.renderSnippet();
+            TemplateStudio.updateSelectionControls(controls);
+          });
+
+          document.addEventListener('mdxImported', () => {
+            TemplateStudio.renderRegionsTable();
+            renderAll();
+            TemplateStudio.renderSnippet();
+            TemplateStudio.updateSelectionControls(controls);
+          });
+
+          TemplateStudio.applyCanvasDimensions(controls);
+          TemplateStudio.applyReferenceOverlay(controls);
+          TemplateStudio.renderSlidePreview(slidePreview);
+          TemplateStudio.renderProductionSlide(productionPreview);
+        
+          /* 
+          // Load layout test helpers in development
+          if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            const testScript = document.createElement('script');
+            testScript.type = 'module';
+            testScript.src = './test/simple-layout-test.js';
+            document.head.appendChild(testScript);
+            
+            const resizeTestScript = document.createElement('script');
+            resizeTestScript.type = 'module';
+            resizeTestScript.src = './test/resize-behavior.test.js';
+            document.head.appendChild(resizeTestScript);
+            
+            const resizeDebugScript = document.createElement('script');
+            resizeDebugScript.type = 'module';
+            resizeDebugScript.src = './test/resize-debug.js';
+            document.head.appendChild(resizeDebugScript);
+            
+            const comprehensiveTestScript = document.createElement('script');
+            comprehensiveTestScript.type = 'module';
+            comprehensiveTestScript.src = './test/comprehensive-resize-test.js';
+            document.head.appendChild(comprehensiveTestScript);
+          }
+          */
+        }
+
+        const moduleScript = document.createElement('script');
+        moduleScript.type = 'module';
+        moduleScript.src = moduleSrc;
+        moduleScript.onload = () => {
+          console.log('Module script loaded:', moduleSrc);
+          setupApplication();
+          
+          // Call init() directly after a short delay
+          setTimeout(() => {
+            console.log('window.TemplateStudio keys:', Object.keys(window.TemplateStudio || {}));
+            if (window.TemplateStudio && window.TemplateStudio.init) {
+              console.log('Calling TemplateStudio.init()');
+              window.TemplateStudio.init();
+            } else if (window.init) {
+              console.log('Calling window.init()');
+              window.init();
+            } else {
+              console.error('TemplateStudio.init not available');
+            }
+          }, 100);
+        }).catch(err => {
+          console.error('Failed to load Template Studio module:', err);
+        });
+        document.head.appendChild(moduleScript);
+      })();
+    </script>
+  </body>
+</html>

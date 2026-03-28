@@ -41,13 +41,13 @@ const STUDIO_BASE = isBrowser
   : (ROOT.includes('template-studio') ? ROOT : pathModule.join(ROOT, 'template-studio'));
 
 const TEMPLATES_DIR = isBrowser
-  ? `${STUDIO_BASE}/templates`
+  ? '/templates'
   : (ROOT.includes('template-studio')
       ? pathModule.join(ROOT, 'templates')
       : pathModule.join(ROOT, 'templates'));
 
 const BRAND_INDEX_PATH = isBrowser
-  ? `${TEMPLATES_DIR}/brands.json`
+  ? `${TEMPLATES_DIR}/brands.json?v=${Date.now()}`
   : pathModule.join(TEMPLATES_DIR, 'brands.json');
 
 const BRAND_SCHEMA_PATH = isBrowser ?
@@ -148,7 +148,7 @@ async function initialize() {
     await Promise.all(
       brandIndex.map(async ({ id, version }) => {
         const brandPath = isBrowser
-          ? `${TEMPLATES_DIR}/${id}/brand.json`
+          ? `${TEMPLATES_DIR}/${id}/brand.json?v=${Date.now()}`
           : pathModule.join(TEMPLATES_DIR, id, 'brand.json');
         const definition = await readJson(brandPath);
         if (validateBrandDefinition && !validateBrandDefinition(definition)) {

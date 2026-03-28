@@ -18,15 +18,6 @@
     error: 'Error'
   };
 
-  function formatTimestamp(isoString) {
-    try {
-      const date = new Date(isoString);
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    } catch (error) {
-      return isoString;
-    }
-  }
-
   function stringifyArg(arg) {
     if (typeof arg === 'string') return arg;
     if (arg instanceof Error) {
@@ -54,7 +45,7 @@
     const timestamp = document.createElement('time');
     timestamp.className = 'log-timestamp';
     timestamp.dateTime = entry.timestamp;
-    timestamp.textContent = formatTimestamp(entry.timestamp);
+    timestamp.textContent = entry.formattedTimestamp;
 
     header.appendChild(levelBadge);
     header.appendChild(timestamp);

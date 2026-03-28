@@ -162,6 +162,8 @@ const server = http.createServer((req, res) => {
         const mdxFiles = files.filter(f => f.endsWith('.mdx'));
         const templates = [];
 
+        // Parse each MDX file to extract template metadata and region definitions
+        // This handles multiple formats: verbose (with grid object), compact (with grid string), and ultra-compact
         for (const file of mdxFiles) {
           const content = await readFile(path.join(mdxDir, file), 'utf8');
           // simple frontmatter parsing since we don't have gray-matter here
@@ -173,26 +175,74 @@ const server = http.createServer((req, res) => {
             const titleMatch = match[1].match(/title:\s*["']([^"']+)["']/);
             if (titleMatch) title = titleMatch[1];
             
-            // basic yaml parsing for regions
-            const regionsMatch = match[1].split('\\n');
-            let inRegions = false;
-            let currentRegion = null;
-            for(const line of regionsMatch) {
-                if (line.trim().startsWith('regions:')) { inRegions = true; continue; }
-                if (inRegions && line.trim().startsWith('- id:')) {
-                    if (currentRegion) regions.push(currentRegion);
-                    currentRegion = { id: line.split(':')[1].trim() };
-                } else if (inRegions && currentRegion && line.trim().startsWith('name:')) {
-                    currentRegion.name = line.split(':')[1].trim();
-                } else if (inRegions && currentRegion && line.trim().startsWith('area:')) {
-                    currentRegion.name = line.split(':')[1].trim();
-                } else if (inRegions && currentRegion && line.trim().startsWith('role:')) {
-                    currentRegion.role = line.split(':')[1].trim();
-                } else if (inRegions && !line.startsWith(' ')) {
-                    inRegions = false; // exit regions array
+            // Parse regions with grid coordinates
+            // REGRESSION FIX: Updated regex to capture all regions until next top-level YAML key
+            // Previous regex was greedy and stopped after first region
+            const regionsMatch = match[1].match(/regions:\s*\n([\s\S]*?)(?=\n\w+:)/m);
+            if (regionsMatch) {
+              console.log(`Parsing regions for ${file}:`);
+              const regionText = regionsMatch[1];
+              // REGRESSION FIX: Split on "- id:" pattern to properly separate region blocks
+              // This handles both "- id:" and "- &ref" YAML patterns
+              const regionBlocks = regionText.split(/\n(?=\s*-\s*id:)/);
+              console.log(`Found ${regionBlocks.length} region blocks`);
+              
+              for (const block of regionBlocks) {
+                const region = {};
+                
+                const idMatch = block.match(/id:\s*["']?([^"'\s]+)["']?/);
+                if (idMatch) region.id = idMatch[1].trim();
+                
+                const nameMatch = block.match(/name:\s*["']?([^"'\s]+)["']?/);
+                if (nameMatch) region.name = nameMatch[1].trim();
+                else if (idMatch) region.name = idMatch[1].trim(); // fallback to id
+                
+                const roleMatch = block.match(/role:\s*["']?([^"'\s]+)["']?/);
+                if (roleMatch) region.role = roleMatch[1].trim();
+                
+                // Parse grid coordinates from multiple possible formats:
+                // 1. Verbose format: grid:\n  x: 1\n  y: 1\n  width: 26\n  height: 1
+                // 2. Compact format: grid: "1,1,26x1"
+                // 3. Area format fallback: area: "1,1,26x1"
+                const gridMatch = block.match(/grid:\s*\n\s*x:\s*(\d+)\s*\n\s*y:\s*(\d+)\s*\n\s*width:\s*(\d+)\s*\n\s*height:\s*(\d+)/);
+                if (gridMatch) {
+                  region.x = parseInt(gridMatch[1], 10);
+                  region.y = parseInt(gridMatch[2], 10);
+                  region.w = parseInt(gridMatch[3], 10);
+                  region.h = parseInt(gridMatch[4], 10);
+                  console.log(`  - ${region.id}: parsed grid coordinates`);
+                } else {
+                  // Try compact grid format "x,y,widthxheight"
+                  const gridCompactMatch = block.match(/grid:\s*["'](\d+),(\d+),(\d+)x(\d+)["']/);
+                  if (gridCompactMatch) {
+                    region.x = parseInt(gridCompactMatch[1], 10);
+                    region.y = parseInt(gridCompactMatch[2], 10);
+                    region.w = parseInt(gridCompactMatch[3], 10);
+                    region.h = parseInt(gridCompactMatch[4], 10);
+                    console.log(`  - ${region.id}: parsed compact grid coordinates`);
+                  } else {
+                    // Try area field with compact format
+                    const areaMatch = block.match(/area:\s*["']([^"']+)["']/);
+                    if (areaMatch) {
+                      const area = areaMatch[1].trim();
+                      const compactMatch = area.match(/^(\d+),(\d+),(\d+)x(\d+)$/);
+                      if (compactMatch) {
+                        region.x = parseInt(compactMatch[1], 10);
+                        region.y = parseInt(compactMatch[2], 10);
+                        region.w = parseInt(compactMatch[3], 10);
+                        region.h = parseInt(compactMatch[4], 10);
+                        console.log(`  - ${region.id}: parsed compact coordinates from ${area}`);
+                      }
+                    }
+                  }
                 }
+                
+                if (region.id && (region.name || region.role)) {
+                  if (!region.name) region.name = region.id;
+                  regions.push(region);
+                }
+              }
             }
-            if (currentRegion) regions.push(currentRegion);
 
             templates.push({
               name: title,

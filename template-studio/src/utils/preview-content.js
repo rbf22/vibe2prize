@@ -74,11 +74,9 @@ export function resolvePreviewText(box, roleKey) {
     return explicit;
   }
   const baseCopy = getRoleCopy(role);
-  if (metadata.maxWords && baseCopy) {
-    const words = baseCopy.split(/\s+/).slice(0, Math.max(3, metadata.maxWords));
-    return words.join(' ');
+  if (baseCopy) {
+    return baseCopy;
   }
-  return baseCopy;
 }
 
 export function formatAreaLabel(box) {

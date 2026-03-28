@@ -1,37 +1,20 @@
 ---
 title: "Simple Test Slide"
-maxWords: 100
 phase: "draft"
-templateSettings:
-  canvasWidth: 1920
-  canvasHeight: 1080
-  columns: 80
-  rows: 45
+settings:
+  canvas: "1920x1080"
+  grid: "80x45"
   gap: "0.5rem"
-exclusions:
-  top: 4
-  bottom: 4
-  left: 3
-  right: 3
-brand:
-  id: "default"
-  variant: "light"
+exclusions: "4,4,3,3"
+brand: "default light"
 regions:
   - id: "title"
     role: "primary-title"
-    required: true
-    grid:
-      x: 3
-      y: 4
-      width: 48
-      height: 3
+    req: true
+    grid: "3,4,48x3"
   - id: "content"
     role: "supporting-text"
-    grid:
-      x: 3
-      y: 10
-      width: 48
-      height: 10
+    grid: "3,10,48x10"
 layout:
   type: "grid-designer"
   template: "Simple Test Slide"

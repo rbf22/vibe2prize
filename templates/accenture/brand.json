@@ -19,8 +19,8 @@
   },
   "assets": {
     "logo": {
-      "dark": "templates/accenture/assets/dark/logo.svg",
-      "light": "templates/accenture/assets/light/logo.svg"
+      "dark": "/templates/accenture/assets/dark/logo.svg",
+      "light": "/templates/accenture/assets/light/logo.svg"
     }
   },
   "editorialThemes": [

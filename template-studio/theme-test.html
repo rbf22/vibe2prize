@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Theme Test</title>
+    <style>
+        .theme-card {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin: 10px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .theme-card.selected {
+            border-color: #81f0c8;
+            background: rgba(129, 240, 200, 0.1);
+        }
+        .theme-preview {
+            width: 150px;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Themes</h1>
+    <div id="themeGallery"></div>
+    
+    <script>
+        const themes = [
+            {
+                id: 'accenture',
+                name: 'Accenture',
+                description: 'Corporate professional theme',
+                previewBackground: 'linear-gradient(135deg, #00a1e0 0%, #003a6f 100%)'
+            },
+            {
+                id: 'default',
+                name: 'Default',
+                description: 'Clean, minimal theme',
+                previewBackground: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+            },
+            {
+                id: 'arc',
+                name: 'Arc Theme',
+                description: 'Modern dark theme',
+                previewBackground: 'linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 100%)'
+            }
+        ];
+        
+        const gallery = document.getElementById('themeGallery');
+        
+        themes.forEach(theme => {
+            const card = document.createElement('div');
+            card.className = 'theme-card';
+            
+            const preview = document.createElement('div');
+            preview.className = 'theme-preview';
+            preview.style.background = theme.previewBackground;
+            
+            const name = document.createElement('div');
+            name.textContent = theme.name;
+            
+            const desc = document.createElement('div');
+            desc.textContent = theme.description;
+            
+            card.appendChild(preview);
+            card.appendChild(name);
+            card.appendChild(desc);
+            
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                console.log('Selected:', theme.name);
+            });
+            
+            gallery.appendChild(card);
+        });
+    </script>
+</body>
+</html>

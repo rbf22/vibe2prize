@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Brand Dropdown</title>
+</head>
+<body>
+    <h1>Debug Brand Dropdown</h1>
+    
+    <label>
+        Brand
+        <select id="brandSelect"></select>
+    </label>
+    
+    <div id="output"></div>
+    
+    <script type="module">
+        import { listBrandOptions } from './src/branding/brands.js';
+        
+        const output = document.getElementById('output');
+        const brandSelect = document.getElementById('brandSelect');
+        
+        output.innerHTML = '<p>Module loaded successfully</p>';
+        
+        try {
+            const brands = listBrandOptions();
+            output.innerHTML += `<p>Found ${brands.length} brands</p>`;
+            
+            brandSelect.innerHTML = '';
+            brands.forEach(brand => {
+                const option = document.createElement('option');
+                option.value = brand.id;
+                option.textContent = brand.label;
+                brandSelect.appendChild(option);
+                output.innerHTML += `<p>Added brand: ${brand.label}</p>`;
+            });
+        } catch (error) {
+            output.innerHTML += `<p style="color: red">Error: ${error.message}</p>`;
+            console.error('Full error:', error);
+        }
+    </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
-import { WebWorkerMLCEngineHandler } from "@mlc-ai/web-llm";
+import * as webllm from 'https://esm.sh/@mlc-ai/web-llm@0.2.82';
 
-const handler = new WebWorkerMLCEngineHandler();
+const handler = new webllm.WebWorkerMLCEngineHandler();
 
 self.onmessage = (msg) => {
   handler.onmessage(msg);

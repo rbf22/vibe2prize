@@ -1,0 +1,141 @@
+---
+title: "Accenture Master Template"
+maxWords: 280
+phase: "draft"
+templateSettings:
+  canvasWidth: 1920
+  canvasHeight: 1080
+  columns: 80
+  rows: 45
+  columnSize: "1fr"
+  rowSize: "1fr"
+  gap: "0.5rem"
+exclusions:
+  top: 5
+  bottom: 3
+  left: 1
+  right: 1
+brand:
+  id: "accenture"
+  variant: "light"
+regions:
+  - &section_label
+    id: "section-label"
+    area: "section-label"
+    role: "section-title"
+    required: false
+    inputType: "text"
+    llmHint: "Eyebrow or track name anchoring the narrative."
+    grid:
+      x: 1
+      y: 1
+      width: 26
+      height: 1
+  - &hero_title
+    id: "hero-title"
+    area: "hero-title"
+    role: "primary-title"
+    required: true
+    inputType: "text"
+    maxWords: 18
+    llmHint: "Primary narrative headline."
+    grid:
+      x: 1
+      y: 2
+      width: 52
+      height: 2
+  - &hero_subtitle
+    id: "hero-subtitle"
+    area: "hero-subtitle"
+    role: "secondary-title"
+    required: false
+    inputType: "text"
+    maxWords: 28
+    llmHint: "Subtitle that frames the story."
+    grid:
+      x: 1
+      y: 4
+      width: 52
+      height: 1
+  - &brand_logo
+    id: "brand-logo"
+    area: "logo"
+    role: "logo"
+    required: true
+    inputType: "image"
+    llmHint: "Brand identifier or watermark."
+    grid:
+      x: 3
+      y: 43
+      width: 10
+      height: 1
+  - &page_number
+    id: "page-number"
+    area: "page-number"
+    role: "page-number"
+    required: true
+    inputType: "text"
+    llmHint: "Slide number indicator."
+    grid:
+      x: 68
+      y: 43
+      width: 9
+      height: 1
+  - &footer_region
+    id: "footer"
+    area: "footer"
+    role: "footer"
+    required: true
+    inputType: "text"
+    llmHint: "Legal copy or confidentiality notice."
+    grid:
+      x: 22
+      y: 43
+      width: 32
+      height: 1
+layout:
+  type: "grid-designer"
+  template: "Accenture Master Template"
+  components:
+    - type: "GridArea"
+      <<: *section_label
+    - type: "GridArea"
+      <<: *hero_title
+    - type: "GridArea"
+      <<: *hero_subtitle
+    - type: "GridArea"
+      <<: *brand_logo
+    - type: "GridArea"
+      <<: *page_number
+    - type: "GridArea"
+      <<: *footer_region
+  rows: 45
+  columns: 80
+  gap: "0.5rem"
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../core/layout/components.js";
+
+const REGION_IMPORTANCE = {
+  "primary-title": "critical",
+  "page-number": "critical",
+  footer: "critical",
+  logo: "supporting",
+};
+
+const regions = frontmatter?.regions ?? [];
+
+const resolveImportance = (role) => REGION_IMPORTANCE[role] || "supporting";
+
+<GridDesigner template={frontmatter?.layout?.template || "Accenture Master Template"}>
+  {regions.map((region) => (
+    <GridArea
+      key={region.id}
+      area={region.area}
+      contentType={region.role}
+      importance={resolveImportance(region.role)}
+    >
+      <ContentRenderer type={region.role} content={""} />
+    </GridArea>
+  ))}
+</GridDesigner>

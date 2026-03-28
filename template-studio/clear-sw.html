@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Service Worker</title>
+</head>
+<body>
+    <h1>Clearing Service Worker...</h1>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                    console.log('Unregistered:', registration);
+                }
+                alert('Service workers cleared! Now you can close this tab and refresh the main page.');
+            });
+        }
+    </script>
+</body>
+</html>

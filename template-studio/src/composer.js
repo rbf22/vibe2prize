@@ -15,6 +15,22 @@ export async function initComposer() {
   const importPptxBtn = document.getElementById('importPptxBtn');
   const pptxFileInput = document.getElementById('pptxFileInput');
 
+  // Track selection state
+  let selectedTemplateIndex = -1;
+  let selectedImportedIndex = -1;
+
+  // Restore imported slides from sessionStorage if available
+  const savedImport = sessionStorage.getItem('importedSlides');
+  if (savedImport) {
+    try {
+      const parsed = JSON.parse(savedImport);
+      importedSlides = parsed.slides;
+      importedPresentationName = parsed.name;
+    } catch (e) {
+      console.warn('Failed to restore imported slides:', e);
+    }
+  }
+
   importPptxBtn.addEventListener('click', () => pptxFileInput.click());
   pptxFileInput.addEventListener('change', async (e) => {
     const file = e.target.files[0];
@@ -25,10 +41,24 @@ export async function initComposer() {
         const extractedSlides = await parsePptx(file);
         
         if (extractedSlides && extractedSlides.length > 0) {
-            // Just load the first slide as an example for now
-            currentSlide = extractedSlides[0];
+            // Store all imported slides
+            importedSlides = extractedSlides;
+            importedPresentationName = file.name.replace('.pptx', '');
+            
+            // Save to sessionStorage for persistence
+            sessionStorage.setItem('importedSlides', JSON.stringify({
+              slides: importedSlides,
+              name: importedPresentationName
+            }));
+            
+            // Render gallery with imported slides
+            renderGallery();
+            
+            // Auto-select first imported slide
+            currentSlide = importedSlides[0];
             renderComposerPreview();
-            alert(`Successfully extracted layout from PowerPoint!`);
+            
+            alert(`Successfully imported ${extractedSlides.length} slides from PowerPoint!`);
         } else {
             alert('No shapes found in PPTX.');
         }
@@ -44,6 +74,8 @@ export async function initComposer() {
   let engine = null;
   let currentSlide = { regions: [] };
   let deck = [];
+  let importedSlides = [];
+  let importedPresentationName = null;
 
   const shouldUseApi = typeof window !== 'undefined' && /^localhost|^127\.0\.0\.1/.test(window.location.hostname);
 
@@ -54,27 +86,18 @@ export async function initComposer() {
       const res = await fetch('/api/templates');
       if (res.ok) {
         templates = await res.json();
+        console.log('Loaded templates from API:', templates.length);
       }
     } catch (err) {
       console.warn('Failed to load templates from local API', err);
     }
   }
 
-  if (!templates.length) {
-    try {
-      const manifestUrl = new URL('./templates/templates-manifest.json', window.location.href);
-      const res = await fetch(manifestUrl, { cache: 'no-store' });
-      if (res.ok) {
-        templates = await res.json();
-      } else {
-        console.warn('Static template manifest unavailable:', res.status, res.statusText);
-      }
-    } catch (err) {
-      console.warn('Failed to load static template manifest', err);
-    }
-  }
-
+  // REGRESSION FIX: Removed manifest fallback to ensure API is always used
+  // The manifest was causing issues with outdated template data
+  // Only use hardcoded templates if API completely fails
   if (templates.length === 0) {
+    console.log('Using fallback hardcoded templates');
     templates = [
       {
         name: 'Title Slide',
@@ -103,37 +126,363 @@ export async function initComposer() {
     ];
   }
 
-  function renderGallery() {
-    templateGallery.innerHTML = templates.map((t, i) => `
-      <div class="template-card" data-index="${i}">
-        <div class="template-thumb"></div>
-        <span>${t.name}</span>
-      </div>
-    `).join('');
+  function parseCompactGrid(gridStr) {
+    if (!gridStr || typeof gridStr !== 'string') {
+      return null;
+    }
+    
+    // Handle "x,y,widthxheight" format
+    const match = gridStr.match(/^(\d+),(\d+),(\d+)x(\d+)$/);
+    if (!match) {
+      return null;
+    }
+    
+    return {
+      x: parseInt(match[1], 10),
+      y: parseInt(match[2], 10),
+      width: parseInt(match[3], 10),
+      height: parseInt(match[4], 10)
+    };
+  }
 
-    templateGallery.querySelectorAll('.template-card').forEach(card => {
-      card.addEventListener('click', () => {
-        const index = card.dataset.index;
-        currentSlide = JSON.parse(JSON.stringify(templates[index]));
-        renderComposerPreview();
-      });
+  function renderThumbnail(thumbEl, template) {
+    console.log('renderThumbnail called for:', template.name);
+    if (!thumbEl || !template || !template.regions) {
+      console.warn('renderThumbnail: missing data', { thumbEl: !!thumbEl, template: !!template, regions: template?.regions?.length });
+      return;
+    }
+    
+    console.log(`Template ${template.name} has ${template.regions.length} regions`);
+    console.log('First region coords:', template.regions[0]);
+    
+    // Create a canvas for the thumbnail
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size (16:9 aspect ratio)
+    const width = 160;
+    const height = 90;
+    canvas.width = width;
+    canvas.height = height;
+    
+    // Clear canvas with dark background
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0, 0, width, height);
+    
+    // Draw grid lines (subtle)
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+    ctx.lineWidth = 0.5;
+    const gridSize = 10;
+    for (let i = 0; i <= gridSize; i++) {
+      const x = (width / gridSize) * i;
+      const y = (height / gridSize) * i;
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, height);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(width, y);
+      ctx.stroke();
+    }
+    
+    // Draw regions
+    template.regions.forEach(region => {
+      // Parse grid coordinates
+      let grid;
+      if (region.grid) {
+        if (typeof region.grid === 'string') {
+          grid = parseCompactGrid(region.grid);
+        } else {
+          grid = region.grid;
+        }
+      } else {
+        // Fallback to x,y,w,h properties
+        grid = {
+          x: region.x || 0,
+          y: region.y || 0,
+          width: region.w || 20,
+          height: region.h || 8
+        };
+      }
+      
+      if (!grid) return;
+      
+      // Convert grid coordinates to pixel coordinates
+      const x = (grid.x / 80) * width;
+      const y = (grid.y / 45) * height;
+      const w = (grid.width / 80) * width;
+      const h = (grid.height / 45) * height;
+      
+      // Set color based on role
+      const colors = {
+        'primary-title': 'rgba(129, 240, 200, 0.3)',
+        'secondary-title': 'rgba(246, 179, 108, 0.3)',
+        'supporting-text': 'rgba(255, 255, 255, 0.1)',
+        'key-data': 'rgba(255, 94, 214, 0.3)',
+        'data-table': 'rgba(108, 179, 246, 0.3)',
+        'section-title': 'rgba(160, 170, 190, 0.2)',
+        'logo': 'rgba(255, 255, 255, 0.15)',
+        'page-number': 'rgba(160, 170, 190, 0.15)',
+        'footer': 'rgba(160, 170, 190, 0.15)'
+      };
+      
+      ctx.fillStyle = colors[region.role] || 'rgba(255, 255, 255, 0.1)';
+      ctx.fillRect(x, y, w, h);
+      
+      // Draw border
+      ctx.strokeStyle = colors[region.role] ? colors[region.role].replace('0.3', '0.6').replace('0.2', '0.4') : 'rgba(255, 255, 255, 0.2)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, w, h);
     });
+    
+    // Set canvas as thumbnail background
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    thumbEl.innerHTML = '';
+    thumbEl.appendChild(canvas);
+    console.log(`Canvas added to thumbnail for ${template.name}`);
+  }
+
+  function renderGallery() {
+    let galleryHTML = '';
+    
+    // Render imported slides section if available
+    if (importedSlides.length > 0) {
+      galleryHTML += `
+        <div class="gallery-section">
+          <div class="gallery-section-header">
+            <h4>Imported Slides</h4>
+            <span class="gallery-section-subtitle">${importedPresentationName}</span>
+            <button id="clearImportBtn" class="clear-btn">Clear</button>
+          </div>
+          <div class="template-gallery imported">
+            ${importedSlides.map((slide, i) => `
+              <div class="template-card imported" data-type="imported" data-index="${i}">
+                <div class="template-thumb"></div>
+                <span>${slide.name}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+    
+    // Render default templates section
+    galleryHTML += `
+      <div class="gallery-section">
+        <div class="gallery-section-header">
+          <h4>Default Templates</h4>
+        </div>
+        <div class="template-gallery default">
+          ${templates.map((t, i) => `
+            <div class="template-card default" data-type="template" data-index="${i}">
+              <div class="template-thumb"></div>
+              <span>${t.name}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    
+    templateGallery.innerHTML = galleryHTML;
+
+    // Render thumbnails for imported slides
+    templateGallery.querySelectorAll('.template-card.imported').forEach((card, i) => {
+      const thumbEl = card.querySelector('.template-thumb');
+      if (thumbEl && importedSlides[i]) {
+        renderThumbnail(thumbEl, importedSlides[i]);
+      }
+    });
+
+    // Render thumbnails for default templates
+    templateGallery.querySelectorAll('.template-card.default').forEach((card, i) => {
+      const thumbEl = card.querySelector('.template-thumb');
+      if (thumbEl && templates[i]) {
+        renderThumbnail(thumbEl, templates[i]);
+      }
+    });
+
+    // Re-apply selection after rendering
+    if (selectedImportedIndex >= 0) {
+      const importedCards = templateGallery.querySelectorAll('.template-card.imported');
+      if (importedCards[selectedImportedIndex]) {
+        updateSelectedCard(importedCards[selectedImportedIndex]);
+      }
+    } else if (selectedTemplateIndex >= 0) {
+      const defaultCards = templateGallery.querySelectorAll('.template-card.default');
+      if (defaultCards[selectedTemplateIndex]) {
+        updateSelectedCard(defaultCards[selectedTemplateIndex]);
+      }
+    }
+
+    // Use event delegation for template clicks
+    templateGallery.addEventListener('click', (e) => {
+      const card = e.target.closest('.template-card');
+      if (!card) return;
+      
+      if (card.classList.contains('imported')) {
+        const index = parseInt(card.dataset.index, 10);
+        selectTemplate(index, true);
+        updateSelectedCard(card);
+      } else if (card.classList.contains('default')) {
+        const index = parseInt(card.dataset.index, 10);
+        selectTemplate(index, false);
+        updateSelectedCard(card);
+      }
+    });
+    
+    // Add clear import handler
+    const clearImportBtn = document.getElementById('clearImportBtn');
+    if (clearImportBtn) {
+      clearImportBtn.addEventListener('click', () => {
+        importedSlides = [];
+        importedPresentationName = null;
+        sessionStorage.removeItem('importedSlides');
+        renderGallery();
+      });
+    }
+    
+    // Update current slide title
+    updateCurrentSlideTitle();
+  }
+
+  function updateSelectedCard(selectedCard) {
+    if (!selectedCard) {
+      console.error('No card provided to updateSelectedCard');
+      return;
+    }
+    // Remove selected class from all cards
+    const allCards = templateGallery.querySelectorAll('.template-card');
+    allCards.forEach(card => {
+      card.classList.remove('selected');
+    });
+    // Add selected class to clicked card
+    selectedCard.classList.add('selected');
+  }
+
+  function selectTemplate(index, isImported = false) {
+    if (isImported) {
+      selectedImportedIndex = index;
+      selectedTemplateIndex = -1;
+      currentSlide = JSON.parse(JSON.stringify(importedSlides[index]));
+    } else {
+      selectedTemplateIndex = index;
+      selectedImportedIndex = -1;
+      currentSlide = JSON.parse(JSON.stringify(templates[index]));
+    }
+    renderComposerPreview();
+  }
+  
+  function updateCurrentSlideTitle() {
+    const titleElement = document.getElementById('currentSlideTitle');
+    if (titleElement && currentSlide) {
+      titleElement.textContent = currentSlide.name || 'Untitled Slide';
+    }
   }
 
   function renderComposerPreview() {
     if (!window.TemplateStudio) return;
+    
+    // Check if composer preview has valid dimensions
+    if (!composerPreview || composerPreview.offsetWidth === 0 || composerPreview.offsetHeight === 0) {
+      console.warn('Composer preview has invalid dimensions, skipping render');
+      return;
+    }
+
+    // Clear previous content to ensure fresh rendering
+    window.TemplateStudio.state.content = {};
+
+    // Process regions to handle grid format
+    const processedRegions = currentSlide.regions.map(r => {
+      let grid;
+      if (r.grid) {
+        if (typeof r.grid === 'string') {
+          grid = parseCompactGrid(r.grid);
+        } else {
+          grid = r.grid;
+        }
+      } else {
+        // Fallback to x,y,w,h properties
+        grid = {
+          x: r.x || 0,
+          y: r.y || 0,
+          width: r.w || 20,
+          height: r.h || 8
+        };
+      }
+      
+      const regionId = r.id || Math.random().toString(36).substr(2, 9);
+      
+      // Set default content based on region role
+      if (!window.TemplateStudio.state.content[regionId]) {
+        window.TemplateStudio.state.content[regionId] = getDefaultContent(r.role || r.name);
+      }
+      
+      return {
+        ...r,
+        id: regionId,
+        required: true,
+        inputType: getInputType(r.role || r.name),
+        fieldTypes: getFieldTypes(r.role || r.name),
+        llmHint: '',
+        // Ensure we have the correct coordinates for the renderer
+        x: grid ? grid.x : 0,
+        y: grid ? grid.y : 0,
+        w: grid ? grid.width : 20,
+        h: grid ? grid.height : 8
+      };
+    });
 
     // Use the existing production renderer
-    window.TemplateStudio.state.regions = currentSlide.regions.map(r => ({
-      ...r,
-      id: r.id || Math.random().toString(36).substr(2, 9),
-      required: true,
-      inputType: 'text',
-      fieldTypes: ['text'],
-      llmHint: ''
-    }));
-
+    window.TemplateStudio.state.regions = processedRegions;
     window.TemplateStudio.renderProductionSlide(composerPreview);
+    updateCurrentSlideTitle();
+  }
+
+  function getDefaultContent(role) {
+    const contentMap = {
+      'primary-title': 'Transform Your Business',
+      'secondary-title': 'Strategic initiatives for digital transformation',
+      'section-title': 'Digital Transformation',
+      'supporting-text': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.',
+      'key-data': '87%',
+      'data-table': '| Metric | Q1 | Q2 | Q3 |\n|--------|----|----|----|\n| Revenue | $1.2M | $1.5M | $1.8M |\n| Growth | 15% | 25% | 20% |',
+      'context-info': 'Year-over-year growth comparison showing positive trend',
+      'page-number': '1',
+      'footer': 'Confidential & Proprietary',
+      'logo': ''
+    };
+    
+    return contentMap[role] || '';
+  }
+
+  function getInputType(role) {
+    const inputMap = {
+      'logo': 'image',
+      'data-table': 'table',
+      'page-number': 'text',
+      'footer': 'text'
+    };
+    
+    return inputMap[role] || 'text';
+  }
+
+  function getFieldTypes(role) {
+    const fieldMap = {
+      'primary-title': ['text'],
+      'secondary-title': ['text'],
+      'section-title': ['text'],
+      'supporting-text': ['text'],
+      'key-data': ['number', 'text'],
+      'data-table': ['table'],
+      'context-info': ['text'],
+      'page-number': ['number'],
+      'footer': ['text'],
+      'logo': ['image']
+    };
+    
+    return fieldMap[role] || ['text'];
   }
 
   function addMessage(text, isAssistant = false) {
@@ -398,6 +747,39 @@ Example Output:
   });
 
   renderGallery();
+  
+  // Auto-select first template if no current slide is set
+  if (!currentSlide || !currentSlide.regions || currentSlide.regions.length === 0) {
+    if (importedSlides.length > 0) {
+      selectedImportedIndex = 0;
+      currentSlide = JSON.parse(JSON.stringify(importedSlides[0]));
+    } else if (templates.length > 0) {
+      selectedTemplateIndex = 0;
+      currentSlide = JSON.parse(JSON.stringify(templates[0]));
+    }
+  } else {
+    // Set selection index based on currentSlide
+    for (let i = 0; i < templates.length; i++) {
+      if (templates[i].name === currentSlide.name) {
+        selectedTemplateIndex = i;
+        break;
+      }
+    }
+  }
+  
+  // Apply initial selection after a short delay to ensure DOM is ready
+  setTimeout(() => {
+    const defaultCards = templateGallery.querySelectorAll('.template-card.default');
+    const importedCards = templateGallery.querySelectorAll('.template-card.imported');
+    
+    if (selectedTemplateIndex >= 0 && defaultCards.length > selectedTemplateIndex) {
+      const card = defaultCards[selectedTemplateIndex];
+      updateSelectedCard(card);
+    } else if (selectedImportedIndex >= 0 && importedCards.length > selectedImportedIndex) {
+      const card = importedCards[selectedImportedIndex];
+      updateSelectedCard(card);
+    }
+  }, 100);
 }
 
 window.initComposer = initComposer;

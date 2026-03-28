@@ -215,6 +215,8 @@ export function parseMDXFrontmatter(content) {
   return { success: true, errors: [], frontmatter, body };
 }
 
+export { normalizeFrontmatter };
+
 export function getInputById(id) {
   if (typeof document === 'undefined') return null;
   return document.getElementById(id);
@@ -381,9 +383,6 @@ export function applyFrontmatterToState(frontmatter) {
           fieldTypes,
           llmHint: region.llmHint || '',
         };
-        if (typeof region.maxWords === 'number') {
-          metadata.maxWords = region.maxWords;
-        }
         if (region.type) {
           metadata.type = region.type;
         }
@@ -433,10 +432,10 @@ export async function importMDXContent(content) {
 
   const { frontmatter, body } = parseResult;
 
-  normalizeFrontmatter(frontmatter);
+  const normalizedFrontmatter = normalizeFrontmatter(frontmatter);
 
   // Validate frontmatter using shared schema
-  const validation = validateFrontmatter(frontmatter);
+  const validation = validateFrontmatter(normalizedFrontmatter);
   if (!validation.valid) {
     return { 
       success: false, 
@@ -449,18 +448,18 @@ export async function importMDXContent(content) {
   // Apply frontmatter to state (only in browser context)
   if (typeof window !== 'undefined' && typeof document !== 'undefined') {
     try {
-      applyFrontmatterToState(frontmatter);
+      applyFrontmatterToState(normalizedFrontmatter);
     } catch (error) {
       return { 
         success: false, 
         errors: [`Failed to apply frontmatter to state: ${error.message}`], 
-        frontmatter, 
+        frontmatter: normalizedFrontmatter, 
         body 
       };
     }
   }
 
-  return { success: true, errors: [], frontmatter, body };
+  return { success: true, errors: [], frontmatter: normalizedFrontmatter, body };
 }
 
 export function importMDXFile(file) {

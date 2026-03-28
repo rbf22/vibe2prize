@@ -1,4 +1,4 @@
-import pptxgen from 'pptxgenjs';
+import pptxgen from 'https://esm.sh/pptxgenjs@4.0.1';
 
 export async function exportToPptx(state) {
   const pres = new pptxgen();

@@ -1,6 +1,7 @@
 {
   "brands": [
     { "id": "default", "label": "Template Studio", "version": 1 },
-    { "id": "accenture", "label": "Accenture", "version": 1 }
+    { "id": "accenture", "label": "Accenture", "version": 1 },
+    { "id": "arc", "label": "Arc Theme", "version": 1 }
   ]
 }

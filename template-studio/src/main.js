@@ -30,7 +30,7 @@ import {
   applyPreset
 } from './ui/controls.js';
 import { renderRegionsTable, addNewRegion, clearAllRegions } from './ui/regions-table.js';
-import { importMDXFile, parseMDXFrontmatter, applyFrontmatterToState } from './persistence/importer.js';
+import { importMDXFile, parseMDXFrontmatter, applyFrontmatterToState, normalizeFrontmatter } from './persistence/importer.js';
 import { renderSnippet } from './utils/snippet.js';
 import {
   applyBrandTheme,
@@ -109,7 +109,8 @@ async function hydrateMasterTemplate({ brandId = state.brand?.id, variantId = st
         console.warn('Master template frontmatter failed to parse for brand %s', brandId);
         return { applied: false, reason: 'parse-error', errors: parsed.errors };
       }
-      applyFrontmatterToState(parsed.frontmatter);
+      const normalizedFrontmatter = normalizeFrontmatter(parsed.frontmatter);
+      applyFrontmatterToState(normalizedFrontmatter);
       if (typeof document !== 'undefined') {
         document.dispatchEvent(new CustomEvent('masterTemplateHydrated', {
           detail: {
@@ -186,9 +187,146 @@ export {
 
 // Entry point for Template Studio when loaded as an ESM
 export function init() {
+  console.log('Template Studio init() called');
   if (typeof window === 'undefined') return;
   window.initComposer = initComposer;
   if (window.TemplateStudio && window.TemplateStudio.__initialized) return;
+
+  // Initialize brand controls
+  const brandSelect = document.getElementById('brandSelect');
+  const themeSelect = document.getElementById('brandThemeSelect');
+  
+  // Initialize brand dropdown
+  if (brandSelect) {
+    const brands = listBrandOptions();
+    brandSelect.innerHTML = '';
+    brands.forEach(brand => {
+      const option = document.createElement('option');
+      option.value = brand.id;
+      option.textContent = brand.label;
+      brandSelect.appendChild(option);
+    });
+    
+    // Select first brand and trigger update
+    if (brands.length > 0) {
+      brandSelect.value = brands[0].id;
+      brandSelect.dispatchEvent(new Event('change'));
+      
+      // Update brand label directly
+      const brandLabel = document.getElementById('brandLabel');
+      if (brandLabel) {
+        brandLabel.textContent = brands[0].label;
+      }
+    }
+  }
+  
+  // Handle theme dropdown changes
+  const brandThemeSelect = document.getElementById('brandThemeSelect');
+  if (brandThemeSelect) {
+    brandThemeSelect.addEventListener('change', (e) => {
+      const brandSelect = document.getElementById('brandSelect');
+      if (brandSelect && window.TemplateStudio && window.TemplateStudio.applyBrandTheme) {
+        const brand = brandSelect.value;
+        const variant = e.target.value;
+        console.log('Theme dropdown changed - Applying brand:', brand, 'variant:', variant);
+        
+        // Update state first
+        state.brand = { id: brand, variant };
+        
+        // Get snapshot for logo update
+        const snapshot = getBrandSnapshot(brand, variant);
+        
+        window.TemplateStudio.applyBrandTheme(brand, variant);
+        
+        // Dispatch event to update UI
+        document.dispatchEvent(new CustomEvent('brandStateChanged', { 
+          detail: { brand, variant } 
+        }));
+        
+        // Also update brand label directly
+        const brandLabel = document.getElementById('brandLabel');
+        if (brandLabel) {
+          if (snapshot) {
+            brandLabel.textContent = snapshot.label || snapshot.id;
+          }
+        }
+        
+        // Update logo directly
+        const brandLogo = document.getElementById('brandLogo');
+        if (brandLogo && snapshot) {
+          const variantKey = variant === 'light' ? 'light' : 'dark';
+          const fallbackKey = variantKey === 'light' ? 'dark' : 'light';
+          const logoSrc = snapshot.assets?.logo?.[variantKey] || snapshot.assets?.logo?.[fallbackKey] || '';
+          if (logoSrc) {
+            brandLogo.src = logoSrc;
+            brandLogo.hidden = false;
+          } else {
+            brandLogo.hidden = true;
+          }
+        }
+      }
+    });
+  }
+  
+  // Handle brand dropdown changes
+  if (brandSelect && brandThemeSelect) {
+    brandSelect.addEventListener('change', (e) => {
+      const brand = e.target.value;
+      console.log('Brand dropdown changed to:', brand);
+      
+      // Populate theme variants for the selected brand
+      const variants = listBrandThemeOptions(brand);
+      brandThemeSelect.innerHTML = '';
+      variants.forEach(variant => {
+        const option = document.createElement('option');
+        option.value = variant.id;
+        option.textContent = variant.label;
+        brandThemeSelect.appendChild(option);
+      });
+      
+      // Apply the first variant
+      if (variants.length > 0 && window.TemplateStudio && window.TemplateStudio.applyBrandTheme) {
+        const variant = variants[0].id;
+        brandThemeSelect.value = variant;
+        console.log('Applying brand:', brand, 'variant:', variant);
+        
+        // Update state first
+        state.brand = { id: brand, variant };
+        
+        // Get snapshot for logo update
+        const snapshot = getBrandSnapshot(brand, variant);
+        
+        window.TemplateStudio.applyBrandTheme(brand, variant);
+        
+        // Dispatch event to update UI
+        document.dispatchEvent(new CustomEvent('brandStateChanged', { 
+          detail: { brand, variant } 
+        }));
+        
+        // Also update brand label directly
+        const brandLabel = document.getElementById('brandLabel');
+        if (brandLabel) {
+          if (snapshot) {
+            brandLabel.textContent = snapshot.label || snapshot.id;
+          }
+        }
+        
+        // Update logo directly
+        const brandLogo = document.getElementById('brandLogo');
+        if (brandLogo && snapshot) {
+          const variantKey = variant === 'light' ? 'light' : 'dark';
+          const fallbackKey = variantKey === 'light' ? 'dark' : 'light';
+          const logoSrc = snapshot.assets?.logo?.[variantKey] || snapshot.assets?.logo?.[fallbackKey] || '';
+          if (logoSrc) {
+            brandLogo.src = logoSrc;
+            brandLogo.hidden = false;
+          } else {
+            brandLogo.hidden = true;
+          }
+        }
+      }
+    });
+  }
 
   // Set up global references IMMEDIATELY
   window.TemplateStudio = {
@@ -263,9 +401,15 @@ export function init() {
 
   seedFallbackLayout();
   window.TemplateStudio.__initialized = true;
+  console.log('Template Studio initialized');
 }
 
 // Auto-initialize if this module is loaded directly (guarded so it only happens once)
-if (typeof window !== 'undefined') {
-  init();
+if (typeof window !== 'undefined' && !window.TemplateStudio?.__initialized) {
+  console.log('Auto-initializing Template Studio');
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 }

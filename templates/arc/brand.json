@@ -1,0 +1,16 @@
+{
+  "id": "arc",
+  "label": "Arc Theme",
+  "version": 1,
+  "variants": {
+    "default": {
+      "label": "Default",
+      "cssVars": {
+        "--bg": "linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 100%)",
+        "--panel": "rgba(255, 255, 255, 0.1)",
+        "--primary": "#00ff88",
+        "--accent": "#00ccff"
+      }
+    }
+  }
+}

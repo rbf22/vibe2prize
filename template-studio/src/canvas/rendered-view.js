@@ -403,8 +403,12 @@ function buildDiagnosticsDescriptor(box, role) {
       x: box.gridX ?? 0,
       y: box.gridY ?? 0
     },
-    metadata: box.metadata || {},
-    maxWords: box.metadata?.maxWords || null,
+    metadata: {
+      required: box.metadata?.required || false,
+      inputType: box.metadata?.inputType || 'any',
+      fieldTypes: box.metadata?.fieldTypes || [],
+      llmHint: box.metadata?.llmHint || '',
+    },
     text: null
   };
 }

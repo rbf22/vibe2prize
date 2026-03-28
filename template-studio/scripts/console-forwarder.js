@@ -33,6 +33,15 @@
     });
   }
 
+  function formatTimestamp(isoString) {
+    try {
+      const date = new Date(isoString);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    } catch (error) {
+      return isoString;
+    }
+  }
+
   function pushEntry(entry) {
     store.push(entry);
     if (store.length > MAX_LOGS) {
@@ -90,12 +99,14 @@
       }
 
       try {
-        const entry = {
+        const timestamp = new Date().toISOString();
+      const entry = {
           id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
           level,
           args: args.map(serializeArg),
           message: args.map(formatArg).join(' '),
-          timestamp: new Date().toISOString()
+          timestamp,
+          formattedTimestamp: formatTimestamp(timestamp)
         };
         pushEntry(entry);
       } catch (err) {

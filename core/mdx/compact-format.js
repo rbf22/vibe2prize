@@ -204,7 +204,14 @@ export function expandCompactRegion(compactRegion) {
   
   // Parse compact grid
   if (typeof region.grid === 'string') {
-    region.grid = parseCompactGrid(region.grid);
+    const parsedGrid = parseCompactGrid(region.grid);
+    if (parsedGrid) {
+      region.grid = parsedGrid;
+    } else {
+      // If parsing fails, provide a default grid
+      console.warn(`Failed to parse grid string "${region.grid}" for region ${region.id}, using default`);
+      region.grid = { x: 0, y: 0, width: 1, height: 1 };
+    }
   }
   
   // Expand field names
@@ -337,15 +344,20 @@ export function expandCompactFrontmatter(frontmatter) {
   }
   
   // Generate layout.components from regions
-  if (expanded.regions && !expanded.layout) {
-    expanded.layout = {
-      type: "grid-designer",
-      template: expanded.title || "Untitled Template",
-      components: expanded.regions.map(region => ({
+  if (expanded.regions) {
+    if (!expanded.layout) {
+      expanded.layout = {
+        type: "grid-designer",
+        template: expanded.title || "Untitled Template",
+        components: []
+      };
+    }
+    if (!Array.isArray(expanded.layout.components)) {
+      expanded.layout.components = expanded.regions.map(region => ({
         type: "GridArea",
         ...region
-      }))
-    };
+      }));
+    }
   }
   
   return expanded;

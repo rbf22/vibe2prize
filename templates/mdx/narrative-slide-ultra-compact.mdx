@@ -1,0 +1,31 @@
+---
+title: "Grid Blueprint: Narrative Slide"
+maxWords: 280
+phase: "draft"
+settings: { canvas: "1920x1080", grid: "80x45", gap: "0.5rem" }
+exclusions: "4,4,3,3"
+brand: "default dark"
+regions:
+  - { id: "section-label", role: "section-title", grid: "3,2,26x1", hint: "Eyebrow or track name" }
+  - { id: "hero-title", role: "primary-title", req: true, grid: "3,4,48x3", hint: "Primary headline", maxWords: 18 }
+  - { id: "hero-subtitle", role: "secondary-title", grid: "3,7,42x2", hint: "Subtitle framing", maxWords: 28 }
+  - { id: "summary", role: "supporting-text", req: true, grid: "3,10,30x12", hint: "Core narrative", maxWords: 160 }
+  - { id: "insight", role: "key-data", grid: "34,10,20x12", hint: "Highlight metric", maxWords: 40 }
+  - { id: "stat-cluster", role: "data-table", type: "table", grid: "3,24,34x10", hint: "Structured stats", maxWords: 40 }
+  - { id: "stat-caption", role: "context-info", grid: "38,24,39x10", hint: "Data explanation", maxWords: 60 }
+  - { id: "quote", role: "supporting-text", grid: "3,35,50x6", hint: "Customer testimonial", maxWords: 70 }
+  - { id: "logo", role: "logo", type: "image", grid: "3,42,10x2", hint: "Brand identifier" }
+  - { id: "page-number", role: "page-number", req: true, grid: "68,42,9x2", hint: "Slide number" }
+  - { id: "footer", role: "footer", req: true, grid: "22,43,32x1", hint: "Legal notice" }
+layout: { type: "grid-designer", template: "Grid Blueprint: Narrative Slide", rows: 45, columns: 80, gap: "0.5rem" }
+---
+
+import { GridDesigner, GridArea, ContentRenderer } from "../../core/layout/components.js";
+
+<GridDesigner template="Grid Blueprint: Narrative Slide">
+  {["section-label", "hero-title", "hero-subtitle", "summary", "insight", "stat-cluster", "stat-caption", "quote", "logo", "page-number", "footer"].map(id => (
+    <GridArea key={id} area={id} contentType={frontmatter.regions.find(r => r.id === id).role}>
+      <ContentRenderer type={frontmatter.regions.find(r => r.id === id).role} content={""} />
+    </GridArea>
+  ))}
+</GridDesigner>

@@ -17,8 +17,8 @@
   },
   "assets": {
     "logo": {
-      "dark": "templates/default/assets/dark/logo.svg",
-      "light": "templates/default/assets/light/logo.svg"
+      "dark": "/templates/default/assets/dark/logo.svg",
+      "light": "/templates/default/assets/light/logo.svg"
     }
   },
   "defaultTheme": "dark",

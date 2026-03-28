@@ -320,8 +320,8 @@ export function attachControlHandlers(controls, renderPreview, renderSnippet, re
   controls.copySnippet.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(controls.snippetOutput.value);
-      controls.copySnippet.textContent = 'Copied!';
-      setTimeout(() => (controls.copySnippet.textContent = 'Copy Snippet'), 1500);
+      controls.copySnippet.textContent = 'Copied MDX!';
+      setTimeout(() => (controls.copySnippet.textContent = 'Copy MDX'), 1500);
     } catch (error) {
       alert('Clipboard access denied. Copy manually.');
     }

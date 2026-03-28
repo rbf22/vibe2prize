@@ -13,8 +13,8 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="./styles/main.css" />
-    <script src="./scripts/console-forwarder.js"></script>
-    <script src="./scripts/log-panel.js"></script>
+    <script type="module" src="./src/main.js?v=2"></script>
+    <script type="module" src="./scripts/log-panel.js"></script>
     <!-- React and ReactDOM for production render -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -22,7 +22,7 @@
     {
       "imports": {
         "pptxgenjs": "https://esm.sh/pptxgenjs@4.0.1",
-        "@mlc-ai/web-llm": "https://esm.run/@mlc-ai/web-llm@0.2.82"
+        "@mlc-ai/web-llm": "https://esm.sh/@mlc-ai/web-llm@0.2.82"
       }
     }
     </script>
@@ -34,12 +34,49 @@
     </header>
 
     <nav class="app-nav">
-      <button id="designTab" class="nav-btn active" data-tab="design">Design</button>
-      <button id="composeTab" class="nav-btn" data-tab="composer">Composer</button>
+      <button id="themesTab" class="nav-btn active" data-tab="themes">Themes</button>
+      <button id="designTab" class="nav-btn" data-tab="design">Template Designer</button>
+      <button id="composeTab" class="nav-btn" data-tab="composer">Compose</button>
       <button id="logsTab" class="nav-btn" data-tab="logs">Logs</button>
     </nav>
 
-    <main class="app-grid" id="designView">
+    <main class="themes-grid" id="themesView">
+      <section class="themes-panel">
+        <div class="brand-panel">
+          <div class="brand-panel-top">
+            <div class="brand-logo-badge">
+              <img id="brandLogo" class="brand-logo" alt="Brand logo" loading="lazy" />
+            </div>
+            <div class="brand-identity-meta">
+              <span class="eyebrow">Organization</span>
+              <strong id="brandLabel">Brand Name</strong>
+              <span id="brandVariantLabel" class="brand-variant">Theme Name</span>
+            </div>
+          </div>
+
+          <div class="brand-panel-controls">
+            <label>
+              Brand
+              <select id="brandSelect"></select>
+            </label>
+
+            <label>
+              Variant
+              <select id="brandThemeSelect"></select>
+            </label>
+          </div>
+
+          <div class="brand-token-list" id="brandTokens"></div>
+
+          <div class="brand-editorial">
+            <span class="eyebrow">Editorial Themes</span>
+            <ul id="brandEditorialList"></ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <main class="app-grid" id="designView" style="display: none;">
       <section class="settings-panel">
         <div class="settings-panel-header">
           <h2>Template Settings</h2>
@@ -47,17 +84,17 @@
 
         <div class="settings-field-grid">
           <label>
-            Template Name
+            Canvas Name
             <input id="templateName" type="text" value="cssgrid-template" />
           </label>
 
           <div class="dual-input-row">
             <label>
-              Canvas Width (px)
+              Pixel Width
               <input id="canvasWidth" type="number" min="320" max="7680" value="1920" />
             </label>
             <label>
-              Canvas Height (px)
+              Pixel Height
               <input id="canvasHeight" type="number" min="240" max="4320" value="1080" />
             </label>
           </div>
@@ -90,85 +127,10 @@
           </label>
         </div>
 
-        <div class="brand-panel">
-          <div class="brand-panel-top">
-            <div class="brand-logo-badge">
-              <img id="brandLogo" class="brand-logo" alt="Brand logo" loading="lazy" />
-            </div>
-            <div class="brand-identity-meta">
-              <span class="eyebrow">Organization</span>
-              <strong id="brandLabel">Brand Name</strong>
-              <span id="brandVariantLabel" class="brand-variant">Theme Name</span>
-            </div>
-          </div>
-
-          <div class="brand-panel-controls">
-            <label>
-              Brand
-              <select id="brandSelect"></select>
-            </label>
-
-            <label>
-              Theme
-              <select id="brandThemeSelect"></select>
-            </label>
-          </div>
-
-          <div class="brand-token-list" id="brandTokens"></div>
-
-          <div class="brand-editorial">
-            <span class="eyebrow">Editorial Themes</span>
-            <ul id="brandEditorialList"></ul>
-          </div>
-        </div>
-
-        <div class="preview-behavior-panel">
-          <div class="preview-panel-header">
-            <div>
-              <span class="eyebrow">Renderer Controls</span>
-              <strong>Preview Output</strong>
-            </div>
-            <p>Set page numbering and toggle studio-only chrome.</p>
-          </div>
-
-          <div class="preview-field-grid">
-            <label>
-              Page Number
-              <input id="pageNumberInput" type="number" min="1" value="1" />
-            </label>
-            <label>
-              Total Slides
-              <input id="totalSlidesInput" type="number" min="1" value="12" />
-            </label>
-            <label>
-              Page Label
-              <input id="pageLabelInput" type="text" value="Page" />
-            </label>
-          </div>
-
-          <div class="preview-flag-grid">
-            <label class="toggle-pill">
-              <input id="previewChromeToggle" type="checkbox" checked />
-              <span>Show Studio Chrome</span>
-            </label>
-            <label class="toggle-pill">
-              <input id="regionOutlineToggle" type="checkbox" checked />
-              <span>Show Region Outlines</span>
-            </label>
-            <label class="toggle-pill">
-              <input id="diagnosticsToggle" type="checkbox" checked />
-              <span>Show Diagnostics</span>
-            </label>
-            <label class="toggle-pill">
-              <input id="backgroundShapesToggle" type="checkbox" checked />
-              <span>Show Background Shapes</span>
-            </label>
-          </div>
-        </div>
-      </section>
+              </section>
 
       <section class="canvas-panel">
-        <h2>Grid Canvas</h2>
+        <h2>Template Designer</h2>
         <div class="guide-panel">
           <h3>Guides</h3>
           <div class="guide-button-row">
@@ -202,18 +164,7 @@
             </div>
           </div>
         </div>
-        <div class="region-presets">
-          <button type="button" class="preset-btn" data-preset="header">Header</button>
-          <button type="button" class="preset-btn" data-preset="footer">Footer</button>
-          <button type="button" class="preset-btn" data-preset="left-sidebar">Left Sidebar</button>
-          <button type="button" class="preset-btn" data-preset="right-sidebar">Right Sidebar</button>
-          <button type="button" class="preset-btn" data-preset="hero">Hero</button>
-          <button type="button" class="preset-btn" data-preset="content">Content</button>
-          <button type="button" class="preset-btn" data-preset="caption">Caption</button>
-          <button type="button" id="clearAllBtn" class="preset-btn" data-preset="clear">Clear All</button>
-        </div>
-        <p class="preset-helper" id="presetStatus">Select a region, then choose a semantic role to auto-fill metadata.</p>
-        <div class="preview-toggle-row">
+                <div class="preview-toggle-row">
           <div class="preview-toggle" role="group" aria-label="Preview view toggle">
             <button type="button" class="preview-toggle-btn active" data-preview-view="canvas">Grid Canvas</button>
             <button type="button" class="preview-toggle-btn" data-preview-view="slide">Rendered Slide</button>
@@ -286,11 +237,11 @@
         <div class="button-row">
           <button id="resetNames" class="ghost-btn" type="button">Reset Names</button>
           <button id="openCssGrid" class="ghost-btn" type="button">CSS Grid Guide</button>
-          <button id="copySnippet" class="primary-btn" type="button">Copy Snippet</button>
+          <button id="copySnippet" class="primary-btn" type="button">Copy MDX</button>
           <button id="saveMdx" class="primary-btn" type="button">Save to MDX</button>
           <button id="downloadPptx" class="primary-btn" type="button">Download PPTX</button>
         </div>
-        <textarea id="snippetOutput" readonly placeholder="Template JSON will appear here..."></textarea>
+        <textarea id="snippetOutput" readonly placeholder="MDX template will appear here..."></textarea>
       </section>
     </main>
 
@@ -328,9 +279,18 @@
 
     <main class="composer-grid" id="composerView" style="display: none;">
       <section class="composer-sidebar">
-        <h3>Templates</h3>
-        <div id="templateGallery" class="template-gallery">
-          <!-- Populated by JS -->
+        <div class="template-selector">
+          <h3>Select Template</h3>
+          <div id="templateGallery" class="template-gallery">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        
+        <div class="theme-selector">
+          <h3>Select Theme</h3>
+          <div id="composerThemeGallery" class="theme-gallery">
+            <!-- Populated by JS -->
+          </div>
         </div>
       </section>
 
@@ -375,455 +335,102 @@
     </main>
 
     <script>
-      (function() {
-        // Use src modules directly for offline usage - no build required
-        const moduleSrc = './src/main.js';
+      function setupApplication() {
+        console.log('setupApplication called');
+        const themesTab = document.getElementById('themesTab');
+        const designTab = document.getElementById('designTab');
+        const composeTab = document.getElementById('composeTab');
+        const logsTab = document.getElementById('logsTab');
+        const themesView = document.getElementById('themesView');
+        const designView = document.getElementById('designView');
+        const composerView = document.getElementById('composerView');
+        const logsView = document.getElementById('logsView');
 
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-          window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-              .then(reg => console.log('SW registered'))
-              .catch(err => console.log('SW registration failed', err));
-          });
-        }
-
-        function initializeLogs() {
-          const feed = document.getElementById('logsFeed');
-          if (window.TemplateStudioLogPanel?.initLogPanel) {
-            window.TemplateStudioLogPanel.initLogPanel({ feedEl: feed });
-            return;
+        const switchTab = (tab) => {
+          console.log('Switching to tab:', tab);
+          // Hide all views
+          themesView.style.display = 'none';
+          designView.style.display = 'none';
+          composerView.style.display = 'none';
+          logsView.style.display = 'none';
+          
+          // Remove active class from all tabs
+          themesTab.classList.remove('active');
+          designTab.classList.remove('active');
+          composeTab.classList.remove('active');
+          logsTab.classList.remove('active');
+          
+          // Show selected view and activate tab
+          if (tab === 'themes') {
+            themesTab.classList.add('active');
+            themesView.style.display = 'grid';
+          } else if (tab === 'design') {
+            designTab.classList.add('active');
+            designView.style.display = 'grid';
+          } else if (tab === 'composer') {
+            composeTab.classList.add('active');
+            composerView.style.display = 'grid';
+          } else if (tab === 'logs') {
+            logsTab.classList.add('active');
+            logsView.style.display = 'block';
           }
-          console.warn('Failed to initialize log panel');
-          if (feed) {
-            feed.innerHTML = '<div class="logs-empty-state">Unable to load log viewer.</div>';
-          }
-        }
-
-        function setupApplication() {
-          console.log('setupApplication called');
-          const designTab = document.getElementById('designTab');
-          const composeTab = document.getElementById('composeTab');
-          const logsTab = document.getElementById('logsTab');
-          const designView = document.getElementById('designView');
-          const composerView = document.getElementById('composerView');
-          const logsView = document.getElementById('logsView');
-
-          const switchTab = (tab) => {
-            console.log('Switching to tab:', tab);
-            if (tab === 'design') {
-              designTab.classList.add('active');
-              composeTab.classList.remove('active');
-              logsTab.classList.remove('active');
-              designView.style.display = 'flex'; // Changed from grid to flex for better overall container support
-              composerView.style.display = 'none';
-              logsView.style.display = 'none';
-            } else {
-              designTab.classList.remove('active');
-              designView.style.display = 'none';
-              if (tab === 'composer') {
-                composeTab.classList.add('active');
-                logsTab.classList.remove('active');
-                composerView.style.display = 'grid';
-                logsView.style.display = 'none';
-              } else {
-                composeTab.classList.remove('active');
-                logsTab.classList.add('active');
-                composerView.style.display = 'none';
-                logsView.style.display = 'flex';
-              }
-            }
-          };
-
-          designTab.addEventListener('click', (e) => {
-            console.log('Design tab clicked');
-            switchTab('design');
-          });
-          composeTab.addEventListener('click', () => switchTab('composer'));
-          logsTab.addEventListener('click', () => switchTab('logs'));
-
-          const ensureReady = () => {
-            // Check for BOTH TemplateStudio (Design) and Composer
-            const isDesignReady = !!(window.TemplateStudio && window.TemplateStudio.attachControlHandlers);
-            const isComposerReady = typeof window.initComposer === 'function';
-            const hasLogStore = typeof window.TemplateStudioLogs !== 'undefined';
-
-            console.log('Checking readiness - Design:', isDesignReady, 'Composer:', isComposerReady);
-            if (window.TemplateStudio) {
-              console.log('TemplateStudio state:', {
-                initialized: window.TemplateStudio.__initialized,
-                hasHandlers: !!window.TemplateStudio.attachControlHandlers
-              });
-            }
-
-            if (!isDesignReady || !isComposerReady || !hasLogStore) {
-              setTimeout(ensureReady, 100);
-              return;
-            }
-            console.log('Application ready, initializing components...');
-            try {
-              initializeDom();
-              window.initComposer();
-              initializeLogs();
-            } catch (err) {
-              console.error('Initialization error:', err);
-            }
-          };
-          ensureReady();
-        }
-
-        function initializeDom() {
-          const previewGrid = document.getElementById('previewGrid');
-          const guideLayer = document.getElementById('guideLayer');
-          const canvasContainer = document.getElementById('canvasContainer');
-          const slidePreview = document.getElementById('slidePreview');
-          const productionPreview = document.getElementById('productionPreview');
-          const workbench = document.getElementById('previewWorkbench');
-          const previewToggleButtons = Array.from(document.querySelectorAll('.preview-toggle-btn'));
-          const diagnosticsBody = document.getElementById('diagnosticsBody');
-          const diagnosticsSummary = document.getElementById('diagnosticSummary');
-
-          const renderCanvas = () => {
-            TemplateStudio.renderPreview(previewGrid);
-            TemplateStudio.renderGuides(guideLayer, previewGrid);
-          };
-
-          const scheduleProductionRender = ({ force = false } = {}) => {
-            if (!productionPreview) return;
-            if (force) {
-              productionPreview._forceRender = true;
-            }
-            const runRender = () => TemplateStudio.renderProductionSlide(productionPreview);
-            requestAnimationFrame(() => {
-              requestAnimationFrame(runRender);
-            });
-          };
-
-          const renderActivePreview = ({ forceProduction = false } = {}) => {
-            const view = workbench.dataset.view;
-            if (view === 'slide') {
-              requestAnimationFrame(() => TemplateStudio.renderSlidePreview(slidePreview));
-            } else if (view === 'production') {
-              scheduleProductionRender({ force: forceProduction });
-            }
-          };
-
-          const renderAll = () => {
-            renderCanvas();
-            renderActivePreview();
-          };
-          const controls = {
-            templateName: document.getElementById('templateName'),
-            canvasWidth: document.getElementById('canvasWidth'),
-            canvasHeight: document.getElementById('canvasHeight'),
-            columnCount: document.getElementById('columnCount'),
-            rowCount: document.getElementById('rowCount'),
-            columnSize: document.getElementById('columnSize'),
-            rowSize: document.getElementById('rowSize'),
-            gridGap: document.getElementById('gridGap'),
-            previewStage: document.getElementById('previewWorkbench'),
-            previewGrid: document.getElementById('previewGrid'),
-            canvasContainer: document.getElementById('canvasContainer'),
-            slidePreviewSurface: document.getElementById('slidePreview'),
-            productionPreviewSurface: document.getElementById('productionPreview'),
-            presetButtons: Array.from(document.querySelectorAll('.preset-btn')),
-            presetStatus: document.getElementById('presetStatus'),
-            snippetOutput: document.getElementById('snippetOutput'),
-            resetNames: document.getElementById('resetNames'),
-            openCssGrid: document.getElementById('openCssGrid'),
-            copySnippet: document.getElementById('copySnippet'),
-            saveMdx: document.getElementById('saveMdx'),
-            downloadPptx: document.getElementById('downloadPptx'),
-            importMdxBtn: document.getElementById('importMdxBtn'),
-            mdxFileInput: document.getElementById('mdxFileInput'),
-            deleteSelectedBtn: document.getElementById('deleteSelectedBtn'),
-            clearAllBtn: document.getElementById('clearAllBtn'),
-            addRegionBtn: document.getElementById('addRegionBtn'),
-            brandSelect: document.getElementById('brandSelect'),
-            brandThemeSelect: document.getElementById('brandThemeSelect'),
-            brandLogo: document.getElementById('brandLogo'),
-            brandLabel: document.getElementById('brandLabel'),
-            brandVariantLabel: document.getElementById('brandVariantLabel'),
-            brandTokens: document.getElementById('brandTokens'),
-            brandEditorialList: document.getElementById('brandEditorialList'),
-            exclusions: {
-              top: document.getElementById('exclusionTop'),
-              bottom: document.getElementById('exclusionBottom'),
-              left: document.getElementById('exclusionLeft'),
-              right: document.getElementById('exclusionRight')
-            },
-            paginationInputs: {
-              pageNumber: document.getElementById('pageNumberInput'),
-              totalSlides: document.getElementById('totalSlidesInput'),
-              label: document.getElementById('pageLabelInput')
-            },
-            previewToggles: {
-              previewChrome: document.getElementById('previewChromeToggle'),
-              regionOutlines: document.getElementById('regionOutlineToggle'),
-              diagnostics: document.getElementById('diagnosticsToggle'),
-              backgroundShapes: document.getElementById('backgroundShapesToggle')
-            }
-          };
-
-          const { TemplateStudio } = window;
-
-          TemplateStudio.attachControlHandlers(
-            controls,
-            renderAll,
-            TemplateStudio.renderSnippet,
-            TemplateStudio.renderRegionsTable
-          );
-
-          TemplateStudio.initDiagnosticsPanel({
-            bodyEl: diagnosticsBody,
-            summaryEl: diagnosticsSummary
-          });
-
-          renderAll();
-          TemplateStudio.renderRegionsTable();
-          TemplateStudio.renderSnippet();
-          TemplateStudio.updateSelectionControls(controls);
-
-          document.addEventListener('selectionChanged', () => {
-            console.log('Selection changed event received');
-            TemplateStudio.updateSelectionControls(controls);
-          });
-
-          const handlePointerDown = (e) => {
-            if (TemplateStudio.isEditableTarget(e)) return;
-            if (e.target.classList.contains('grid-block') || e.target.closest('.grid-block')) {
-              return;
-            }
-
-            const rect = previewGrid.getBoundingClientRect();
-            const cellPixelSizeX = rect.width / TemplateStudio.state.columns;
-            const cellPixelSizeY = rect.height / TemplateStudio.state.rows;
-
-            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-
-            const mouseGridX = Math.floor((clientX - rect.left) / cellPixelSizeX);
-            const mouseGridY = Math.floor((clientY - rect.top) / cellPixelSizeY);
-
-            console.log(`PointerDown: client(${clientX},${clientY}) grid(${mouseGridX},${mouseGridY}) rect(${rect.left},${rect.top},${rect.width},${rect.height})`);
-
-            const box = TemplateStudio.getBoxAtGrid(mouseGridX, mouseGridY);
-            console.log(`Box at grid: ${box ? box.id : 'none'}`);
-            if (box) {
-              TemplateStudio.state.selectedBoxId = box.id;
-              TemplateStudio.updateSelectionControls(controls);
-              renderAll();
-              TemplateStudio.renderRegionsTable();
-              TemplateStudio.renderSnippet();
-            } else {
-              TemplateStudio.state.selectedBoxId = null;
-              TemplateStudio.updateSelectionControls(controls);
-              TemplateStudio.state.isDrawing = true;
-              TemplateStudio.state.dragStart = {
-                startGridX: mouseGridX,
-                startGridY: mouseGridY,
-                currentGridX: mouseGridX,
-                currentGridY: mouseGridY,
-                startClientX: clientX,
-                startClientY: clientY,
-                hasMoved: false
-              };
-              previewGrid.classList.add('drawing');
-            }
-          };
-
-          const handlePointerMove = (e) => {
-            TemplateStudio.handleMouseMove(
-              e,
-              previewGrid,
-              () => {
-                renderCanvas();
-              }
-            );
-          };
-
-          const handlePointerUp = (e) => {
-            TemplateStudio.handleMouseUp(
-              e,
-              previewGrid,
-              renderCanvas,
-              () => {
-                TemplateStudio.renderRegionsTable();
-                document.dispatchEvent(new CustomEvent('regionsTableChanged'));
-              },
-              () => {
-                TemplateStudio.renderSnippet();
-                document.dispatchEvent(new CustomEvent('snippetChanged'));
-              }
-            );
-
-            TemplateStudio.updateSelectionControls(controls);
-            renderActivePreview({ forceProduction: workbench.dataset.view === 'production' });
-          };
-
-          previewGrid.addEventListener('mousedown', handlePointerDown);
-          previewGrid.addEventListener('mousemove', handlePointerMove);
-          document.addEventListener('mouseup', handlePointerUp);
-
-          // Touch support for iPad
-          previewGrid.addEventListener('touchstart', (e) => {
-              if (TemplateStudio.isEditableTarget(e)) return;
-              console.log('Touch start');
-              handlePointerDown(e);
-              if (TemplateStudio.state.isDrawing || TemplateStudio.state.isDragging || TemplateStudio.state.isResizing) {
-                  e.preventDefault();
-              }
-          }, { passive: false });
-
-          previewGrid.addEventListener('touchmove', (e) => {
-              console.log('Touch move - drawing:', TemplateStudio.state.isDrawing);
-              handlePointerMove(e);
-              if (TemplateStudio.state.isDrawing || TemplateStudio.state.isDragging || TemplateStudio.state.isResizing) {
-                  e.preventDefault(); // Prevent scrolling while drawing/dragging
-              }
-          }, { passive: false });
-
-          document.addEventListener('touchend', (e) => {
-              console.log('Touch end');
-              handlePointerUp(e);
-          });
-
-          previewToggleButtons.forEach((btn) => {
-            btn.addEventListener('click', () => {
-              const view = btn.dataset.previewView;
-              previewToggleButtons.forEach((button) => button.classList.toggle('active', button === btn));
-              workbench.dataset.view = view;
-              if (view === 'canvas') {
-                renderCanvas();
-              } else {
-                renderActivePreview({ forceProduction: view === 'production' });
-              }
-            });
-          });
-
-
-          document.addEventListener('keydown', (e) => {
-            if (TemplateStudio.isEditableTarget(e)) return;
-            if ((e.key === 'Delete' || e.key === 'Backspace') && TemplateStudio.state.selectedBoxId) {
-              e.preventDefault();
-              TemplateStudio.deleteSelectedRegion();
-              TemplateStudio.renderRegionsTable();
-              renderCanvas();
-              TemplateStudio.renderSnippet();
-              TemplateStudio.updateSelectionControls(controls);
-              TemplateStudio.renderSlidePreview(slidePreview);
-              TemplateStudio.renderProductionSlide(productionPreview);
-            }
-          });
-
-          document.addEventListener('keydown', (e) => {
-            if (TemplateStudio.isEditableTarget(e)) return;
-            if ((e.metaKey || e.ctrlKey) && !e.altKey) {
-              const key = e.key.toLowerCase();
-              if (key === 'z') {
-                e.preventDefault();
-                TemplateStudio.handleUndo();
-              } else if (key === 'y') {
-                e.preventDefault();
-                TemplateStudio.handleRedo();
-              } else if (key === 's') {
-                e.preventDefault();
-                if (controls.saveMdx) {
-                  controls.saveMdx.click();
-                } else {
-                  try {
-                    TemplateStudio.downloadMdxFile(TemplateStudio.state);
-                  } catch (error) {
-                    console.error('Failed to export MDX', error);
-                    alert('Failed to export MDX. Please check your template metadata.');
-                  }
-                }
-              }
-            }
-          });
-
-          document.addEventListener('diagnosticRegionFocus', (event) => {
-            const boxId = event?.detail?.boxId;
-            if (!boxId) return;
-            TemplateStudio.state.selectedBoxId = boxId;
-            TemplateStudio.renderRegionsTable();
-            TemplateStudio.updateSelectionControls(controls);
-            renderCanvas();
-            TemplateStudio.renderSlidePreview(slidePreview);
-            TemplateStudio.renderProductionSlide(productionPreview);
-            TemplateStudio.renderSnippet();
-          });
-
-          document.addEventListener('regionsTableChanged', () => {
-            renderAll();
-            TemplateStudio.renderSnippet();
-          });
-
-          document.addEventListener('regionDeleted', () => {
-            renderAll();
-            TemplateStudio.renderSnippet();
-            TemplateStudio.updateSelectionControls(controls);
-          });
-
-          document.addEventListener('regionAdded', () => {
-            renderAll();
-            TemplateStudio.renderSnippet();
-          });
-
-          document.addEventListener('allRegionsCleared', () => {
-            renderAll();
-            TemplateStudio.renderSnippet();
-            TemplateStudio.updateSelectionControls(controls);
-          });
-
-          document.addEventListener('mdxImported', () => {
-            TemplateStudio.renderRegionsTable();
-            renderAll();
-            TemplateStudio.renderSnippet();
-            TemplateStudio.updateSelectionControls(controls);
-          });
-
-          TemplateStudio.applyCanvasDimensions(controls);
-          TemplateStudio.applyReferenceOverlay(controls);
-          TemplateStudio.renderSlidePreview(slidePreview);
-          TemplateStudio.renderProductionSlide(productionPreview);
-        
-          /* 
-          // Load layout test helpers in development
-          if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            const testScript = document.createElement('script');
-            testScript.type = 'module';
-            testScript.src = './test/simple-layout-test.js';
-            document.head.appendChild(testScript);
-            
-            const resizeTestScript = document.createElement('script');
-            resizeTestScript.type = 'module';
-            resizeTestScript.src = './test/resize-behavior.test.js';
-            document.head.appendChild(resizeTestScript);
-            
-            const resizeDebugScript = document.createElement('script');
-            resizeDebugScript.type = 'module';
-            resizeDebugScript.src = './test/resize-debug.js';
-            document.head.appendChild(resizeDebugScript);
-            
-            const comprehensiveTestScript = document.createElement('script');
-            comprehensiveTestScript.type = 'module';
-            comprehensiveTestScript.src = './test/comprehensive-resize-test.js';
-            document.head.appendChild(comprehensiveTestScript);
-          }
-          */
-        }
-
-        const moduleScript = document.createElement('script');
-        moduleScript.type = 'module';
-        moduleScript.src = moduleSrc;
-        moduleScript.onload = () => {
-          console.log('Module script loaded:', moduleSrc);
-          setupApplication();
         };
-        moduleScript.onerror = () => console.error('Failed to load Template Studio module:', moduleSrc);
-        document.head.appendChild(moduleScript);
-      })();
+
+        // Tab click handlers
+        themesTab.addEventListener('click', () => switchTab('themes'));
+        designTab.addEventListener('click', () => switchTab('design'));
+        composeTab.addEventListener('click', () => switchTab('composer'));
+        logsTab.addEventListener('click', () => switchTab('logs'));
+
+        // Show themes tab by default
+        switchTab('themes');
+      }
+      
+      // Initialize brand dropdown directly
+      async function initializeBrandDropdown() {
+        const brandSelect = document.getElementById('brandSelect');
+        if (!brandSelect) return;
+        
+        try {
+          const { listBrandOptions } = await import('./src/branding/brands.js');
+          const brands = listBrandOptions();
+          
+          brandSelect.innerHTML = '';
+          brands.forEach(brand => {
+            const option = document.createElement('option');
+            option.value = brand.id;
+            option.textContent = brand.label;
+            brandSelect.appendChild(option);
+          });
+          
+          // Select first brand
+          if (brands.length > 0) {
+            brandSelect.value = brands[0].id;
+            brandSelect.dispatchEvent(new Event('change'));
+          }
+        } catch (error) {
+          console.error('Failed to initialize brand dropdown:', error);
+        }
+      }
+    </script>
+    <script type="module">
+        import('./src/main.js?v=2').then(module => {
+          console.log('Module script loaded');
+          setupApplication();
+          
+          // Call init directly
+          if (module.init) {
+            console.log('Calling module.init()');
+            module.init();
+          } else {
+            console.error('module.init not available');
+          }
+          
+          // Also initialize brand dropdown as backup
+          initializeBrandDropdown();
+        }).catch(err => {
+          console.error('Failed to load Template Studio module:', err);
+        });
     </script>
   </body>
 </html>

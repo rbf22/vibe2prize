@@ -180,7 +180,6 @@ function normalizeBoxMetadata(box = {}, fallbackMetadata = {}) {
     inputType: metadata.inputType || 'any',
     fieldTypes: normalizedFieldTypes,
     llmHint: metadata.llmHint || '',
-    maxWords: typeof metadata.maxWords === 'number' ? metadata.maxWords : undefined,
     type: metadata.type || normalizedFieldTypes[0] || ''
   };
 }
@@ -209,9 +208,6 @@ export function buildFrontmatterFromState(state) {
       role,
       area: box.name
     };
-    if (typeof metadata.maxWords === 'number') {
-      component.maxWords = metadata.maxWords;
-    }
     components.push(component);
   });
   const templateSettings = {
@@ -252,9 +248,6 @@ export function buildFrontmatterFromState(state) {
       },
     };
 
-    if (metadata.maxWords !== undefined) {
-      region.maxWords = metadata.maxWords;
-    }
     if (metadata.llmHint) {
       region.llmHint = metadata.llmHint;
     }
@@ -271,7 +264,6 @@ export function buildFrontmatterFromState(state) {
   const frontmatter = {
     title: slugToTitle(templateName),
     phase: 'draft',
-    maxWords: 280,
     templateSettings,
     layout,
     exclusions,
@@ -339,7 +331,6 @@ function serializeCompactRegions(regions) {
     if (region.area && region.area !== region.id) parts.push(`  area: ${quote(region.area)}`);
     if (region.req) parts.push(`  req: ${region.req}`);
     if (region.type) parts.push(`  type: ${quote(region.type)}`);
-    if (region.maxWords) parts.push(`  maxWords: ${region.maxWords}`);
     if (region.hint) parts.push(`  hint: ${quote(region.hint)}`);
     if (region.grid) parts.push(`  grid: ${quote(region.grid)}`);
     
@@ -368,9 +359,6 @@ function serializeLayout(layout) {
       lines.push('      id: ' + quote(component.id || ''));
       lines.push('      role: ' + quote(component.role || ''));
       lines.push('      area: ' + quote(component.area || ''));
-      if (typeof component.maxWords === 'number') {
-        lines.push(`      maxWords: ${component.maxWords}`);
-      }
     });
   }
 
@@ -398,9 +386,6 @@ function serializeRegions(regions) {
       region.fieldTypes.forEach((fieldType) => {
         lines.push(`      - ${quote(fieldType)}`);
       });
-    }
-    if (typeof region.maxWords === 'number') {
-      lines.push(`    maxWords: ${region.maxWords}`);
     }
     if (region.llmHint) {
       lines.push(`    llmHint: ${quote(region.llmHint)}`);
@@ -477,7 +462,6 @@ export function buildMdxSource(state) {
   const frontmatterYaml = [
     '---',
     `title: ${quote(frontmatter.title)}`,
-    `maxWords: ${frontmatter.maxWords}`,
     `phase: ${quote(frontmatter.phase)}`,
     templateSettingsYaml,
     layoutYaml,

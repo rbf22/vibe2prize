@@ -1,4 +1,5 @@
 import { state } from '../state.js';
+import { renderGuides } from './guides.js';
 import { startResize, startDrag } from './interactions.js';
 
 function getAreaName(box) {
@@ -36,7 +37,7 @@ export function boxesToAreaMatrix() {
   return matrix;
 }
 
-export function renderPreview(previewGrid, renderGuides) {
+export function renderPreview(previewGrid) {
   if (!previewGrid) {
     return;
   }

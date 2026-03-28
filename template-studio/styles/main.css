@@ -54,6 +54,80 @@ h1 {
   gap: 2rem;
 }
 
+.themes-grid {
+  display: flex;
+  gap: 2rem;
+}
+
+.themes-panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.theme-library {
+  flex: 1;
+}
+
+.theme-editor {
+  flex: 1;
+}
+
+.theme-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.theme-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-card:hover {
+  background: var(--surface-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.theme-card.selected {
+  border-color: var(--primary);
+  background: rgba(129, 240, 200, 0.1);
+}
+
+.theme-preview {
+  width: 100%;
+  height: 100px;
+  background: var(--surface);
+  border-radius: 0.5rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.theme-name {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.theme-description {
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
 .settings-panel {
   background: var(--panel);
   border: 1px solid var(--panel-border);
@@ -1526,6 +1600,102 @@ button[style*="z-index: 9999"] {
   overflow-y: auto;
 }
 
+/* Gallery sections */
+.gallery-section {
+  margin-bottom: 2rem;
+}
+
+.gallery-section:last-child {
+  margin-bottom: 0;
+}
+
+.gallery-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gallery-section-header h4 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.gallery-section-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  flex: 1;
+  margin-left: 0.5rem;
+}
+
+.clear-btn {
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.2);
+  color: #ff3b30;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clear-btn:hover {
+  background: rgba(255, 59, 48, 0.2);
+  border-color: rgba(255, 59, 48, 0.3);
+}
+
+/* Differentiate imported slides */
+.template-gallery.imported .template-card {
+  background: rgba(0, 122, 255, 0.05);
+  border-color: rgba(0, 122, 255, 0.2);
+}
+
+.template-gallery.imported .template-card:hover {
+  background: rgba(0, 122, 255, 0.1);
+  border-color: rgba(0, 122, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.template-gallery.imported .template-card.selected {
+  background: rgba(0, 122, 255, 0.2);
+  position: relative;
+}
+
+.template-gallery.imported .template-card.selected::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(120deg, var(--primary), var(--indicator));
+  background-origin: border-box;
+  background-clip: border-box;
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Default templates styling */
+/* Moved after base .template-card to win cascade */
+.template-gallery.default .template-card.selected {
+  background: rgba(255, 255, 255, 0.08) !important;
+  position: relative;
+  border: 2px solid var(--primary) !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  border-color: var(--primary) !important;
+}
+
 .template-card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1533,12 +1703,18 @@ button[style*="z-index: 9999"] {
   padding: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .template-card:hover {
   background: rgba(255, 255, 255, 0.06);
-  border-color: var(--primary);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
 }
+
 
 .template-card.active {
   border-color: var(--primary);
@@ -1547,9 +1723,10 @@ button[style*="z-index: 9999"] {
 
 .template-thumb {
   aspect-ratio: 16/9;
-  background: #000;
+  background: #0a0a0a;
   border-radius: 0.5rem;
   margin-bottom: 0.5rem;
+  overflow: hidden;
 }
 
 .deck-strip-container {
